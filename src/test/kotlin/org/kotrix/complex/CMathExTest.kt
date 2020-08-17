@@ -5,6 +5,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeTypeOf
 
+/**
+ * Test class for org.kotrix.complex.CMathExt
+ */
 class CMathExTest: StringSpec({
     /** Conversion **/
 

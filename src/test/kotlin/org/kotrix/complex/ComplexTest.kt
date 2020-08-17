@@ -7,7 +7,7 @@ import io.kotest.matchers.types.shouldBeTypeOf
 import org.kotrix.testing.utils.MAX_TOLERANCE
 
 /**
- * Test class for org.kotrix.complex
+ * Test class for org.kotrix.complex.Complex && org.kotrix.complex.CMath
  */
 class ComplexTest: StringSpec({
     "Complex.Companion.ZERO should be 0.0 + 0.0i" {
