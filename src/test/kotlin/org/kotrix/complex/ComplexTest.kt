@@ -10,6 +10,38 @@ import org.kotrix.testing.utils.MAX_TOLERANCE
  * Test class for org.kotrix.complex.Complex && org.kotrix.complex.CMath
  */
 class ComplexTest: StringSpec({
+    /** Constructors **/
+
+    "Complex(Double, Double): Complex(1.0, 2.0) should be 1 + 2i" {
+        val complex = Complex(1.0, 2.0)
+
+        complex.real shouldBe (1.0 plusOrMinus MAX_TOLERANCE)
+        complex.real.shouldBeTypeOf<Double>()
+
+        complex.imag shouldBe (2.0 plusOrMinus MAX_TOLERANCE)
+        complex.imag.shouldBeTypeOf<Double>()
+    }
+
+    "Complex(Number, NUmber): Complex(1 as Number, 2 as Number) should be 1 + 2i" {
+        Complex(1 as Number, 2 as Number) shouldBe Complex(1.0, 2.0)
+    }
+
+    "Complex(Complex, Number): Complex(Complex(3, 4), 1) should be 3 + 5i" {
+        Complex(Complex(3, 4), 1) shouldBe Complex(3, 5)
+    }
+
+    "Complex(Number, Complex): Complex(1, Complex(3, 4)) should be -3 + 3i" {
+        Complex(1, Complex(3, 4)) shouldBe Complex(-3, 3)
+    }
+
+    "Complex(Number): Complex(10) should be 10 + 0i" {
+        Complex(10) shouldBe Complex(10, 0)
+    }
+
+    "Complex(Complex): Complex(Complex(1, 2)) should be 1 + 2i" {
+        Complex(Complex(1, 2)) shouldBe Complex(1, 2)
+    }
+
     "Complex.Companion.ZERO should be 0.0 + 0.0i" {
         Complex.ZERO shouldBe Complex(0, 0)
     }
@@ -238,7 +270,6 @@ class ComplexTest: StringSpec({
 
     "Complex.cosh: (3 + 4i).cosh should be approximately -6.580663040551157 + -7.581552742746545i" {
         val cosh = Complex(3, 4).cosh
-        println(cosh)
         cosh.real shouldBe
                 (-6.58066304055115643256074412653880361671126734551589777322021832 plusOrMinus MAX_TOLERANCE)
         cosh.imag shouldBe

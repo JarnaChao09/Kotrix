@@ -18,7 +18,7 @@ data class Complex(var real: Double, var imag: Double): Number() {
 
     constructor(copy: Complex): this(copy.real, copy.imag)
 
-    override fun toByte(): Byte = radius.toByte()
+    override fun toByte(): Byte = radius.toInt().toByte()
 
     override fun toChar(): Char = radius.toChar()
 
@@ -30,7 +30,7 @@ data class Complex(var real: Double, var imag: Double): Number() {
 
     override fun toLong(): Long = radius.toLong()
 
-    override fun toShort(): Short = radius.toShort()
+    override fun toShort(): Short = radius.toInt().toShort()
 
     companion object {
         val ZERO
