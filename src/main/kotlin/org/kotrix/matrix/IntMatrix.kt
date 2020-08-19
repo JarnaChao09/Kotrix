@@ -135,7 +135,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
         get() = this.transpose()
 
     override fun transpose(): IntMatrix =
-        super.transpose() as IntMatrix
+        IntMatrix(super.transpose())
 
     override val type: KClass<Int> by lazy { Int::class }
 

@@ -129,7 +129,7 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
         get() = this.transpose()
 
     override fun transpose(): DoubleMatrix =
-        super.transpose() as DoubleMatrix
+        DoubleMatrix(super.transpose())
 
     override val type: KClass<Double> by lazy { Double::class }
 
