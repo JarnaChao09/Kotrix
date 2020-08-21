@@ -17,15 +17,15 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
     constructor(x: Int, y: Int, initBlock: (Int) -> Double = { 0.0 }): this(dim = Size(x, y), initBlock = { _, _ -> initBlock(0)})
 
     constructor(vectorOfVector: Vector<DoubleVector>, asColVectors: Boolean = false): this(
-        dim = if (asColVectors) vectorOfVector[0].length by vectorOfVector.length else vectorOfVector.length by vectorOfVector[0].length,
+        dim = if (asColVectors) vectorOfVector[0].size by vectorOfVector.size else vectorOfVector.size by vectorOfVector[0].size,
         initBlock = if (asColVectors) { r, c -> vectorOfVector[c][r] } else { r, c -> vectorOfVector[r][c] }
     )
 
     constructor(vector: DoubleVector, asCol: Boolean = false):
             this(
-                dim = if (asCol) Size(vector.length, 1) else Size(
+                dim = if (asCol) Size(vector.size, 1) else Size(
                     1,
-                    vector.length
+                    vector.size
                 ),
                 initBlock = if (asCol) { i, _ -> vector[i]} else { _, i -> vector[i]  }
             )

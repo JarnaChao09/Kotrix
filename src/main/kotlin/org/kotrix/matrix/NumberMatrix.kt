@@ -15,10 +15,10 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: Vector<T>): this(dim = Size(1, vector.length), initBlock = { _, i -> vector[i]  })
+    constructor(vector: Vector<T>): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
 
     constructor(matListOfVector: Vector<Vector<T>>, unused: Boolean = true): this(
-        dim = if (unused) Size(matListOfVector.length, matListOfVector[0].length) else Size(matListOfVector.length, matListOfVector[0].length),
+        dim = if (unused) Size(matListOfVector.size, matListOfVector[0].size) else Size(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
 

@@ -16,27 +16,27 @@ class BooleanVector(length: Int = 10, initBlock: (Int) -> Boolean = { false }): 
         get() = this.toArray()
 
     fun toArray(): BooleanArray {
-        return BooleanArray(this.length) { i -> this[i] }
+        return BooleanArray(this.size) { i -> this[i] }
     }
 
     operator fun not(): BooleanVector =
-        BooleanVector(this.length) { i -> !this[i] }
+        BooleanVector(this.size) { i -> !this[i] }
 }
 
 infix fun BooleanVector.and(other: BooleanVector): BooleanVector =
-    if (this.length != other.length)
-        throw IllegalArgumentException("${this.length} != ${other.length}")
+    if (this.size != other.size)
+        throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.length) { i -> this[i] && other[i] }
+        BooleanVector(this.size) { i -> this[i] && other[i] }
 
 infix fun BooleanVector.or(other: BooleanVector): BooleanVector =
-    if (this.length != other.length)
-        throw IllegalArgumentException("${this.length} != ${other.length}")
+    if (this.size != other.size)
+        throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.length) { i -> this[i] || other[i] }
+        BooleanVector(this.size) { i -> this[i] || other[i] }
 
 infix fun BooleanVector.xor(other: BooleanVector): BooleanVector =
-    if (this.length != other.length)
-        throw IllegalArgumentException("${this.length} != ${other.length}")
+    if (this.size != other.size)
+        throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.length) { i -> this[i] xor other[i] }
+        BooleanVector(this.size) { i -> this[i] xor other[i] }

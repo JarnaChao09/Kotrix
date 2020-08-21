@@ -2,6 +2,8 @@ package org.kotrix.vector
 
 import org.kotrix.matrix.Matrix
 import org.kotrix.utils.Slice
+import java.lang.Exception
+import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
@@ -10,7 +12,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
 
     constructor(list: List<T>): this(length = list.size, initBlock = { i -> list[i] })
 
-    constructor(vec: Vector<T>): this(length = vec.length, initBlock = { i -> vec[i] })
+    constructor(vec: Vector<T>): this(length = vec.size, initBlock = { i -> vec[i] })
 
     sealed class Scope<T> where T: Any {
         val actions: MutableList<Scope<T>> = emptyList<Scope<T>>().toMutableList()
@@ -50,7 +52,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     class VectorIterator<U>(val value: Vector<U>): Iterator<U> where U: Any {
         private var current = 0
         override fun hasNext(): Boolean {
-            return current < value.length
+            return current < value.size
         }
 
         override fun next(): U {
@@ -59,21 +61,24 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
 
     }
 
-    class VectorIteratorWithIndices<U>(val value: Vector<U>): Iterator<Pair<U, Int>> where U: Any {
+    class VectorIteratorWithIndices<U>(val value: Vector<U>): Iterator<IndexedValue<U>> where U: Any {
         private var current = 0
         override fun hasNext(): Boolean {
-            return current < value.length
+            return current < value.size
         }
 
-        override fun next(): Pair<U, Int> =
-            value[current] to current++
+        override fun next(): IndexedValue<U> =
+            IndexedValue(current, value[current++])
     }
 
     companion object {
         @JvmStatic
-        inline fun <reified T: Any> empty(size: Int = 1): Vector<T> {
-            return Vector(size) { T::class.java.newInstance() }
-        }
+        inline fun <reified T: Any> empty(size: Int = 1): Vector<T> =
+            try {
+                Vector(size) { T::class.java.newInstance() }
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Cannot instantiate instance of ${T::class.java}")
+            }
 
         @JvmStatic
         fun <T: Any> of(vararg elements: T): Vector<T> =
@@ -111,7 +116,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
 
     protected var _arr: MutableList<T> = List(length) { i -> initBlock(i) }.toMutableList()
 
-    override val length: Int
+    override val size: Int
         get() = this._arr.size
 
     override val type: KClass<out T>
@@ -121,11 +126,11 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
         get() = this.toList()
 
     override fun toString(): String {
-        if (length == 0) {
+        if (size == 0) {
             return "[]"
         }
         val retString = List(0) { "" }.toMutableList()
-        val maxLength: Int = _arr.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.length-1] + 1
+        val maxLength: Int = _arr.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.size-1] + 1
         for (i in this._arr) {
             val currentLength = i.toString().length
             retString += " " * (maxLength - currentLength) + i.toString()
@@ -144,32 +149,32 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     override operator fun iterator(): Iterator<T> =
         VectorIterator(this)
 
-    override fun indices(): IntRange =
-        0 until this.length
+    override val indices: IntRange
+        get() = 0 until this.size
 
-    override fun withIndices(): Iterator<Pair<T, Int>> =
-        VectorIteratorWithIndices(this)
+    override val withIndices: Iterator<IndexedValue<T>>
+        get() = VectorIteratorWithIndices(this)
 
-    override operator fun get(index: Int): T = this._arr[(length + index) % length]
+    override operator fun get(index: Int): T = this._arr[(size + index) % size]
 
     override operator fun get(indexSlice: Slice): VectorBase<T> {
         val ret = nulls<T>()
         val subList: MutableList<T> = emptyList<T>().toMutableList()
         for (i: Int in indexSlice) {
-            subList.add(this._arr[(length + i) % length])
+            subList.add(this._arr[(size + i) % size])
         }
         ret._arr = subList
         return ret
     }
 
     override operator fun set(index: Int, value: T) {
-        this._arr[(length + index) % length] = value
+        this._arr[(size + index) % size] = value
     }
 
     override operator fun set(indexSlice: Slice, value: VectorBase<T>) {
         var counter = 0
         for (i in indexSlice) {
-            this[(length + i) % length] = value[counter++]
+            this[(size + i) % size] = value[counter++]
         }
     }
 
@@ -209,7 +214,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
         Matrix(this, asCol = asCol)
 
     override fun toList(): List<T> =
-        List(this.length) { i -> this[i] }
+        List(this.size) { i -> this[i] }
 
     override fun contains(other: T): Boolean =
         other in this._arr
@@ -234,5 +239,11 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     }
 
     override fun equal(other: Vector<T>): BooleanVector =
-        BooleanVector(this.length) { i -> this[i] == other[i] }
+        BooleanVector(this.size) { i -> this[i] == other[i] }
+
+    override fun containsAll(elements: Collection<T>): Boolean =
+        this._arr.containsAll(elements)
+
+    override fun isEmpty(): Boolean =
+        this._arr.isEmpty()
 }

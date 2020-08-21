@@ -26,15 +26,15 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     constructor(vector: Vector<T>, asCol: Boolean = false):
             this(
-                dim = if (asCol) Size(vector.length, 1) else Size(
+                dim = if (asCol) Size(vector.size, 1) else Size(
                     1,
-                    vector.length
+                    vector.size
                 ),
                 initBlock = if (asCol) { i, _ -> vector[i]} else { _, i -> vector[i]  }
             )
 
     constructor(matListOfVector: Vector<Vector<T>>): this(
-        dim = Size(matListOfVector.length, matListOfVector[0].length),
+        dim = Size(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
 
@@ -206,7 +206,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     }
 
     override operator fun set(index: Int, value: Vector<T>) {
-        if (this.colLength != value.length) throw IllegalArgumentException("VECTOR SIZE ${value.length} INCOMPATIBLE WITH ${this.dim}")
+        if (this.colLength != value.size) throw IllegalArgumentException("VECTOR SIZE ${value.size} INCOMPATIBLE WITH ${this.dim}")
         this.internalMatrix[index] = value
     }
 
@@ -261,14 +261,14 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         return ret.build()
     }
 
-    override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.size = it.internalMatrix.length by it.internalMatrix[0].length }
+    override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.size = it.internalMatrix.size by it.internalMatrix[0].size }
 
     override fun colAppend(other: MatrixBase<T>): Matrix<T> {
         other as Matrix<T>
-        for (i in 0 until min(this.internalMatrix.length, other.internalMatrix.length)) {
+        for (i in 0 until min(this.internalMatrix.size, other.internalMatrix.size)) {
             this.internalMatrix[i].appendAll(other.internalMatrix[i])
         }
-        return this.also { it.size = it.internalMatrix.length by it.internalMatrix[0].length }
+        return this.also { it.size = it.internalMatrix.size by it.internalMatrix[0].size }
     }
 
     private operator fun String.times(maxLength: Int): String {

@@ -4,16 +4,14 @@ import org.kotrix.matrix.Matrix
 import org.kotrix.utils.Slice
 import kotlin.reflect.KClass
 
-interface VectorBase<T>: Iterable<T> where T: Any {
+interface VectorBase<T>: Collection<T> where T: Any {
     val type: KClass<out T>
-
-    val length: Int
 
     val list: List<T>
 
-    fun indices(): IntRange
+    val indices: IntRange
 
-    fun withIndices(): Iterator<Pair<T, Int>>
+    val withIndices: Iterator<IndexedValue<T>>
 
     infix fun append(other: T)
 
@@ -37,7 +35,7 @@ interface VectorBase<T>: Iterable<T> where T: Any {
 
     operator fun set(indexSlice: Slice, value: VectorBase<T>)
 
-    operator fun contains(other: T): Boolean
+    override operator fun contains(element: T): Boolean
 
     operator fun invoke(): VectorBase<T>
 

@@ -46,56 +46,56 @@ operator fun Int.div(other: IntVector): IntVector =
     (this / other.toDoubleVector()).toIntVector()
 
 operator fun Int.div(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length) { i -> this / other[i] }
+    DoubleVector(other.size) { i -> this / other[i] }
 
 operator fun Double.div(other: IntVector): DoubleVector =
     this / other.toDoubleVector()
 
 operator fun Double.div(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length).mapIndexed { _, index -> this / other[index] }
+    DoubleVector(other.size).mapIndexed { _, index -> this / other[index] }
 
 /** Remainder **/
 operator fun Int.rem(other: IntVector): IntVector =
-    IntVector(other.length).mapIndexed { _, index -> this % other[index] }
+    IntVector(other.size).mapIndexed { _, index -> this % other[index] }
 
 operator fun Int.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
 
 operator fun Double.rem(other: IntVector): DoubleVector =
-    DoubleVector(other.length).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
 
 operator fun Double.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
 
 /** Power **/
 infix fun Int.pow(other: IntVector): IntVector =
-    IntVector(other.length) { this } pow other
+    IntVector(other.size) { this } pow other
 
 infix fun Int.pow(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length) { this.toDouble() } pow other
+    DoubleVector(other.size) { this.toDouble() } pow other
 
 infix fun Double.pow(other: IntVector): DoubleVector =
-    DoubleVector(other.length) { this } pow other.toDoubleVector()
+    DoubleVector(other.size) { this } pow other.toDoubleVector()
 
 infix fun Double.pow(other: DoubleVector): DoubleVector =
-    DoubleVector(other.length) { this } pow other
+    DoubleVector(other.size) { this } pow other
 
 infix fun IntVector.pow(other: Int): IntVector =
-    IntVector(this.length) { i -> (this[i].toDouble()).pow(other).toInt() }
+    IntVector(this.size) { i -> (this[i].toDouble()).pow(other).toInt() }
 
 infix fun IntVector.pow(other: Double): DoubleVector =
-    DoubleVector(this.length) { i -> (this[i].toDouble()).pow(other) }
+    DoubleVector(this.size) { i -> (this[i].toDouble()).pow(other) }
 
 infix fun DoubleVector.pow(other: Int): DoubleVector =
-    DoubleVector(this.length) { i -> this[i].pow(other) }
+    DoubleVector(this.size) { i -> this[i].pow(other) }
 
 infix fun DoubleVector.pow(other: Double): DoubleVector =
-    DoubleVector(this.length) { i -> this[i].pow(other) }
+    DoubleVector(this.size) { i -> this[i].pow(other) }
 
 /** List Conversion **/
 inline fun <reified T> List<T>.toVector(): Vector<T> where T: Any {
     val ret = Vector.nulls<T>(this.size)
-    for (i in 0 until ret.length) {
+    for (i in 0 until ret.size) {
         ret[i] = this[i]
     }
     return ret

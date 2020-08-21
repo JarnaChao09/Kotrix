@@ -17,22 +17,22 @@ import kotlin.reflect.KClass
 class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int>(dim, initBlock) {
     constructor(x: Int, y: Int, initBlock: (Int) -> Int = { 0 }): this(dim = Size(x, y), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: IntVector): this(dim = Size(1, vector.length), initBlock = { _, i -> vector[i]  })
+    constructor(vector: IntVector): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
 
     constructor(vector: IntVector, asCol: Boolean = false):
             this(
-                dim = if (asCol) Size(vector.length, 1) else Size(
+                dim = if (asCol) Size(vector.size, 1) else Size(
                     1,
-                    vector.length
+                    vector.size
                 ),
                 initBlock = if (asCol) { i, _ -> vector[i]} else { _, i -> vector[i]  }
             )
 
     constructor(vectorOfVector: Vector<IntVector>, asColVectors: Boolean = false): this(
         dim = if (asColVectors) Size(
-            vectorOfVector[0].length,
-            vectorOfVector.length
-        ) else Size(vectorOfVector.length, vectorOfVector[0].length),
+            vectorOfVector[0].size,
+            vectorOfVector.size
+        ) else Size(vectorOfVector.size, vectorOfVector[0].size),
         initBlock = if (asColVectors) { r, c -> vectorOfVector[c][r] } else { r, c -> vectorOfVector[r][c] }
     )
 
@@ -76,7 +76,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
         @JvmName("ofInts")
         fun of(matrix: List<List<Int>>): IntMatrix {
             val mat = Vector(matrix.size) { IntVector(matrix[0].size) }
-            for (i in 0 until mat.length) {
+            for (i in 0 until mat.size) {
                 mat[i] = IntVector(matrix[i].size) { j -> matrix[i][j] }
             }
             return IntMatrix(mat)
