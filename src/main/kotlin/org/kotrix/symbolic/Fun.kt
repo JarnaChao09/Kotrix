@@ -1,5 +1,6 @@
 package org.kotrix.symbolic
 
+import org.kotrix.utils.Stringify
 import kotlin.math.E
 import kotlin.math.pow
 
