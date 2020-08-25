@@ -2,15 +2,9 @@ package org.kotrix.discrete
 
 import org.kotrix.utils.Stringify
 
-sealed class BooleanAlgebra:
-        Stringify, EvalBool<BooleanAlgebra, Constant, BooleanAlgebra> {
-    abstract class Unary(protected val expression: BooleanAlgebra): BooleanAlgebra()
-
-    abstract class Binary(
-            protected val lexpr: BooleanAlgebra,
-            protected val rexpr: BooleanAlgebra
-    ): BooleanAlgebra()
-
+sealed class BooleanAlgebra(
+        open val variables: Set<Variable> = emptySet()
+): Stringify, EvalBool<BooleanAlgebra, Constant, BooleanAlgebra> {
     operator fun invoke(value: Map<BooleanAlgebra, Constant>) = this.eval(value)
 
     operator fun invoke(vararg value: Pair<BooleanAlgebra, Constant>) = this(mapOf(*value))
@@ -24,6 +18,8 @@ data class Constant(val value: Boolean): BooleanAlgebra() {
 }
 
 data class Variable(val name: String): BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = setOf(this)
 
     inner class NoValueException: Exception("No Value Given for $this")
 
@@ -43,7 +39,10 @@ data class Variable(val name: String): BooleanAlgebra() {
 }
 
 data class To(val sufficient: BooleanAlgebra, val necessary: BooleanAlgebra):
-        BooleanAlgebra.Binary(sufficient, necessary) {
+        BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = sufficient.variables union sufficient.variables
+
     override fun stringify(): String =
             "(${sufficient.stringify()} ==> ${necessary.stringify()})"
 
@@ -61,7 +60,7 @@ infix fun BooleanAlgebra.arrow(other: BooleanAlgebra): BooleanAlgebra =
         To(this, other)
 
 data class Iff(val leftexpr: BooleanAlgebra, val rightexpr: BooleanAlgebra):
-        BooleanAlgebra.Binary(leftexpr, rightexpr) {
+        BooleanAlgebra(leftexpr.variables union rightexpr.variables) {
     override fun stringify(): String =
             "(${leftexpr.stringify()} <==> ${rightexpr.stringify()})"
 
@@ -79,7 +78,7 @@ infix fun BooleanAlgebra.iff(other: BooleanAlgebra): BooleanAlgebra =
         Iff(this, other)
 
 data class And(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra.Binary(leftop, rightop) {
+        BooleanAlgebra(leftop.variables union rightop.variables) {
     override fun stringify(): String =
             "(${leftop.stringify()} && ${rightop.stringify()})"
 
@@ -97,7 +96,7 @@ infix fun BooleanAlgebra.AND(other: BooleanAlgebra): BooleanAlgebra =
         And(this, other)
 
 data class Or(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra.Binary(leftop, rightop) {
+        BooleanAlgebra(leftop.variables union rightop.variables) {
     override fun stringify(): String =
             "(${leftop.stringify()} || ${rightop.stringify()})"
 
@@ -115,7 +114,7 @@ infix fun BooleanAlgebra.OR(other: BooleanAlgebra): BooleanAlgebra =
         Or(this, other)
 
 data class Xor(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra.Binary(leftop, rightop) {
+        BooleanAlgebra(leftop.variables union rightop.variables) {
     override fun stringify(): String =
             "(${leftop.stringify()} ^ ${rightop.stringify()})"
 
@@ -132,7 +131,7 @@ data class Xor(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
 infix fun BooleanAlgebra.XOR(other: BooleanAlgebra): BooleanAlgebra =
         Xor(this, other)
 
-data class Not(val expr: BooleanAlgebra): BooleanAlgebra.Unary(expr) {
+data class Not(val expr: BooleanAlgebra): BooleanAlgebra(expr.variables) {
     override fun stringify(): String =
             "!(${expr.stringify()})"
 

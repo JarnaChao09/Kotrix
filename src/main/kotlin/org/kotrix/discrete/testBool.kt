@@ -7,13 +7,19 @@ fun main() {
 
     val expression = (p OR q) arrow (p XOR (r.NOT))
 
-    println(expression)
+    val truthTable = TruthTable(expression)
 
-    println(expression.stringify())
+    println(truthTable.varValues)
 
-    println(expression(
-            p to true.const,
-            q to true.const,
-            r to false.const,
-    ).stringify())
+//    println(expression)
+//
+//    println(expression.stringify())
+//
+//    println(expression.variables)
+//
+//    println(expression(
+//            p to true.const,
+//            q to true.const,
+//            r to false.const,
+//    ).stringify())
 }
