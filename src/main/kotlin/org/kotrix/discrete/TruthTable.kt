@@ -89,7 +89,7 @@ class TruthTable(val expression: BooleanAlgebra) {
         val variableList = this.variables.toList()
         for (r in 0 until this.varValues.rowLength) {
             val dummy = Vector(0) { "" }
-            dummy appendAll this.varValues[r].toList().map { if (it) " $it" else it.toString() }.toVector()
+            dummy appendAll this.varValues[r].toList().map { if (it) "$it " else it.toString() }.toVector()
             for (op in sortedOperations) {
                 val values = Array<Pair<Variable, Constant>>(expression.variables.size) {
                     variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const
