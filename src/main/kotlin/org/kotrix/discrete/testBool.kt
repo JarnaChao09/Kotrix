@@ -9,17 +9,5 @@ fun main() {
 
     val truthTable = TruthTable(expression)
 
-    println(truthTable.varValues)
-
-//    println(expression)
-//
-//    println(expression.stringify())
-//
-//    println(expression.variables)
-//
-//    println(expression(
-//            p to true.const,
-//            q to true.const,
-//            r to false.const,
-//    ).stringify())
+    println(truthTable)
 }

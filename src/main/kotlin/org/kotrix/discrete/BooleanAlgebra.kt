@@ -41,7 +41,7 @@ data class Variable(val name: String): BooleanAlgebra() {
 data class To(val sufficient: BooleanAlgebra, val necessary: BooleanAlgebra):
         BooleanAlgebra() {
     override val variables: Set<Variable>
-        get() = sufficient.variables union sufficient.variables
+        get() = sufficient.variables union necessary.variables
 
     override fun stringify(): String =
             "(${sufficient.stringify()} ==> ${necessary.stringify()})"
@@ -60,7 +60,10 @@ infix fun BooleanAlgebra.arrow(other: BooleanAlgebra): BooleanAlgebra =
         To(this, other)
 
 data class Iff(val leftexpr: BooleanAlgebra, val rightexpr: BooleanAlgebra):
-        BooleanAlgebra(leftexpr.variables union rightexpr.variables) {
+        BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = leftexpr.variables union rightexpr.variables
+
     override fun stringify(): String =
             "(${leftexpr.stringify()} <==> ${rightexpr.stringify()})"
 
@@ -78,7 +81,10 @@ infix fun BooleanAlgebra.iff(other: BooleanAlgebra): BooleanAlgebra =
         Iff(this, other)
 
 data class And(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra(leftop.variables union rightop.variables) {
+        BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = leftop.variables union rightop.variables
+
     override fun stringify(): String =
             "(${leftop.stringify()} && ${rightop.stringify()})"
 
@@ -96,7 +102,10 @@ infix fun BooleanAlgebra.AND(other: BooleanAlgebra): BooleanAlgebra =
         And(this, other)
 
 data class Or(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra(leftop.variables union rightop.variables) {
+        BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = leftop.variables union rightop.variables
+
     override fun stringify(): String =
             "(${leftop.stringify()} || ${rightop.stringify()})"
 
@@ -114,7 +123,10 @@ infix fun BooleanAlgebra.OR(other: BooleanAlgebra): BooleanAlgebra =
         Or(this, other)
 
 data class Xor(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
-        BooleanAlgebra(leftop.variables union rightop.variables) {
+        BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = leftop.variables union rightop.variables
+
     override fun stringify(): String =
             "(${leftop.stringify()} ^ ${rightop.stringify()})"
 
@@ -131,7 +143,10 @@ data class Xor(val leftop: BooleanAlgebra, val rightop: BooleanAlgebra):
 infix fun BooleanAlgebra.XOR(other: BooleanAlgebra): BooleanAlgebra =
         Xor(this, other)
 
-data class Not(val expr: BooleanAlgebra): BooleanAlgebra(expr.variables) {
+data class Not(val expr: BooleanAlgebra): BooleanAlgebra() {
+    override val variables: Set<Variable>
+        get() = expr.variables
+
     override fun stringify(): String =
             "!(${expr.stringify()})"
 
