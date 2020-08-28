@@ -52,20 +52,20 @@ operator fun Double.div(other: IntVector): DoubleVector =
     this / other.toDoubleVector()
 
 operator fun Double.div(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { _, index -> this / other[index] }
+    DoubleVector(other.size).mapIndexed { index, _ -> this / other[index] } as DoubleVector
 
 /** Remainder **/
 operator fun Int.rem(other: IntVector): IntVector =
-    IntVector(other.size).mapIndexed { _, index -> this % other[index] }
+    IntVector(other.size).mapIndexed { index, _ -> this % other[index] } as IntVector
 
 operator fun Int.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
 
 operator fun Double.rem(other: IntVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
 
 operator fun Double.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { _, index -> this % other[index] }
+    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
 
 /** Power **/
 infix fun Int.pow(other: IntVector): IntVector =

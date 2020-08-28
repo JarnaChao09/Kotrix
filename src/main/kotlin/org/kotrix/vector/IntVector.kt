@@ -184,16 +184,16 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): NumberVector
     infix fun pow(other: DoubleVector): DoubleVector = this.toDoubleVector() pow other
 
     operator fun plus(other: Int): IntVector =
-        IntVector(this.size).mapIndexed { index, _ -> this[index] + other }
+        IntVector(this.size).mapIndexed { index, _ -> this[index] + other } as IntVector
 
     operator fun plus(other: Double): DoubleVector =
-        DoubleVector(this.size).mapIndexed { _, index -> this[index] + other }
+        DoubleVector(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVector
 
     operator fun minus(other: Int): IntVector =
-        IntVector(this.size).mapIndexed { index, _ -> this[index] - other }
+        IntVector(this.size).mapIndexed { index, _ -> this[index] - other } as IntVector
 
     operator fun minus(other: Double): DoubleVector =
-        DoubleVector(this.size).mapIndexed { _, index -> this[index] - other }
+        DoubleVector(this.size).mapIndexed { index, _ -> this[index] - other } as DoubleVector
 
     operator fun times(other: Int): IntVector =
         IntVector(this.size) { i -> this[i] * other }
@@ -212,37 +212,6 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): NumberVector
 
     operator fun rem(other: Double): DoubleVector =
         DoubleVector(this.size) { i -> this[i] % other }
-
-    override fun forEach(action: (Int) -> Unit) {
-        for (i in this) {
-            action(i)
-        }
-    }
-
-    override fun forEachIndexed(action: (Int, index: Int) -> Unit) {
-        var index = 0
-        for (i in this) {
-            action(i, index++)
-        }
-    }
-
-    override fun map(action: (Int) -> Int): IntVector {
-        val ret = IntVector(this.size)
-        var index = 0
-        for (i in this) {
-            ret[index++] = action(i)
-        }
-        return ret
-    }
-
-    override fun mapIndexed(action: (Int, index: Int) -> Int): IntVector {
-        val ret = IntVector(this.size)
-        var index = 0
-        for (i in this) {
-            ret[index] = action(i, index++)
-        }
-        return ret
-    }
 
     override fun toMatrix(asCol: Boolean): IntMatrix = IntMatrix(this, asCol)
 

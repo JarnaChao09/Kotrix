@@ -37,19 +37,11 @@ interface VectorBase<T>: Collection<T> where T: Any {
 
     override operator fun contains(element: T): Boolean
 
-    operator fun invoke(): VectorBase<T>
-
-    fun forEach(action: (T) -> Unit)
-
-    fun forEachIndexed(action: (T, index: Int) -> Unit)
-
-    fun map(action: (T) -> T): VectorBase<T>
-
-    fun mapIndexed(action: (T, index: Int) -> T): VectorBase<T>
+    operator fun <U: VectorBase<T>> contains(element: U): Boolean
 
     infix fun equal(other: Vector<T>): Vector<Boolean>
 
-    fun toMatrix(asCol: Boolean = true): Matrix<T>
+    fun toMatrix(asCol: Boolean): Matrix<T>
 
     fun toList(): List<T>
 }

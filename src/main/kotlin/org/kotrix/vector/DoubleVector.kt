@@ -150,7 +150,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Numb
         DoubleVector(this.size) { i -> -(this[i]) }
 
     override fun dot(other: NumberVector<Double>): Double {
-        return DoubleVector(this.size).mapIndexed { _, index: Int -> this[index] * other[index] }.sum()
+        return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
     override fun cross(other: NumberVector<Double>): DoubleVector {
@@ -184,10 +184,10 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Numb
     infix fun pow(other: IntVector): DoubleVector = this pow other.toDoubleVector()
 
     operator fun plus(other: Int): DoubleVector =
-        DoubleVector(this.size).mapIndexed { _, index -> this[index] + other }
+        DoubleVector(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVector
 
     operator fun plus(other: Double): DoubleVector =
-        DoubleVector(this.size).mapIndexed { _, index -> this[index] + other }
+        DoubleVector(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVector
 
     operator fun minus(other: Int): DoubleVector =
         DoubleVector(this.size) { i -> this[i] - other }
@@ -212,37 +212,6 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Numb
 
     operator fun rem(other: Double): DoubleVector =
         DoubleVector(this.size) { i -> this[i] % other }
-
-    override fun forEach(action: (Double) -> Unit) {
-        for (i in this) {
-            action(i)
-        }
-    }
-
-    override fun forEachIndexed(action: (Double, index: Int) -> Unit) {
-        var index = 0
-        for (i in this) {
-            action(i, index++)
-        }
-    }
-
-    override fun map(action: (Double) -> Double): DoubleVector {
-        val ret = DoubleVector(this.size)
-        var index = 0
-        for (i in this) {
-            ret[index++] = action(i)
-        }
-        return ret
-    }
-
-    override fun mapIndexed(action: (Double, index: Int) -> Double): DoubleVector {
-        val ret = DoubleVector(this.size)
-        var index = 0
-        for (i in this) {
-            ret[index] = action(i, index++)
-        }
-        return ret
-    }
 
     override fun toMatrix(asCol: Boolean): DoubleMatrix = DoubleMatrix(this, asCol)
 

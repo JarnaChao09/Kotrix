@@ -133,10 +133,10 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isNormal(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { rowI: Vector<T>, i: Int ->
-            this.vector.forEachIndexed { rowJ: Vector<T>, j: Int ->
+        this.vector.forEachIndexed { i: Int, rowI: Vector<T> ->
+            this.vector.forEachIndexed { j: Int, rowJ: Vector<T> ->
                 var s = Complex.ZERO
-                this.vector.forEachIndexed { rowK: Vector<T>, k: Int ->
+                this.vector.forEachIndexed { k: Int, rowK: Vector<T> ->
                     s += rowI[k] * rowJ[k].conjugate - rowK[i].conjugate * rowK[j]
                 }
                 if (s != Complex.ZERO) {
@@ -150,7 +150,7 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isOrthogonal(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { row: Vector<T>, i: Int ->
+        this.vector.forEachIndexed { i: Int, row: Vector<T> ->
             for (j in 0 until this.colLength) {
                 var s = Complex.ZERO
                 for (k in 0 until this.rowLength) {
@@ -168,9 +168,9 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         val cols = Array(this.colLength) { false }
         var ret = true
-        this.vector.forEachIndexed { row: Vector<T>, _ ->
+        this.vector.forEachIndexed { _, row: Vector<T> ->
             var found = false
-            row.forEachIndexed { e, j ->
+            row.forEachIndexed { j, e ->
                 if (e == 1) {
                     if (found || cols[j]) {
                         ret = false
@@ -223,7 +223,7 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isUnitary(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { row: Vector<T>, i: Int ->
+        this.vector.forEachIndexed { i: Int, row: Vector<T> ->
             for (j in 0 until this.colLength) {
                 var s = Complex.ZERO
                 for (k in 0 until this.rowLength) {

@@ -7,12 +7,12 @@ import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
-open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> where T: Any {
-    constructor(length: Int = 10, initValue: T): this(length, initBlock = { initValue })
+open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where T: Any {
+    constructor(size: Int = 10, initValue: T): this(size, initBlock = { initValue })
 
-    constructor(list: List<T>): this(length = list.size, initBlock = { i -> list[i] })
+    constructor(list: List<T>): this(size = list.size, initBlock = { i -> list[i] })
 
-    constructor(vec: Vector<T>): this(length = vec.size, initBlock = { i -> vec[i] })
+    constructor(vec: Vector<T>): this(size = vec.size, initBlock = { i -> vec[i] })
 
     sealed class Scope<T> where T: Any {
         val actions: MutableList<Scope<T>> = emptyList<Scope<T>>().toMutableList()
@@ -85,9 +85,12 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
             Vector(elements.size) { i -> elements[i] }
 
         @Suppress("UNCHECKED_CAST")
-        fun <T: Any> nulls(size: Int = 1): Vector<T> {
+        fun <T: Any> nulls(size: Int = 0): Vector<T> {
             return Vector(size) { Any() as T }
         }
+
+        operator fun <T: Any> invoke(size: Int): Vector<T> =
+                nulls(size = size)
     }
 
     override fun appendAll(value: VectorBase<T>) {
@@ -114,7 +117,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     override fun removeAt(index: Int): T =
         this._arr.removeAt(index)
 
-    protected var _arr: MutableList<T> = List(length) { i -> initBlock(i) }.toMutableList()
+    protected var _arr: MutableList<T> = List(size) { i -> initBlock(i) }.toMutableList()
 
     override val size: Int
         get() = this._arr.size
@@ -157,7 +160,7 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
 
     override operator fun get(index: Int): T = this._arr[(size + index) % size]
 
-    override operator fun get(indexSlice: Slice): VectorBase<T> {
+    override operator fun get(indexSlice: Slice): Vector<T> {
         val ret = nulls<T>()
         val subList: MutableList<T> = emptyList<T>().toMutableList()
         for (i: Int in indexSlice) {
@@ -172,42 +175,14 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     }
 
     override operator fun set(indexSlice: Slice, value: VectorBase<T>) {
+        require(value.size == indexSlice.size) {
+            "Size ${value.size} of inputted vector does not equal size ${indexSlice.size} of proposed slice"
+        }
+
         var counter = 0
         for (i in indexSlice) {
             this[(size + i) % size] = value[counter++]
         }
-    }
-
-    override fun forEach(action: (T) -> Unit) {
-        for (i in this) {
-            action(i)
-        }
-    }
-
-    override fun forEachIndexed(action: (T, index: Int) -> Unit) {
-        var index = 0
-        for (i in this) {
-            action(i, index++)
-        }
-    }
-
-    override fun map(action: (T) -> T): VectorBase<T> {
-        val ret = nulls<T>()
-        ret._arr = emptyList<T>().toMutableList()
-        for (i in this) {
-            ret.append(action(i))
-        }
-        return ret
-    }
-
-    override fun mapIndexed(action: (T, index: Int) -> T): VectorBase<T> {
-        var index = 0
-        val ret = nulls<T>()
-        ret._arr = emptyList<T>().toMutableList()
-        for (i in this) {
-            ret.append(action(i, index++))
-        }
-        return ret
     }
 
     override fun toMatrix(asCol: Boolean): Matrix<T> =
@@ -216,12 +191,8 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
     override fun toList(): List<T> =
         List(this.size) { i -> this[i] }
 
-    override fun contains(other: T): Boolean =
-        other in this._arr
-
-    override fun invoke(): VectorBase<T> {
-        return nulls()
-    }
+    override operator fun contains(element: T): Boolean =
+        element in this._arr
 
     override fun hashCode(): Int {
         return _arr.hashCode()
@@ -240,6 +211,9 @@ open class Vector<T>(length: Int = 10, initBlock: (Int) -> T): VectorBase<T> whe
 
     override fun equal(other: Vector<T>): BooleanVector =
         BooleanVector(this.size) { i -> this[i] == other[i] }
+
+    override fun <U : VectorBase<T>> contains(element: U): Boolean =
+            this.containsAll(element)
 
     override fun containsAll(elements: Collection<T>): Boolean =
         this._arr.containsAll(elements)

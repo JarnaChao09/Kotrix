@@ -40,7 +40,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     constructor(matrix: Matrix<T>): this(dim = matrix.size, initBlock = { r, c -> matrix[r, c]})
 
-    constructor(dim1: Size, asRows: Boolean, initBlock: (Int) -> T): this(dim = dim1, initBlock = if (asRows) { _, i -> initBlock(i) } else { r, _ -> initBlock(r) })
+    constructor(dim1: Size, asCols: Boolean, initBlock: (Int) -> T): this(dim = dim1, initBlock = if (asCols) { i, _ -> initBlock(i) } else { _, i -> initBlock(i) })
 
     sealed class Scope<T> where T: Any {
         class Base<T: Any>: Scope<T>()
@@ -53,13 +53,13 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     companion object {
         inline fun <reified T: Any> empty(dim: Size): Matrix<T> {
-            return Matrix(dim, asRows = true) { T::class.java.newInstance() }
+            return Matrix(dim, asCols = true) { T::class.java.newInstance() }
         }
 
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
         fun <T: Any> nulls(dim: Size): Matrix<T> {
-            return Matrix(dim, asRows = true) { Any() as T }
+            return Matrix(dim, asCols = true) { Any() as T }
         }
 
         @JvmStatic
@@ -169,7 +169,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         Vector(internalMatrix[index])
 
     override operator fun get(indexSlice: Slice): Matrix<T> =
-        Matrix(internalMatrix[indexSlice] as Vector<Vector<T>>)
+        Matrix(internalMatrix[indexSlice])
 
     override operator fun get(indexR: Int, indexC: Int): T = internalMatrix[indexR][indexC]
 
@@ -284,7 +284,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         var maxLength = 0
         internalMatrix.forEach { it.forEach { i -> maxLength = max(maxLength, i.toString().length) } }
         for (r  in internalMatrix) {
-            val dummy = Vector(length = 0) { "" }
+            val dummy = Vector(size = 0) { "" }
             for (c in r) {
                 dummy append (" " * (maxLength - c.toString().length) + c.toString())
             }
