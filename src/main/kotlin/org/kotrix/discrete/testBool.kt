@@ -5,7 +5,7 @@ fun main() {
     val q = Variable("q")
     val r = Variable("r")
 
-    val expression = (p OR q) arrow (p XOR (r.NOT))
+    val expression = (p OR q) AND ((p.NOT) OR r) arrow (q OR r)
 
     val truthTable = TruthTable(expression)
 

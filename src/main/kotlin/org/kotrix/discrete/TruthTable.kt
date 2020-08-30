@@ -7,16 +7,17 @@ import org.kotrix.utils.by
 import org.kotrix.utils.sliceTo
 import org.kotrix.vector.BooleanVector
 import org.kotrix.vector.Vector
+import org.kotrix.vector.forEachIndexed
 import org.kotrix.vector.toVector
 
-class TruthTable(val expression: BooleanAlgebra) {
-    val variables: Set<Variable> by lazy { expression.variables.toSortedSet { l, r -> l.name.compareTo(r.name) } }
+class TruthTable(private val expression: BooleanAlgebra) {
+    private val variables: Set<Variable> by lazy { expression.variables.toSortedSet { l, r -> l.name.compareTo(r.name) } }
 
-    val varIndex: Map<Variable, Int> by lazy {
+    private val varIndex: Map<Variable, Int> by lazy {
         mapOf(*Array<Pair<Variable, Int>>(expression.variables.size) { expression.variables.toList()[it] to it })
     }
 
-    fun getAllOperations(
+    private fun getAllOperations(
             from: BooleanAlgebra = expression,
             allOps: Vector<BooleanAlgebra> = Vector<BooleanAlgebra>(0) { expression },
     ): Vector<BooleanAlgebra> {
@@ -42,7 +43,7 @@ class TruthTable(val expression: BooleanAlgebra) {
         }
     }
 
-    val varValues: BooleanMatrix by lazy {
+    private val varValues: BooleanMatrix by lazy {
         val rowSize = 2.0.pow(expression.variables.size).toInt()
         val colSize = expression.variables.size
         val ret = BooleanMatrix(rowSize by colSize)
@@ -68,34 +69,42 @@ class TruthTable(val expression: BooleanAlgebra) {
         val titleString = MutableList(0) { "" }
         val tableString = MutableList(0) { MutableList(0) { "" } }
 
-        var maxLength = 5
-        this.variables.forEach { maxLength = max(maxLength, it.stringify().length) }
-
         val sortedOperations = this.getAllOperations()
                 .sortedBy { it.stringify().length }
                 .toVector()
-                .also {
-                    it.forEach { maxLength = max(maxLength, it.stringify().length) }
-                }
 
+        val maxLengthList = MutableList(this.variables.size + sortedOperations.size) { 5 }
+
+        variables.forEachIndexed { index, variable ->
+            maxLengthList[index] = max(maxLengthList[index], variable.stringify().length)
+        }
+
+        val offset = this.variables.size
+
+        sortedOperations.forEachIndexed { index, booleanAlgebra ->
+            maxLengthList[index + offset] = max(maxLengthList[index + offset], booleanAlgebra.stringify().length)
+        }
+
+        var index = 0
         for (i in this.variables) {
-            titleString.add(i.stringify() + (" " * 4))
+            titleString.add(i.stringify() + (" " * (maxLengthList[index++] - i.stringify().length)))
         }
 
         for (i in sortedOperations) {
-            titleString.add(i.stringify() + (" " * (maxLength - i.stringify().length)))
+            titleString.add(i.stringify() + (" " * (maxLengthList[index++] - i.stringify().length)))
         }
 
         val variableList = this.variables.toList()
         for (r in 0 until this.varValues.rowLength) {
+            index = 0
             val dummy = Vector(0) { "" }
-            dummy appendAll this.varValues[r].toList().map { if (it) "$it " else it.toString() }.toVector()
+            dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVector()
             for (op in sortedOperations) {
                 val values = Array<Pair<Variable, Constant>>(expression.variables.size) {
                     variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const
                 }
                 val temp = (op(*values) as Constant).value.toString()
-                dummy append (temp + (" " * (maxLength - temp.length)))
+                dummy append (temp + (" " * (maxLengthList[index++] - temp.length)))
             }
             tableString += dummy.toList().toMutableList()
         }
