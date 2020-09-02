@@ -15,7 +15,7 @@ import kotlin.IllegalArgumentException
 
 class VectorTest : StringSpec({
     /** Constructors **/
-    "Vector(length) {}: Vector(5) { 0 } should be [5, 5, 5, 5, 5] of type Vector<Int>" {
+    "Vector(length) {}: Vector(5) { 0 } should be [0, 0, 0, 0, 0] of type Vector<Int>" {
         val vector = Vector(5) { 0 }
 
         vector.shouldContainExactly(0, 0, 0, 0, 0)

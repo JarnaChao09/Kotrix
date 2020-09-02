@@ -9,6 +9,8 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): NumberVector
 
     constructor(copy: Vector<Int>): this(copy.size, initBlock = { i -> copy[i] })
 
+    constructor(list: List<Int>): this(list.size, initBlock = { i -> list[i] })
+
     sealed class Scope {
         val actions: MutableList<Scope> = emptyList<Scope>().toMutableList()
 
@@ -51,7 +53,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): NumberVector
     }
 
     override val type: KClass<out Int>
-        get() = super.type
+        get() = Int::class
 
     override val list: List<Int>
         get() = super.list

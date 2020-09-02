@@ -9,6 +9,8 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Numb
 
     constructor(copy: Vector<Double>): this(copy.size, initBlock = { i -> copy[i] })
 
+    constructor(list: List<Double>): this(list.size, initBlock = { i -> list[i] })
+
     sealed class Scope {
         val actions: MutableList<Scope> = emptyList<Scope>().toMutableList()
 
