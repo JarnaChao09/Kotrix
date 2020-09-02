@@ -4,6 +4,8 @@ import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.Vector
+import org.kotrix.vector.VectorBase
+import org.kotrix.vector.toVector
 import java.lang.IllegalArgumentException
 import java.util.stream.Stream
 import kotlin.math.max
@@ -263,12 +265,25 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.size = it.internalMatrix.size by it.internalMatrix[0].size }
 
+    override fun removeRow(indexR: Int): Vector<T> =
+            this.internalMatrix.removeAt(indexR)
+
     override fun colAppend(other: MatrixBase<T>): Matrix<T> {
         other as Matrix<T>
         for (i in 0 until min(this.internalMatrix.size, other.internalMatrix.size)) {
             this.internalMatrix[i].appendAll(other.internalMatrix[i])
         }
         return this.also { it.size = it.internalMatrix.size by it.internalMatrix[0].size }
+    }
+
+    override fun removeCol(indexC: Int): Vector<T> {
+        val ret = Vector.nulls<T>()
+
+        this.internalMatrix.forEach {
+            ret append it.removeAt(indexC)
+        }
+
+        return ret
     }
 
     private operator fun String.times(maxLength: Int): String {

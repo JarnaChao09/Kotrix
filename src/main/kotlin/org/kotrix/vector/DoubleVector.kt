@@ -4,7 +4,7 @@ import org.kotrix.matrix.DoubleMatrix
 import kotlin.math.pow
 import kotlin.reflect.KClass
 
-class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): NumberVector<Double>(length, initBlock) {
+class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vector<Double>(length, initBlock), NumberVector<Double> {
     constructor(length: Int = 10, initValue: Double): this(length, initBlock = { initValue })
 
     constructor(copy: Vector<Double>): this(copy.size, initBlock = { i -> copy[i] })

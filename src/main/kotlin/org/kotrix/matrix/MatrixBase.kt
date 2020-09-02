@@ -3,6 +3,7 @@ package org.kotrix.matrix
 import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
 import org.kotrix.vector.Vector
+import org.kotrix.vector.VectorBase
 
 import java.util.stream.Stream
 
@@ -53,7 +54,11 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     fun rowAppend(other: MatrixBase<T>): MatrixBase<T>
 
+    fun removeRow(indexR: Int): VectorBase<T>
+
     fun colAppend(other: MatrixBase<T>): MatrixBase<T>
+
+    fun removeCol(indexC: Int): VectorBase<T>
 
     fun toVector(): Vector<out Vector<T>>
 

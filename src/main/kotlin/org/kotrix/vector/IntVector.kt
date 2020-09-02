@@ -4,7 +4,7 @@ import org.kotrix.matrix.IntMatrix
 import kotlin.math.pow
 import kotlin.reflect.KClass
 
-class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): NumberVector<Int>(length, initBlock) {
+class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(length, initBlock), NumberVector<Int> {
     constructor(length: Int = 10, initValue: Int): this(length, initBlock = { initValue })
 
     constructor(copy: Vector<Int>): this(copy.size, initBlock = { i -> copy[i] })
