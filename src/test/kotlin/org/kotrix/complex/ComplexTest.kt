@@ -75,6 +75,19 @@ class ComplexTest: StringSpec({
         -Complex(1, 1) shouldBe Complex(-1, -1)
     }
 
+    /** Rounding **/
+
+    /** Ceil Floor **/
+    // TODO Round
+
+    "Complex.floor: Complex(1.4, 2.3).floor should be 1.0 + 2.0i" {
+        Complex(1.4, 2.3).floor shouldBe Complex(1,2)
+    }
+
+    "Complex.ceil: Complex(1.4, 2.3).ceil should be 2.0 + 3.0i" {
+        Complex(1.4, 2.3).ceil shouldBe Complex(2, 3)
+    }
+
     /** Complex Basic Arithmetic + - * / **/
 
     "Complex.plus: (1.0 + 1.0i) + (2.0 + -1.0i) should be 3.0 + 0.0i" {

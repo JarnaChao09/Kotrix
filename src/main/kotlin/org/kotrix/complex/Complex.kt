@@ -97,6 +97,12 @@ data class Complex(var real: Double, var imag: Double): Number() {
             )
         ).complex
 
+    val floor
+        get() = Complex(floor(this.real), floor(this.imag))
+
+    val ceil
+        get() = Complex(ceil(this.real), ceil(this.imag))
+
     val squared
         get() = pow(2.0)
 
