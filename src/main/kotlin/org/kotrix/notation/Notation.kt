@@ -7,14 +7,15 @@ interface Notation: Comparable<Notation>, Stringify {
 
     val exponent: Int
 
-    val decimalForm: Double
+    val decimal: Double
 
-    override fun stringify(): String {
-        if (exponent == 0 || exponent == -0) {
-            return "$base"
-        }
-        return "${base}E$exponent"
-    }
+    override fun stringify(): String =
+            if (exponent == 0 || exponent == -0)
+                "$base"
+            else if(base == 0.0)
+                "0.0"
+            else
+                "${base}E$exponent"
 
     operator fun unaryPlus(): Notation
 
@@ -31,6 +32,12 @@ interface Notation: Comparable<Notation>, Stringify {
     operator fun rem(other: Notation): Notation
 
     fun pow(other: Notation): Notation
+
+    fun floor(): Notation
+
+    fun ceil(): Notation
+
+    fun round(precision: Int): Notation
 }
 
 @Suppress("UNCHECKED_CAST")

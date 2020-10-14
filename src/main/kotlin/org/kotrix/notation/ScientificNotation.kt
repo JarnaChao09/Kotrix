@@ -6,11 +6,17 @@ data class ScientificNotation(private var base_: Double, private var exponent_: 
     constructor(base: Number, exp: Number): this(base.toDouble(), exp.toInt())
 
     constructor(regular: Number): this(
-            regular.toDouble() * (10.0).pow(-floor(log10(regular.toDouble().absoluteValue))),
-            sign(regular.toDouble()) * floor(log10(regular.toDouble().absoluteValue))
+            base = regular.toDouble() * (10.0).pow(-floor(log10(regular.toDouble().absoluteValue))),
+            exp  = sign(regular.toDouble()) * floor(log10(regular.toDouble().absoluteValue))
     )
 
     constructor(): this(0)
+
+    init {
+        val e = (sign(base_) * floor(log10(base_.absoluteValue))).toInt()
+        base_ *= (10.0).pow(-e)
+        exponent_ += e
+    }
 
     override val base: Double
         get() = base_
@@ -18,16 +24,16 @@ data class ScientificNotation(private var base_: Double, private var exponent_: 
     override val exponent: Int
         get() = exponent_
 
-    override val decimalForm: Double
+    override val decimal: Double
         get() = base_ * (10.0).pow(exponent_)
 
     override fun unaryPlus(): ScientificNotation =
-            ScientificNotation(+this.base, this.exponent)
+            this.copy(base_ = +this.base)
 
     override fun unaryMinus(): ScientificNotation =
-            ScientificNotation(-this.base, this.exponent)
+            this.copy(base_ = -this.base)
 
-    override fun plus(other: Notation): Notation {
+    override fun plus(other: Notation): ScientificNotation {
         other as ScientificNotation
         var (thisBase, thisExp) = this
         var (otherBase, otherExp) = other
@@ -45,7 +51,7 @@ data class ScientificNotation(private var base_: Double, private var exponent_: 
         return ScientificNotation(thisBase + otherBase, newExp)
     }
 
-    override fun minus(other: Notation): Notation {
+    override fun minus(other: Notation): ScientificNotation {
         other as ScientificNotation
         var (thisBase, thisExp) = this
         var (otherBase, otherExp) = other
@@ -63,52 +69,32 @@ data class ScientificNotation(private var base_: Double, private var exponent_: 
         return ScientificNotation(thisBase - otherBase, newExp)
     }
 
-    override fun times(other: Notation): Notation {
+    override fun times(other: Notation): ScientificNotation {
         other as ScientificNotation
         val (thisBase, thisExp) = this
         val (otherBase, otherExp) = other
 
-        val tempBase = thisBase * otherBase
-        val exp = floor(log10(tempBase.absoluteValue))
-        val newExp = thisExp + otherExp + exp
-        val newBase = tempBase * (10.0).pow(-exp)
-
-        return ScientificNotation(newBase, newExp)
+        return ScientificNotation(thisBase * otherBase, thisExp + otherExp)
     }
 
-    override fun div(other: Notation): Notation {
+    override fun div(other: Notation): ScientificNotation {
         other as ScientificNotation
-        var (thisBase, thisExp) = this
-        var (otherBase, otherExp) = other
+        val (thisBase, thisExp) = this
+        val (otherBase, otherExp) = other
 
-        val tempExp = (thisExp - otherExp).absoluteValue
-
-        if (thisExp != otherExp) {
-            if (thisExp > otherExp) {
-                thisBase *= (10.0).pow(thisExp - otherExp)
-            } else {
-                otherBase *= (10.0).pow(otherExp - thisExp)
-            }
-        }
-
-        val tempBase = thisBase / otherBase
-        val exp = floor(log10(tempBase.absoluteValue))
-        val (newBase, newExp) = (tempBase * (10.0).pow(-exp)) to tempExp - exp.toInt()
-
-        return ScientificNotation(newBase, newExp)
+        return ScientificNotation(thisBase / otherBase, thisExp - otherExp)
     }
 
-    override fun rem(other: Notation): Notation {
-        TODO("Not yet implemented")
-    }
+    override fun rem(other: Notation): ScientificNotation =
+            this - (other * (this / other).floor())
+
 
     override fun pow(other: Notation): Notation {
         other as ScientificNotation
         val (thisBase, thisExp) = this
-        val (otherBase, otherExp) = other
 
         // TODO ensure no overflow
-        val actualValue = other.decimalForm
+        val actualValue = other.decimal
 
         val tempBase = thisBase.pow(actualValue)
         val tempExp = thisExp * actualValue
@@ -117,6 +103,18 @@ data class ScientificNotation(private var base_: Double, private var exponent_: 
 
         return ScientificNotation(newBase, newExp)
     }
+
+    override fun floor(): ScientificNotation =
+            this.copy(base_ = floor(this.base))
+
+    override fun ceil(): ScientificNotation =
+            this.copy(base_ = ceil(this.base))
+
+    override fun round(precision: Int): ScientificNotation =
+            this.copy(base_ = this.base.round(precision = precision))
+
+    private fun Double.round(precision: Int): Double =
+            "%.${precision}f".format(this).toDouble()
 
     override fun compareTo(other: Notation): Int {
         val expCheck = exponent_.compareTo(other.exponent)
