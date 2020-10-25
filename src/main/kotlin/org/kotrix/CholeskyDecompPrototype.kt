@@ -66,4 +66,5 @@ fun main() {
     )
     val (L, L_T) = llt_test.LLTDecomp()
     println("${L.matrixString()}\n${L_T.matrixString()}")
+    println("test")
 }
