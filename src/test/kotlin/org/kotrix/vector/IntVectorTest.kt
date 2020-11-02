@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeTypeOf
+import kotlin.math.pow
 
 class IntVectorTest: StringSpec({
     /** Constructors **/
@@ -80,6 +81,83 @@ class IntVectorTest: StringSpec({
      * plusAssign, minusAssign, timesAssign, divAssign, remAssign, powAssign
      * unaryPlus, unaryMinus
      */
+    "IntVector.plus(IntVector): IntVector.of(1,2,3) + IntVector.of(2,3,4) should be [3,5,7]" {
+        val left = IntVector.of(1,2,3)
+        val right = IntVector.of(2,3,4)
+
+        val total = left + right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i] + right[i])
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
+
+    "IntVector.minus(IntVector): IntVector.of(3,2,1) - IntVector.of(2,1,0) should be [1,1,1]" {
+        val left = IntVector.of(3,2,1)
+        val right = IntVector.of(2,1,0)
+
+        val total = left - right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i] - right[i])
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
+
+    "IntVector.times(IntVector).times(IntVector): IntVector.of(1,2,3) * IntVector.of(2,2,2) should be [2,4,6]" {
+        val left = IntVector.of(1,2,3)
+        val right = IntVector.of(2,2,2)
+
+        val total = left * right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i] * right[i])
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
+
+    "IntVector.div(IntVector).div(IntVector): IntVector.of(2,4,6) / IntVector.of(2,2,2) should be [1,2,3]" {
+        val left = IntVector.of(2,4,6)
+        val right = IntVector.of(2,2,2)
+
+        val total = left / right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i] / right[i])
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
+
+    "IntVector.rem(IntVector).times(IntVector): IntVector.of(1,2,3) % IntVector.of(2,2,2) should be [1,0,1]" {
+        val left = IntVector.of(1,2,3)
+        val right = IntVector.of(2,2,2)
+
+        val total = left % right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i] % right[i])
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
+
+    "IntVector.pow(IntVector): IntVector.of(1,2,3) pow IntVector.of(2,2,2) should be [1,4,9]" {
+        val left = IntVector.of(1,2,3)
+        val right = IntVector.of(2,2,2)
+
+        val total = left pow right
+
+        for (i in total.indices) {
+            total[i] shouldBe (left[i].toDouble().pow(right[i]))
+        }
+
+        total.shouldBeTypeOf<IntVector>()
+    }
 
     /** Vector Arithmetic
      * dot, cross

@@ -11,7 +11,7 @@ interface NumberVector<T>: VectorBase<T> where T: Number {
 
     operator fun rem(other: NumberVector<T>): NumberVector<T>
 
-    infix fun pow(other: NumberVector<T>): NumberVector<T>
+    fun pow(other: NumberVector<T>): NumberVector<T>
 
     operator fun plusAssign(other: NumberVector<T>)
 
@@ -23,15 +23,15 @@ interface NumberVector<T>: VectorBase<T> where T: Number {
 
     operator fun remAssign(other: NumberVector<T>)
 
-    infix fun powAssign(other: NumberVector<T>)
+    fun powAssign(other: NumberVector<T>)
 
     operator fun unaryPlus(): NumberVector<T>
 
     operator fun unaryMinus(): NumberVector<T>
 
-    infix fun dot(other: NumberVector<T>): T
+    fun dot(other: NumberVector<T>): T
 
-    infix fun cross(other: NumberVector<T>): NumberVector<T>
+    fun cross(other: NumberVector<T>): NumberVector<T>
 
     fun toArray(): Array<T>
 

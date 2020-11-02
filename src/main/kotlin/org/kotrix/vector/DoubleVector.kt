@@ -101,7 +101,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override infix fun pow(other: NumberVector<Double>): DoubleVector {
+    override fun pow(other: NumberVector<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i].pow(other[i])
@@ -155,7 +155,27 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
+    fun dot(other: IntVector): Double {
+        return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
+    }
+
     override fun cross(other: NumberVector<Double>): DoubleVector {
+        if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
+            throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
+        }
+        val ret = DoubleVector(3)
+        if (this.size == 2 && other.size == 2) {
+            ret[0] = this[0] * other[1] - this[1] * other[0]
+        }
+        if (this.size == 3 && other.size == 3) {
+            ret[0] = this[1] * other[2] - this[2] * other[1]
+            ret[1] = this[2] * other[0] - this[0] * other[2]
+            ret[2] = this[0] * other[1] - this[1] * other[0]
+        }
+        return ret
+    }
+
+    fun cross(other: IntVector): DoubleVector {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
         }
@@ -183,7 +203,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
 
     operator fun rem(other: IntVector): DoubleVector = this % other.toDoubleVector()
 
-    infix fun pow(other: IntVector): DoubleVector = this pow other.toDoubleVector()
+    fun pow(other: IntVector): DoubleVector = this.pow(other.toDoubleVector())
 
     operator fun plus(other: Int): DoubleVector =
         DoubleVector(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVector

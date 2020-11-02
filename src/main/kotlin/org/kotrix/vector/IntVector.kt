@@ -101,7 +101,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override infix fun pow(other: NumberVector<Int>): IntVector {
+    override fun pow(other: NumberVector<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i].toDouble().pow(other[i].toDouble()).toInt()
@@ -139,7 +139,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         }
     }
 
-    override infix fun powAssign(other: NumberVector<Int>) {
+    override fun powAssign(other: NumberVector<Int>) {
         for (i in 0 until this.size) {
             this[i] = this[i].toDouble().pow(other[i]).toInt()
         }
@@ -151,15 +151,35 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
     override fun unaryMinus(): IntVector =
         IntVector(this.size) { i -> -(this[i]) }
 
-    override infix fun dot(other: NumberVector<Int>): Int {
-        return IntVector(this.size).mapIndexed { _, index: Int -> this[index] * other[index] }.sum()
+    override fun dot(other: NumberVector<Int>): Int {
+        return IntVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
-    override infix fun cross(other: NumberVector<Int>): IntVector {
+    fun dot(other: DoubleVector): Double {
+        return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index]  }.sum()
+    }
+
+    override fun cross(other: NumberVector<Int>): IntVector {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
         }
         val ret = IntVector(3)
+        if (this.size == 2 && other.size == 2) {
+            ret[0] = this[0] * other[1] - this[1] * other[0]
+        }
+        if (this.size == 3 && other.size == 3) {
+            ret[0] = this[1] * other[2] - this[2] * other[1]
+            ret[1] = this[2] * other[0] - this[0] * other[2]
+            ret[2] = this[0] * other[1] - this[1] * other[0]
+        }
+        return ret
+    }
+
+    fun cross(other: DoubleVector): DoubleVector {
+        if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
+            throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
+        }
+        val ret = DoubleVector(3)
         if (this.size == 2 && other.size == 2) {
             ret[0] = this[0] * other[1] - this[1] * other[0]
         }
@@ -183,7 +203,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
 
     operator fun rem(other: DoubleVector): DoubleVector = this.toDoubleVector() % other
 
-    infix fun pow(other: DoubleVector): DoubleVector = this.toDoubleVector() pow other
+    fun pow(other: DoubleVector): DoubleVector = this.toDoubleVector().pow(other)
 
     operator fun plus(other: Int): IntVector =
         IntVector(this.size).mapIndexed { index, _ -> this[index] + other } as IntVector

@@ -6,6 +6,7 @@ import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.DoubleVector
 import org.kotrix.vector.Vector
+import org.kotrix.vector.*
 
 import java.lang.IllegalArgumentException
 import java.util.stream.DoubleStream
