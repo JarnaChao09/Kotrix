@@ -3,6 +3,7 @@ package org.kotrix.matrix.decomp
 import org.kotrix.matrix.DoubleMatrix
 import org.kotrix.matrix.IntMatrix
 import org.kotrix.matrix.Matrix
+import org.kotrix.matrix.NumberMatrix
 import org.kotrix.utils.by
 import org.kotrix.vector.DoubleVector
 
@@ -10,7 +11,7 @@ import kotlin.math.min
 import kotlin.math.abs
 
 class LUPDecomposition(matrix: DoubleMatrix) {
-    constructor(matrix: IntMatrix): this(matrix.toDoubleMatrix())
+    constructor(matrix: NumberMatrix<*>): this(matrix.toDoubleMatrix())
 
     val lu: Array<DoubleArray> = matrix.doubleArray
 

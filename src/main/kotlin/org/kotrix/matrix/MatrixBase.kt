@@ -16,7 +16,13 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     val rowLength: Int
 
+    val rowRange: IntRange
+        get() = 0 until rowLength
+
     val colLength: Int
+
+    val colRange: IntRange
+        get() = 0 until colLength
 
     fun transpose(): MatrixBase<T>
 

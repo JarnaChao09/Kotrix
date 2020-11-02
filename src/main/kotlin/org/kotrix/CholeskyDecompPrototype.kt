@@ -1,5 +1,8 @@
 package org.kotrix
 
+import org.kotrix.matrix.DoubleMatrix
+import org.kotrix.matrix.decomp.CholeskyDecomposition
+import org.kotrix.utils.by
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -66,5 +69,10 @@ fun main() {
     )
     val (L, L_T) = llt_test.LLTDecomp()
     println("${L.matrixString()}\n${L_T.matrixString()}")
-    println("test")
+
+    for (i in 0..1) println()
+
+    val matrix = DoubleMatrix.of(3 by 3, 4,12,-16,12,37,-43,-16,-43,98)
+    val (L1, L_T1) = CholeskyDecomposition(matrix)
+    println("$L1\n$L_T1")
 }
