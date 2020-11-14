@@ -1,6 +1,8 @@
 package org.kotrix.vector
 
 interface NumberVector<T>: VectorBase<T> where T: Number {
+    val magnitude: Double
+
     operator fun plus(other: NumberVector<T>): NumberVector<T>
 
     operator fun minus(other: NumberVector<T>): NumberVector<T>
@@ -33,7 +35,7 @@ interface NumberVector<T>: VectorBase<T> where T: Number {
 
     fun cross(other: NumberVector<T>): NumberVector<T>
 
-    fun scalarProject(other: NumberVector<T>): T
+    fun scalarProject(other: NumberVector<T>): Double
 
     fun projectOnto(other: NumberVector<T>): NumberVector<T>
 

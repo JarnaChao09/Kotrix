@@ -2,6 +2,7 @@ package org.kotrix.vector
 
 import org.kotrix.matrix.DoubleMatrix
 import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.reflect.KClass
 
 class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vector<Double>(length, initBlock), NumberVector<Double> {
@@ -60,6 +61,15 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
 
     val array: DoubleArray
         get() = this.toArray().toDoubleArray()
+
+    override val magnitude: Double
+        get() {
+            var sum = 0.0
+            for (i in this) {
+                sum += i * i
+            }
+            return sqrt(sum)
+        }
 
     override fun plus(other: NumberVector<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
@@ -159,9 +169,9 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
-    override fun scalarProject(other: NumberVector<Double>): Double = (this.dot(other)) / (other.dot(other))
+    override fun scalarProject(other: NumberVector<Double>): Double = (this.dot(other)) / other.toDoubleVector().magnitude
 
-    fun scalarProject(other: IntVector): Double = (this.dot(other)) / (other.dot(other))
+    fun scalarProject(other: IntVector): Double = (this.dot(other)) / other.magnitude
 
     override fun projectOnto(other: NumberVector<Double>): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
 
