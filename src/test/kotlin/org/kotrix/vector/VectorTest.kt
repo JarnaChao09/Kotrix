@@ -266,7 +266,7 @@ class VectorTest : StringSpec({
     }
 
     /** Conversion
-     * Matrix, List
+     * Matrix, List, toVector, toIntVector, toDoubleVector
      */
 
     "Vector.of(1, 2, 3, 4, 5).toMatrix(asCol = false)" {
@@ -280,6 +280,24 @@ class VectorTest : StringSpec({
 
     "Vector.of(1, 2, 3, 4, 5).list / .toList()" {
         Vector.of(1, 2, 3, 4, 5).toList() shouldBe listOf(1, 2, 3, 4, 5,)
+    }
+
+    "listOf(1, 2, 3, 4, 5).toVector()" {
+        val vec = listOf(1, 2, 3, 4, 5).toVector()
+        vec shouldBe Vector.of(1,2,3,4,5)
+        vec.shouldBeTypeOf<Vector<Int>>()
+    }
+
+    "Vector.of(1, 2, 3, 4, 5).toIntVector()" {
+        val vec = Vector.of(1,2,3,4,5).toIntVector()
+        vec shouldBe IntVector.of(1,2,3,4,5)
+        vec.shouldBeTypeOf<IntVector>()
+    }
+
+    "Vector.of(1.0, 2.0, 3.0, 4.0, 5.0).toDoubleVector()" {
+        val vec = Vector.of(1.0, 2.0, 3.0, 4.0, 5.0).toDoubleVector()
+        vec shouldBe DoubleVector.of(1,2,3,4,5)
+        vec.shouldBeTypeOf<DoubleVector>()
     }
 
     /** Contains

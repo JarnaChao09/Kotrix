@@ -28,6 +28,12 @@ fun <T: Any> Vector<T>.mapIndexed(action: (index: Int, T) -> T): Vector<T> {
     return ret
 }
 
+fun <T: Any> Collection<T>.toVector() = Vector(this.toList())
+
+fun Collection<Int>.toIntVector() = IntVector(this.toList())
+
+fun Collection<Double>.toDoubleVector() = DoubleVector(this.toList())
+
 inline fun <reified T: Any> vector(actions: Vector.Scope<T>.() -> Vector.Scope<T>): Vector<T> =
     Vector.Scope.Base<T>().actions().build()
 

@@ -45,8 +45,8 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
 
     companion object {
         @JvmStatic
-        fun of(vararg elements: Int): IntVector =
-            IntVector(elements.size) { i -> elements[i] }
+        fun of(vararg elements: Number): IntVector =
+            IntVector(elements.size) { i -> elements[i].toInt() }
 
         val EMPTY: IntVector
             get() = IntVector(0)

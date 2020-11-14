@@ -45,8 +45,8 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
 
     companion object {
         @JvmStatic
-        fun of(vararg elements: Double): DoubleVector =
-            DoubleVector(elements.size) { i -> elements[i] }
+        fun of(vararg elements: Number): DoubleVector =
+            DoubleVector(elements.size) { i -> elements[i].toDouble() }
 
         val EMPTY: DoubleVector
             get() = DoubleVector(0)
