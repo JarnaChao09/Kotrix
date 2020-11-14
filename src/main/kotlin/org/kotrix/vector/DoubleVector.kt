@@ -159,6 +159,14 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
+    override fun scalarProject(other: NumberVector<Double>): Double = (this.dot(other)) / (other.dot(other))
+
+    fun scalarProject(other: IntVector): Double = (this.dot(other)) / (other.dot(other))
+
+    override fun projectOnto(other: NumberVector<Double>): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
+
+    fun projectOnto(other: IntVector): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
+
     override fun cross(other: NumberVector<Double>): DoubleVector {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")

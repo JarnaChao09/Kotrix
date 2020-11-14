@@ -33,6 +33,10 @@ interface NumberVector<T>: VectorBase<T> where T: Number {
 
     fun cross(other: NumberVector<T>): NumberVector<T>
 
+    fun scalarProject(other: NumberVector<T>): T
+
+    fun projectOnto(other: NumberVector<T>): NumberVector<T>
+
     fun toArray(): Array<T>
 
     fun toIntVector(): IntVector
