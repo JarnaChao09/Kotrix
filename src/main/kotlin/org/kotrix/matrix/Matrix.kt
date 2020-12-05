@@ -55,7 +55,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     companion object {
         inline fun <reified T: Any> empty(dim: Size): Matrix<T> {
-            return Matrix(dim, asCols = true) { T::class.java.newInstance() }
+            return Matrix(dim, asCols = true) { T::class.java.getDeclaredConstructor().newInstance() }
         }
 
         @Suppress("UNCHECKED_CAST")

@@ -75,7 +75,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
         @JvmStatic
         inline fun <reified T: Any> empty(size: Int = 1): Vector<T> =
             try {
-                Vector(size) { T::class.java.newInstance() }
+                Vector(size) { T::class.java.getDeclaredConstructor().newInstance() }
             } catch (e: Exception) {
                 throw IllegalArgumentException("Cannot instantiate instance of ${T::class.java}")
             }
