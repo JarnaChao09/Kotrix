@@ -1,4 +1,5 @@
 package org.kotrix.discrete.graph
 
-interface Tree {
+interface Tree<T> {
+    val children: List<Tree<T>>
 }
