@@ -8,4 +8,6 @@ fun main() {
     println(y.diff(x).simpleString())
 
     println(y.diff(x).evalAllAtZero().simpleString())
+
+    println("test")
 }
