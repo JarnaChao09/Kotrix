@@ -9,5 +9,5 @@ fun main() {
 
     println(y.diff(x).evalAllAtZero().simpleString())
 
-    println("hello world")
+    println("test")
 }
