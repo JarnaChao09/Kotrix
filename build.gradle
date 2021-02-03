@@ -20,7 +20,6 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 
 repositories {
-//    jcenter()
     mavenCentral()
 }
 
@@ -35,7 +34,6 @@ test {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
