@@ -1,7 +1,7 @@
 package org.kotrix.symbolic
 
-import org.kotrix.symbolic.Fun
-import org.kotrix.symbolic.Variable
+import org.kotrix.symbolic.funAST.Fun
+import org.kotrix.symbolic.funAST.Variable
 
 val String.asVar: Variable
     get() = Variable(this)

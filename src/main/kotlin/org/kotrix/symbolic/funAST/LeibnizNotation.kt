@@ -1,4 +1,7 @@
-package org.kotrix.symbolic
+package org.kotrix.symbolic.funAST
+
+import org.kotrix.symbolic.funAST.Fun
+import org.kotrix.symbolic.funAST.Variable
 
 data class Derivative(val function: Fun? = null, val by: Variable? = null) {
     class NoVariableGiven: Throwable(message = "No Variable given")
