@@ -20,7 +20,7 @@ data class Complex(var real: Double, var imag: Double): Number() {
 
     override fun toByte(): Byte = radius.toInt().toByte()
 
-    override fun toChar(): Char = radius.toChar()
+    override fun toChar(): Char = radius.toInt().toChar()
 
     override fun toDouble(): Double = radius
 

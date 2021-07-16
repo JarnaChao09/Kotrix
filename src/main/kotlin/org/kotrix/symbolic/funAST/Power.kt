@@ -10,14 +10,14 @@ data class Power(val base: Fun, val exponent: Fun): Fun() {
         get() = setOf(*this.base.variables.toTypedArray(), *this.exponent.variables.toTypedArray())
 
     override fun simplify(): Fun {
-        val base_ = base.simplify()
-        val exp_ = exponent.simplify()
+        val b = base.simplify()
+        val e = exponent.simplify()
         return when {
-            base_ == 0.scalar -> 0.scalar
-            exp_ == 0.scalar -> 1.scalar
-            exp_ == 1.scalar -> base_
-            base_ is Scalar && exp_ is Scalar -> this.evalAllAtZero()
-            else -> base_ pow exp_
+            b == 0.scalar -> 0.scalar
+            e == 0.scalar -> 1.scalar
+            e == 1.scalar -> b
+            b is Scalar && e is Scalar -> this.evalAllAtZero().scalar
+            else -> b pow e
         }
     }
 
@@ -47,6 +47,4 @@ data class Power(val base: Fun, val exponent: Fun): Fun() {
     override fun toString(): String = "Power(${this.base}, ${this.exponent})"
 
     override fun sub(replace: Variable, with: Fun): Fun = base.sub(replace, with) pow exponent.sub(replace, with)
-
-    override fun copy(): Fun = Power(this.base, this.exponent)
 }

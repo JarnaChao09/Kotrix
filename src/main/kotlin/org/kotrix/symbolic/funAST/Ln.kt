@@ -2,37 +2,34 @@ package org.kotrix.symbolic.funAST
 
 import org.kotrix.symbolic.funAST.extensions.scalar
 
-data class Ln(val a: Fun): Fun() {
+data class Ln(val value: Fun): Fun() {
     override val variables: Set<Variable>
-        get() = this.a.variables
+        get() = this.value.variables
 
     override fun simplify(): Fun {
-        val a_ = a.simplify()
-        return when (a_) {
+        return when (val v = value.simplify()) {
             1.scalar -> 0.scalar
             Math.E.scalar -> 1.scalar
             0.scalar -> Double.MIN_VALUE.scalar
-            else -> Ln(a_)
+            else -> Ln(v)
         }
     }
 
-    override fun stringify(): String = "ln(${a.stringify()})"
+    override fun stringify(): String = "ln(${value.stringify()})"
 
-    override fun diff(by: Variable): Fun = this.a.reciprocal * this.a.diff(by)
+    override fun diff(by: Variable): Fun = this.value.reciprocal * this.value.diff(by)
 
-    override fun fullEval(value: Map<Fun, Scalar>): Double = when(val calc = a.fullEval(value)) {
+    override fun fullEval(value: Map<Fun, Scalar>): Double = when(val calc = this.value.fullEval(value)) {
         0.0 -> Double.MIN_VALUE
         else -> kotlin.math.ln(calc)
     }
 
-    override fun partialEval(value: Map<Fun, Scalar>): Fun = when (a.partialEval(value)) {
+    override fun partialEval(value: Map<Fun, Scalar>): Fun = when (this.value.partialEval(value)) {
         0.0.scalar -> Double.MIN_VALUE.scalar
-        else -> Ln(a.partialEval(value))
+        else -> Ln(this.value.partialEval(value))
     }
 
-    override fun toString(): String = "Ln(${this.a})"
+    override fun toString(): String = "Ln(${this.value})"
 
-    override fun sub(replace: Variable, with: Fun): Fun = Ln(a.sub(replace, with))
-
-    override fun copy(): Fun = Ln(this.a)
+    override fun sub(replace: Variable, with: Fun): Fun = Ln(value.sub(replace, with))
 }

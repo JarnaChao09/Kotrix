@@ -35,8 +35,8 @@ data class Variable(val name: String): Fun() {
 
     override fun toString(): String = this.name
 
+    override fun simplify(): Fun = this
+
     override fun sub(replace: Variable, with: Fun): Fun =
         if (this == replace) with else this
-
-    override fun copy(): Fun = Variable(this.name)
 }

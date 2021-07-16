@@ -17,7 +17,7 @@ operator fun Fun.div(other: Number) = this / other.scalar
 
 infix fun Fun.pow(other: Number) = this pow other.scalar
 
-infix fun Fun.at(other: Number) = this to other.scalar
+infix fun Fun.withValue(other: Number) = this to other.scalar
 
 fun sin(x: Fun): Fun = Sin(x)
 

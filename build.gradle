@@ -24,7 +24,7 @@ repositories {
 }
 
 ext {
-    kotlin_version = "1.4.21"
+    kotlin_version = "1.5.20"
     kotlinx_coroutines_version = "1.5.1"
     kotest_version = '4.6.1'
 }

@@ -19,7 +19,7 @@ data class Scalar(val value: Double): Fun() {
 
     override fun toString(): String = "Constant(${this.value})"
 
-    override fun sub(replace: Variable, with: Fun): Fun = this
+    override fun simplify(): Fun = this
 
-    override fun copy(): Fun = Scalar(this.value)
+    override fun sub(replace: Variable, with: Fun): Fun = this
 }

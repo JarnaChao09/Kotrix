@@ -5,9 +5,7 @@ class Lexer(private var text: String) {
     private var textIterator = text.iterator()
     private var currentCharacter = ""
 
-    operator fun invoke(newText: String): Lexer {
-        return this.reset(newText)
-    }
+    operator fun invoke(newText: String): Lexer = this.reset(newText)
 
     fun reset(newText: String): Lexer {
         return this.apply {
