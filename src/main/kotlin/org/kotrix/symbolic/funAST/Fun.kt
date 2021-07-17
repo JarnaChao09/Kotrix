@@ -16,9 +16,9 @@ sealed class Fun(
     val exp: Fun
         get() = Power(E.scalar, this)
 
-    operator fun unaryPlus(): Fun = this
+    operator fun unaryPlus(): Fun = UnaryPlus(this)
 
-    operator fun unaryMinus(): Fun = Times((-1).scalar, this)
+    operator fun unaryMinus(): Fun = UnaryMinus(this)
 
     operator fun plus(other: Fun): Fun = Add(this, other)
 

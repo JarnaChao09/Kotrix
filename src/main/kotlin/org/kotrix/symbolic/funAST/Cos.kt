@@ -1,13 +1,29 @@
 package org.kotrix.symbolic.funAST
 
 import org.kotrix.symbolic.funAST.extensions.cos
+import org.kotrix.symbolic.funAST.extensions.scalar
 import org.kotrix.symbolic.funAST.extensions.sin
 
 data class Cos(val angle: Fun): Fun() {
     override val variables: Set<Variable>
         get() = this.angle.variables
 
-    override fun simplify(): Fun = cos(angle.simplify())
+    override fun simplify(): Fun {
+        val a = angle.simplify()
+
+        return when {
+            a is Scalar -> {
+                when (a) {
+                    0.scalar, (2.0 * kotlin.math.PI).scalar -> 1.scalar
+                    (kotlin.math.PI / 2.0).scalar, ((3.0 * kotlin.math.PI) / 2.0).scalar -> 0.scalar
+                    (kotlin.math.PI).scalar -> (-1).scalar
+                    else -> kotlin.math.cos(a.value).scalar
+                }
+            }
+
+            else -> cos(a)
+        }
+    }
 
     override fun stringify(): String = "cos(${angle.stringify()})"
 
