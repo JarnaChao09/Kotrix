@@ -121,8 +121,9 @@ class ComplexTest: StringSpec({
     }
 
     "Complex.pow(Complex): (3 + 4i) ^ (1 + 2i) should be approximately -0.4198131755619574 + -0.6604516942073323i" {
-        Complex(3, 4).pow(Complex(1, 2)) shouldBe
-                Complex(-0.4198131755619574, -0.6604516942073323)
+        val pow = Complex(3, 4).pow(Complex(1, 2))
+        pow.real shouldBe (-0.4198131755619574 plusOrMinus MAX_TOLERANCE)
+        pow.imag shouldBe (-0.6604516942073323 plusOrMinus MAX_TOLERANCE)
     }
 
     "Complex.pow(Complex): (3 + 4i) ^ (1 + 2i) should be CMath.pow(3 + 4i, 1 + 2i)" {
