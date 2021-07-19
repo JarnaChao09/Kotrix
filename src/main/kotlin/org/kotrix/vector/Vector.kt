@@ -130,7 +130,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
 
     override fun toString(): String {
         if (size == 0) {
-            return "[]"
+            return "<>"
         }
         val retString = List(0) { "" }.toMutableList()
         val maxLength: Int = buffer.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.size-1] + 1
