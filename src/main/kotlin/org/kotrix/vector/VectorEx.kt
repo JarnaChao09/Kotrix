@@ -12,16 +12,16 @@ fun <T: Any> Vector<T>.forEachIndexed(action: (index: Int, T) -> Unit) {
     }
 }
 
-fun <T: Any> Vector<T>.map(action: (T) -> T): Vector<T> {
-    val ret = Vector.nulls<T>()
+fun <T: Any, R: Any> Vector<T>.map(action: (T) -> R): Vector<R> {
+    val ret = Vector.nulls<R>()
     for (i in this) {
         ret.append(action(i))
     }
     return ret
 }
 
-fun <T: Any> Vector<T>.mapIndexed(action: (index: Int, T) -> T): Vector<T> {
-    val ret = Vector.nulls<T>()
+fun <T: Any, R: Any> Vector<T>.mapIndexed(action: (index: Int, T) -> R): Vector<R> {
+    val ret = Vector.nulls<R>()
     for ((index, i) in this.withIndex()) {
         ret.append(action(index, i))
     }

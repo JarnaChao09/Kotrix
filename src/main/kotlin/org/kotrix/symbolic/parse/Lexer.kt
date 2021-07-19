@@ -44,6 +44,21 @@ class Lexer(private var text: String) {
                 ")" -> advance {
                     tokens.add(Tokens.Parentheses(Tokens.ParenthesesType.Right))
                 }
+                "[" -> advance {
+                    tokens.add(Tokens.Bracket(Tokens.BracketType.Left))
+                }
+                "]" -> advance {
+                    tokens.add(Tokens.Bracket(Tokens.BracketType.Right))
+                }
+                "<" -> advance {
+                    tokens.add(Tokens.Diamond(Tokens.DiamondType.Left))
+                }
+                ">" -> advance {
+                    tokens.add(Tokens.Diamond(Tokens.DiamondType.Right))
+                }
+                "," -> advance {
+                    tokens.add(Tokens.Comma)
+                }
             }
         }
         return tokens.toList()

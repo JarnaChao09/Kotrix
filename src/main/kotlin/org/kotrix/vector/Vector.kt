@@ -100,30 +100,30 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
     }
 
     override fun append(other: T) {
-        this._arr.add(other)
+        this.buffer.add(other)
     }
 
     override fun push(other: T) {
-        this._arr.add(0, other)
+        this.buffer.add(0, other)
     }
 
     override fun put(other: T, at: Int) {
-        this._arr.add(at, other)
+        this.buffer.add(at, other)
     }
 
     override fun remove(other: T): Boolean =
-        this._arr.remove(other)
+        this.buffer.remove(other)
 
     override fun removeAt(index: Int): T =
-        this._arr.removeAt(index)
+        this.buffer.removeAt(index)
 
-    protected var _arr: MutableList<T> = List(size) { i -> initBlock(i) }.toMutableList()
+    protected var buffer: MutableList<T> = List(size) { i -> initBlock(i) }.toMutableList()
 
     override val size: Int
-        get() = this._arr.size
+        get() = this.buffer.size
 
     override val type: KClass<out T>
-        get() = _arr[0]::class
+        get() = buffer[0]::class
 
     override val list: List<T>
         get() = this.toList()
@@ -133,8 +133,8 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
             return "[]"
         }
         val retString = List(0) { "" }.toMutableList()
-        val maxLength: Int = _arr.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.size-1] + 1
-        for (i in this._arr) {
+        val maxLength: Int = buffer.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.size-1] + 1
+        for (i in this.buffer) {
             val currentLength = i.toString().length
             retString += " " * (maxLength - currentLength) + i.toString()
         }
@@ -158,20 +158,20 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
     override val withIndices: Iterator<IndexedValue<T>>
         get() = VectorIteratorWithIndices(this)
 
-    override operator fun get(index: Int): T = this._arr[(size + index) % size]
+    override operator fun get(index: Int): T = this.buffer[(size + index) % size]
 
     override operator fun get(indexSlice: Slice): Vector<T> {
         val ret = nulls<T>()
         val subList: MutableList<T> = emptyList<T>().toMutableList()
         for (i: Int in indexSlice) {
-            subList.add(this._arr[(size + i) % size])
+            subList.add(this.buffer[(size + i) % size])
         }
-        ret._arr = subList
+        ret.buffer = subList
         return ret
     }
 
     override operator fun set(index: Int, value: T) {
-        this._arr[(size + index) % size] = value
+        this.buffer[(size + index) % size] = value
     }
 
     override operator fun set(indexSlice: Slice, value: VectorBase<T>) {
@@ -192,10 +192,10 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
         List(this.size) { i -> this[i] }
 
     override operator fun contains(element: T): Boolean =
-        element in this._arr
+        element in this.buffer
 
     override fun hashCode(): Int {
-        return _arr.hashCode()
+        return buffer.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -204,7 +204,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
 
         other as Vector<*>
 
-        if (_arr != other._arr) return false
+        if (buffer != other.buffer) return false
 
         return true
     }
@@ -216,8 +216,8 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
             this.containsAll(element)
 
     override fun containsAll(elements: Collection<T>): Boolean =
-        this._arr.containsAll(elements)
+        this.buffer.containsAll(elements)
 
     override fun isEmpty(): Boolean =
-        this._arr.isEmpty()
+        this.buffer.isEmpty()
 }
