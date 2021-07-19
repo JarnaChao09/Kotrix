@@ -305,7 +305,10 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
             }
             retString += dummy
         }
-        return retString.joinToString(prefix = "[", postfix = "]", separator = ",\n ")
+        return retString
+            .joinToString(prefix = "[", postfix = "]", separator = ",\n ")
+            .replace("<", "[")
+            .replace(">", "]")
     }
 
     override fun equals(other: Any?): Boolean {

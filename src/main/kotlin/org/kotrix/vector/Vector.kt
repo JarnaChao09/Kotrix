@@ -138,7 +138,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
             val currentLength = i.toString().length
             retString += " " * (maxLength - currentLength) + i.toString()
         }
-        return retString.joinToString(prefix = "[", postfix = "]", separator = ",")
+        return retString.joinToString(prefix = "<", postfix = ">", separator = ",")
     }
 
     private operator fun String.times(maxLength: Int): String {
