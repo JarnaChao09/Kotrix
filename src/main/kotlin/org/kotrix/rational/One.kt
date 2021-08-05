@@ -1,10 +1,10 @@
 package org.kotrix.rational
 
 sealed class One : Rational {
-    override val numerator: Int
-        get() = 1
-    override val denominator: Int
-        get() = 1
+    override val numerator: UInt
+        get() = 1U
+    override val denominator: UInt
+        get() = 1U
 
     override fun toString(): String = "${when(sign) { Sign.Positive -> "+"; Sign.Negative -> "-" }}(1)"
 

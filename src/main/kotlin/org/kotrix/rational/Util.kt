@@ -1,8 +1,22 @@
 package org.kotrix.rational
 
-import kotlin.math.pow
+infix fun Int.pow(other: Int): Int {
+    var ret = 1
+    for (i in 0 until other) {
+        ret *= this
+    }
 
-infix fun Int.pow(other: Int): Int = this.toDouble().pow(other.toDouble()).toInt()
+    return ret
+}
+
+infix fun UInt.pow(other: UInt): UInt {
+    var ret = 1U
+    for (i in 0U until other) {
+        ret *= this
+    }
+
+    return ret
+}
 
 fun Int.sieve(): List<Int> {
     val lp = IntArray(this + 1) { 0 }
