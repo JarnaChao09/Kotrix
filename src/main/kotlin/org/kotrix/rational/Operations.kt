@@ -13,6 +13,9 @@ operator fun Rational.component2() = this.denominator
 
 operator fun Rational.component3() = this.sign
 
+val Rational.inverse: Rational
+    get() = Rational(this.denominator, this.numerator, this.sign)
+
 operator fun Rational.plus(rhs: Rational): Rational {
     val (leftMultiple, rightMultiple, newDenominator) = ensureDenominatorsAreEqual(this, rhs)
 
@@ -52,6 +55,15 @@ operator fun Rational.plus(rhs: Rational): Rational {
 }
 
 operator fun Rational.minus(rhs: Rational): Rational = this + (-rhs)
+
+operator fun Rational.times(rhs: Rational): Rational =
+    Rational(
+        this.numerator * rhs.numerator,
+        this.denominator * rhs.denominator,
+        if (this.sign == rhs.sign) Sign.Positive else Sign.Negative
+    )
+
+operator fun Rational.div(rhs: Rational): Rational = this * rhs.inverse
 
 /**
  * Ensures that denominators are equal in order to perform add operation
