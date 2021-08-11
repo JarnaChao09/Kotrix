@@ -1,5 +1,6 @@
 package org.kotrix.discrete
 
+import org.kotrix.discrete.booleanAlgebraAST.*
 import kotlin.math.pow
 import kotlin.math.max
 import org.kotrix.matrix.BooleanMatrix

@@ -1,5 +1,7 @@
 package org.kotrix.discrete
 
+import org.kotrix.discrete.booleanAlgebraAST.*
+
 fun main() {
     val p = Variable("p")
     val q = Variable("q")

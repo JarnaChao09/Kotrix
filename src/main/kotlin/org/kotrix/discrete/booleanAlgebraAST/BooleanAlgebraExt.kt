@@ -1,4 +1,4 @@
-package org.kotrix.discrete
+package org.kotrix.discrete.booleanAlgebraAST
 
 val Boolean.const: Constant
     get() = Constant(this)
