@@ -1,5 +1,6 @@
 package org.kotrix.symbolic.funAST
 
+// TODO determine is UnaryMinus object is a better option over Times(-1, value)
 data class UnaryMinus(val value: Fun): Fun() {
     override val variables: Set<Variable>
         get() = setOf(*this.value.variables.toTypedArray())

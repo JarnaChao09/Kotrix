@@ -6,15 +6,15 @@ import org.kotrix.symbolic.funAST.extensions.*
 import org.kotrix.symbolic.parse.Lexer
 import org.kotrix.symbolic.parse.Parser
 
-fun main() {
-
-    val lexer = Lexer("<1, 2 + 2, 2.5, 3 * 3, 3.5 / 3.5>")
-
-    val vectorTokens = lexer.generateTokens()
-
-    val parsedVector = Parser(vectorTokens).parse()
-
-    println(parsedVector.simpleString())
+//fun main() {
+//
+//    val lexer = Lexer("<1, 2 + 2, 2.5, 3 * 3, 3.5 / 3.5>")
+//
+//    val vectorTokens = lexer.generateTokens()
+//
+//    val parsedVector = Parser(vectorTokens).parse()
+//
+//    println(parsedVector.simpleString())
 //
 //    val lexer = Lexer("(1.5 + 2) * 3 ^ -4")
 //
@@ -45,11 +45,15 @@ fun main() {
 //    println(ptest3.simpleString())
 //
 //    println("ptest1 and ptest3 are equal: ${ptest1 == ptest3}")
-}
+//}
 
-//fun main() {
-//    val x by Var()
-//
+fun main() {
+    val x by Var()
+
+    println(run {
+        (ln(x) + 2) + ln(x)
+    }.simpleString())
+
 //    val x2 = (2 + x) + x
 //
 //    println(x2.stringify())
@@ -91,4 +95,4 @@ fun main() {
 //    println(y.diff(x).eval(x withValue 4).simpleString())
 //
 //    println(y.eval(x withValue 8).simpleString())
-//}
+}

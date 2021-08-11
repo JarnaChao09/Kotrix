@@ -1,9 +1,6 @@
 package org.kotrix.symbolic.funAST.extensions
 
-import org.kotrix.symbolic.funAST.Cos
-import org.kotrix.symbolic.funAST.Fun
-import org.kotrix.symbolic.funAST.Power
-import org.kotrix.symbolic.funAST.Sin
+import org.kotrix.symbolic.funAST.*
 
 infix fun Fun.pow(other: Fun): Fun = Power(this, other)
 
@@ -30,3 +27,5 @@ fun csc(x: Fun): Fun = sin(x).reciprocal
 fun sec(x: Fun): Fun = cos(x).reciprocal
 
 fun cot(x: Fun): Fun = tan(x).reciprocal
+
+fun ln(x: Fun): Fun = Ln(x)

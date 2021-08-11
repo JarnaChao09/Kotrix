@@ -23,6 +23,29 @@ data class Add(val lhs: Fun, val rhs: Fun): Fun() {
                 val lr = l.rhs.simplify()
 
                 when(r) {
+                    is UnaryPlus -> {
+                        when(r.value.simplify()) {
+                            ll -> {
+                                ((2 * ll).simplify() + lr).simplify()
+                            }
+                            lr -> {
+                                (ll + (2 * lr).simplify()).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is UnaryMinus -> {
+                        val rv = r.value.simplify()
+                        when {
+                            ll == rv -> {
+                                lr
+                            }
+                            lr == rv -> {
+                                ll
+                            }
+                            else -> l + r
+                        }
+                    }
                     is Scalar -> {
                         when {
                             ll is Scalar -> {
@@ -37,10 +60,10 @@ data class Add(val lhs: Fun, val rhs: Fun): Fun() {
                     is Variable -> {
                         when(r) {
                             ll -> {
-                                (2 * r).simplify() + lr
+                                (2 * ll).simplify() + lr
                             }
                             lr -> {
-                                ll + (2 * r).simplify()
+                                ll + (2 * lr).simplify()
                             }
                             else -> l + r
                         }
@@ -61,6 +84,26 @@ data class Add(val lhs: Fun, val rhs: Fun): Fun() {
                             }
                             lr == rr -> {
                                 ((ll + (2 * lr).simplify()).simplify() + rl).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Subtract -> {
+                        val rl = r.lhs.simplify()
+                        val rr = r.rhs.simplify()
+
+                        when {
+                            ll == rl -> {
+                                (((2 * ll).simplify() + lr).simplify() - rr).simplify()
+                            }
+                            ll == rr -> {
+                                (lr + rl).simplify()
+                            }
+                            lr == rl -> {
+                                ((ll + (2 * lr).simplify()) - rr).simplify()
+                            }
+                            lr == rr -> {
+                                (ll + rl).simplify()
                             }
                             else -> l + r
                         }
@@ -97,6 +140,32 @@ data class Add(val lhs: Fun, val rhs: Fun): Fun() {
                                     lrr == rr ->
                                         (((lrl + rl).simplify() * lrr).simplify() + ll).simplify()
                                     else -> l + r
+                                }
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Divide -> {
+                        val rn = r.numerator.simplify()
+                        val rd = r.denominator.simplify()
+
+                        when {
+                            ll is Divide -> {
+                                val lln = ll.numerator.simplify()
+                                val lld = ll.denominator.simplify()
+                                if (lld == rd) {
+                                    (((lln + rn).simplify() / lld).simplify() + lr).simplify()
+                                } else {
+                                    l + r // todo check for branches if both denominators are not equal
+                                }
+                            }
+                            lr is Divide -> {
+                                val lrn = lr.numerator.simplify()
+                                val lrd = lr.denominator.simplify()
+                                if (lrd == rd) {
+                                    (ll + ((lrn + rn).simplify() / lrd).simplify()).simplify()
+                                } else {
+                                    l + r // todo check for branches if both denominators are not equal
                                 }
                             }
                             else -> l + r
@@ -139,17 +208,121 @@ data class Add(val lhs: Fun, val rhs: Fun): Fun() {
                             }
                         }
                     }
-                    is Ln -> {
-                        TODO()
+                    is Ln, is Sin, is Cos -> {
+                        when(r) {
+                            ll -> {
+                                ((2 * r) + lr).simplify()
+                            }
+                            lr -> {
+                                (ll + (2 * r)).simplify()
+                            }
+                            else -> l + r
+                        }
                     }
-                    is Sin -> {
-                        TODO()
-                    }
-                    is Cos -> {
-                        TODO()
-                    }
-                    else -> l + r
+                    is Vector -> TODO()
                 }
+            }
+
+            l is Subtract -> {
+                val ll = l.lhs.simplify()
+                val lr = l.rhs.simplify()
+
+                when(r) {
+                    is UnaryPlus -> {
+                        when(r.value.simplify()) {
+                            ll -> {
+                                ((2 * ll).simplify() - lr).simplify()
+                            }
+                            lr -> {
+                                return ll
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is UnaryMinus -> {
+                        when(r.value.simplify()) {
+                            ll -> {
+                                -lr
+                            }
+                            lr -> {
+                                (ll - (2 * lr).simplify()).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Scalar -> {
+                        when {
+                            ll is Scalar -> {
+                                ((ll + r).simplify() - lr).simplify()
+                            }
+                            lr is Scalar -> {
+                                (ll - (lr + r).simplify()).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Variable -> {
+                        when(r) {
+                            ll -> {
+                                ((2 * ll).simplify() - lr).simplify()
+                            }
+                            lr -> {
+                                (ll - (2 * lr).simplify()).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Add -> {
+                        val rl = r.lhs.simplify()
+                        val rr = r.rhs.simplify()
+
+                        // (ll - lr) + (rl + rr)
+                        when {
+                            ll == rl -> {
+                                (((2 * ll).simplify() - lr).simplify() + rr).simplify()
+                            }
+                            ll == rr  -> {
+                                (((2 * ll).simplify() - lr).simplify() + rl).simplify()
+                            }
+                            lr == rl -> {
+                                (ll + rr).simplify()
+                            }
+                            lr == rr -> {
+                                (ll + rl).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Subtract -> {
+                        val rl = r.rhs.simplify()
+                        val rr = r.rhs.simplify()
+
+                        // (ll - lr) + (rl - rr)
+                        when {
+                            ll == rl -> {
+                                (((2 * ll).simplify() - lr).simplify() - rr).simplify()
+                            }
+                            ll == rr -> {
+                                (-lr + rl).simplify()
+                            }
+                            lr == rl -> {
+                                (ll - rr).simplify()
+                            }
+                            lr == rr -> {
+                                ((ll - (2 * lr).simplify()).simplify() + rl).simplify()
+                            }
+                            else -> l + r
+                        }
+                    }
+                    is Cos -> TODO()
+                    is Divide -> TODO()
+                    is Ln -> TODO()
+                    is Power -> TODO()
+                    is Sin -> TODO()
+                    is Times -> TODO()
+                    is Vector -> TODO()
+                }
+                TODO()
             }
 
             l is UnaryMinus -> {

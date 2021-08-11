@@ -7,6 +7,7 @@ data class Subtract(val lhs: Fun, val rhs: Fun): Fun() {
         get() = setOf(*this.lhs.variables.toTypedArray(), *this.rhs.variables.toTypedArray())
 
     override fun simplify(): Fun {
+//        println("calling subtract simplify: $this")
         val l = lhs.simplify()
         val r = rhs.simplify()
         return when {

@@ -1,10 +1,11 @@
 package org.kotrix.symbolic.funAST
 
+// TODO determine if UnaryPlus object is a better option over Times(+1, value)
 data class UnaryPlus(val value: Fun): Fun() {
     override val variables: Set<Variable>
         get() = setOf(*this.value.variables.toTypedArray())
 
-    override fun simplify(): Fun = UnaryPlus(this.simplify())
+    override fun simplify(): Fun = UnaryPlus(this.value.simplify())
 
     override fun sub(replace: Variable, with: Fun): Fun = UnaryPlus(this.value.sub(replace, with))
 
