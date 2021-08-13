@@ -51,7 +51,7 @@ fun main() {
     val x by Var()
 
     println(run {
-        (ln(x) + 2) + ln(x)
+        (2 + x) + 2
     }.simpleString())
 
 //    val x2 = (2 + x) + x
