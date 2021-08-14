@@ -25,10 +25,10 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                 when (r) {
                     is UnaryPlus -> {
                         when (r.value.simplify()) { // (ll + lr) + +(r.value)
-                            ll -> { // (ll + lr) + +(ll) -> (2 * ll) + lr
+                            ll -> { // (ll + lr) + +(r.value) where r.value == ll -> (2 * ll) + lr
                                 ((2 * ll).simplify() + lr).simplify()
                             }
-                            lr -> { // (ll + lr) + +(lr) -> ll + (2 * lr)
+                            lr -> { // (ll + lr) + +(r.value) where r.value == lr -> ll + (2 * lr)
                                 (ll + (2 * lr).simplify()).simplify()
                             }
                             else -> l + r
@@ -36,10 +36,10 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                     }
                     is UnaryMinus -> {
                         when (r.value.simplify()) { // (ll + lr) + -(r.value)
-                            ll -> { // (ll + lr) + -(ll) -> lr
+                            ll -> { // (ll + lr) + -(r.value) where ll == r.value-> lr
                                 lr
                             }
-                            lr -> { // (ll + lr) + -(lr) -> ll
+                            lr -> { // (ll + lr) + -(r.value) where lr == r.value -> ll
                                 ll
                             }
                             else -> l + r
@@ -178,8 +178,8 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                             else -> l + r
                         }
                     }
-                    is Power -> {
-                        when {
+                    is Power -> { // todo complete branch
+                        when { // (ll + lr) + (b ^ e)
                             ll is Times -> {
                                 val lll = ll.lhs.simplify()
                                 val llr = ll.rhs.simplify()
@@ -217,11 +217,11 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                     }
                     is Ln, is Sin, is Cos -> {
                         when (r) {
-                            ll -> {
-                                ((2 * r) + lr).simplify()
+                            ll -> { // (ll + lr) + r where ll == r and r is Ln, Sin, or Cos -> (2 * ll) + lr
+                                ((2 * ll) + lr).simplify()
                             }
-                            lr -> {
-                                (ll + (2 * r)).simplify()
+                            lr -> { // (ll + lr) + r where lr == r and r is Ln, Sin, or Cos -> ll + (2 * lr)
+                                (ll + (2 * lr)).simplify()
                             }
                             else -> l + r
                         }
@@ -230,50 +230,50 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                 }
             }
 
-            l is Subtract -> {
+            l is Subtract -> { // (ll - lr) + r
                 val ll = l.lhs.simplify()
                 val lr = l.rhs.simplify()
 
                 when (r) {
                     is UnaryPlus -> {
-                        when (r.value.simplify()) {
-                            ll -> {
+                        when (r.value.simplify()) { // (ll - lr) + +(r.value)
+                            ll -> { // (ll - lr) + +(r.value) where r.value == ll -> (2 * ll) - lr
                                 ((2 * ll).simplify() - lr).simplify()
                             }
-                            lr -> {
+                            lr -> { // (ll - lr) + +(r.value) where r.value == lr -> ll
                                 return ll
                             }
                             else -> l + r
                         }
                     }
                     is UnaryMinus -> {
-                        when (r.value.simplify()) {
-                            ll -> {
+                        when (r.value.simplify()) { // (ll - lr) + -(r.value)
+                            ll -> { // (ll - lr) + -(r.value) where r.value == ll -> -lr
                                 -lr
                             }
-                            lr -> {
+                            lr -> { // (ll - lr) + -(r.value) where r.value == lr -> ll - (2 * lr)
                                 (ll - (2 * lr).simplify()).simplify()
                             }
                             else -> l + r
                         }
                     }
                     is Scalar -> {
-                        when {
-                            ll is Scalar -> {
+                        when { // (ll - lr) + r where r is some scalar
+                            ll is Scalar -> { // (ll - lr) + r where ll and r are some scalar -> (ll + r) - lr
                                 ((ll + r).simplify() - lr).simplify()
                             }
-                            lr is Scalar -> {
+                            lr is Scalar -> { // (ll - lr) + r where lr and r are some scalar -> ll - (lr + r)
                                 (ll - (lr + r).simplify()).simplify()
                             }
                             else -> l + r
                         }
                     }
                     is Variable -> {
-                        when (r) {
-                            ll -> {
+                        when (r) { // (ll - lr) + r where r is some variable
+                            ll -> { // (ll - lr) + r where r is some variable and ll == r -> (2 * ll) - lr
                                 ((2 * ll).simplify() - lr).simplify()
                             }
-                            lr -> {
+                            lr -> { // (ll - lr) + r where r is some variable and lr == r -> ll - (2 * lr)
                                 (ll - (2 * lr).simplify()).simplify()
                             }
                             else -> l + r
@@ -283,18 +283,17 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                         val rl = r.lhs.simplify()
                         val rr = r.rhs.simplify()
 
-                        // (ll - lr) + (rl + rr)
-                        when {
-                            ll == rl -> {
+                        when { // (ll - lr) + (rl + rr)
+                            ll == rl -> { // (ll - lr) + (rl + rr) where ll == rl -> (2 * ll) - lr + rr
                                 (((2 * ll).simplify() - lr).simplify() + rr).simplify()
                             }
-                            ll == rr -> {
+                            ll == rr -> { // (ll - lr) + (rl + rr) where ll == rr -> (2 * ll) - lr + rl
                                 (((2 * ll).simplify() - lr).simplify() + rl).simplify()
                             }
-                            lr == rl -> {
+                            lr == rl -> { // (ll - lr) + (rl + rr) where lr == rl -> ll + rr
                                 (ll + rr).simplify()
                             }
-                            lr == rr -> {
+                            lr == rr -> { // (ll - lr) + (rl + rr) where lr == rr -> ll + rl
                                 (ll + rl).simplify()
                             }
                             else -> l + r
@@ -304,18 +303,17 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                         val rl = r.rhs.simplify()
                         val rr = r.rhs.simplify()
 
-                        // (ll - lr) + (rl - rr)
-                        when {
-                            ll == rl -> {
+                        when { // (ll - lr) + (rl - rr)
+                            ll == rl -> { // (ll - lr) + (rl - rr) where ll == rl -> (2 * ll) - lr - rr
                                 (((2 * ll).simplify() - lr).simplify() - rr).simplify()
                             }
-                            ll == rr -> {
+                            ll == rr -> { // (ll - lr) + (rl - rr) where ll == rr -> -lr + rl
                                 (-lr + rl).simplify()
                             }
-                            lr == rl -> {
+                            lr == rl -> { // (ll - lr) + (rl - rr) where lr == rl -> ll - rr
                                 (ll - rr).simplify()
                             }
-                            lr == rr -> {
+                            lr == rr -> { // (ll - lr) + (rl - rr) where lr == rr -> ll - (2 * lr) - rl
                                 ((ll - (2 * lr).simplify()).simplify() + rl).simplify()
                             }
                             else -> l + r
@@ -325,33 +323,41 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                         val rl = r.lhs.simplify()
                         val rr = r.rhs.simplify()
                         when {
-                            ll is Times -> { // ((lll * llr) - lr) + (rl * rr)
+                            ll is Times -> {
                                 val lll = ll.lhs.simplify()
                                 val llr = ll.rhs.simplify()
-                                when {
-                                    lll == rl ->
+                                when { // ((lll * llr) - lr) + (rl * rr)
+                                    lll == rl -> { // ((lll * llr) - lr) + (rl * rr) where lll == rl -> lll * (llr + rr) - lr
                                         ((lll * (llr + rr).simplify()).simplify() - lr).simplify()
-                                    llr == rl ->
-                                        (((lll + rr).simplify() * llr).simplify() - lr).simplify()
-                                    lll == rr ->
+                                    }
+                                    lll == rr -> { // ((lll * llr) - lr) + (rl * rr) where lll == rr -> lll * (llr + rl) - lr
                                         ((lll * (llr + rl).simplify()).simplify() - lr).simplify()
-                                    llr == rr ->
+                                    }
+                                    llr == rl -> { // ((lll * llr) - lr) + (rl * rr) where llr == rl -> (lll + rr) * llr - lr
+                                        (((lll + rr).simplify() * llr).simplify() - lr).simplify()
+                                    }
+                                    llr == rr -> { // ((lll * llr) - lr) + (rl * rr) where llr == rr -> (lll + rl) * llr - lr
                                         (((lll + rl).simplify() * llr).simplify() - lr).simplify()
+                                    }
                                     else -> l + r
                                 }
                             }
-                            lr is Times -> { // (ll - (lrl * lrr)) + (rl * rr)
+                            lr is Times -> {
                                 val lrl = lr.lhs.simplify()
                                 val lrr = lr.lhs.simplify()
-                                when {
-                                    lrl == rl ->
+                                when { // (ll - (lrl * lrr)) + (rl * rr)
+                                    lrl == rl -> { // (ll - (lrl * lrr)) + (rl * rr) where lrl == rl -> ll - (lrl * (lrr + rr))
                                         (ll - (lrl * (lrr + rr).simplify()).simplify()).simplify()
-                                    lrr == rl ->
-                                        (ll - ((lrl + rr).simplify() * lrr).simplify()).simplify()
-                                    lrl == rr ->
+                                    }
+                                    lrl == rr -> { // (ll - (lrl * lrr)) + (rl * rr) where lrl == rr -> ll - (lrl * (lrr * rl))
                                         (ll - (lrl * (lrr + rl).simplify()).simplify()).simplify()
-                                    lrr == rr ->
+                                    }
+                                    lrr == rl -> { // (ll - (lrl * lrr)) + (rl * rr) where lrr == rl -> ll - ((lrl + rr) * lrr)
+                                        (ll - ((lrl + rr).simplify() * lrr).simplify()).simplify()
+                                    }
+                                    lrr == rr -> { // (ll - (lrl * lrr)) + (rl * rr) where lrr == rr -> ll - ((lrl + rl) * lrr)
                                         (ll - ((lrl + rl).simplify() * lrr).simplify()).simplify()
+                                    }
                                     else -> l + r
                                 }
                             }
@@ -367,15 +373,20 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                 }
             }
 
-            l is UnaryMinus -> {
+            l is UnaryMinus -> { // -l + r
                 val lv = l.value.simplify()
-                when {
-                    (r is UnaryPlus && r.value.simplify() == lv) || (r !is UnaryPlus && r == lv) -> 0.scalar
+                when { // -(l.value) + r
+                    (r is UnaryPlus && r.value.simplify() == lv) // -(l.value) + +(r.value) where l.value == r.value -> 0
+                            || (r !is UnaryPlus && r == lv) -> { // -(l.value) + r where r is not an UnaryPlus and l.value == r -> 0
+                        0.scalar
+                    }
                     else -> l + r
                 }
             }
 
-            l is Scalar && r is Scalar -> this.evalAllAtZero().scalar
+            l is Scalar && r is Scalar -> { // l + r where l and r are both some scalar
+                this.evalAllAtZero().scalar
+            }
 
             else -> l + r
         }
