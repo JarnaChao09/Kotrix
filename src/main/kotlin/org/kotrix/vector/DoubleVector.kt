@@ -5,10 +5,10 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.reflect.KClass
 
-class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vector<Double>(length, initBlock), NumberVector<Double> {
+class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): VectorImpl<Double>(length, initBlock), NumberVectors<Double> {
     constructor(length: Int = 10, initValue: Double): this(length, initBlock = { initValue })
 
-    constructor(copy: Vector<Double>): this(copy.size, initBlock = { i -> copy[i] })
+    constructor(copy: VectorImpl<Double>): this(copy.size, initBlock = { i -> copy[i] })
 
     constructor(list: List<Double>): this(list.size, initBlock = { i -> list[i] })
 
@@ -71,7 +71,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
             return sqrt(sum)
         }
 
-    override fun plus(other: NumberVector<Double>): DoubleVector {
+    override fun plus(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] + other[i]
@@ -79,7 +79,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun minus(other: NumberVector<Double>): DoubleVector {
+    override fun minus(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] - other[i]
@@ -87,7 +87,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun times(other: NumberVector<Double>): DoubleVector {
+    override fun times(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] * other[i]
@@ -95,7 +95,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun div(other: NumberVector<Double>): DoubleVector {
+    override fun div(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] / other[i]
@@ -103,7 +103,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun rem(other: NumberVector<Double>): DoubleVector {
+    override fun rem(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] % other[i]
@@ -111,7 +111,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun pow(other: NumberVector<Double>): DoubleVector {
+    override fun pow(other: NumberVectors<Double>): DoubleVector {
         val ret = DoubleVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i].pow(other[i])
@@ -119,37 +119,37 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return ret
     }
 
-    override fun plusAssign(other: NumberVector<Double>) {
+    override fun plusAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] += other[i]
         }
     }
 
-    override fun minusAssign(other: NumberVector<Double>) {
+    override fun minusAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] -= other[i]
         }
     }
 
-    override fun timesAssign(other: NumberVector<Double>) {
+    override fun timesAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] *= other[i]
         }
     }
 
-    override fun divAssign(other: NumberVector<Double>) {
+    override fun divAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] /= other[i]
         }
     }
 
-    override fun remAssign(other: NumberVector<Double>) {
+    override fun remAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] %= other[i]
         }
     }
 
-    override fun powAssign(other: NumberVector<Double>) {
+    override fun powAssign(other: NumberVectors<Double>) {
         for (i in 0 until this.size) {
             this[i] = this[i].pow(other[i])
         }
@@ -161,7 +161,7 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
     override fun unaryMinus(): DoubleVector =
         DoubleVector(this.size) { i -> -(this[i]) }
 
-    override fun dot(other: NumberVector<Double>): Double {
+    override fun dot(other: NumberVectors<Double>): Double {
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
@@ -169,15 +169,15 @@ class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): Vect
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
-    override fun scalarProject(other: NumberVector<Double>): Double = (this.dot(other)) / other.toDoubleVector().magnitude
+    override fun scalarProject(other: NumberVectors<Double>): Double = (this.dot(other)) / other.toDoubleVector().magnitude
 
     fun scalarProject(other: IntVector): Double = (this.dot(other)) / other.magnitude
 
-    override fun projectOnto(other: NumberVector<Double>): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
+    override fun projectOnto(other: NumberVectors<Double>): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
 
     fun projectOnto(other: IntVector): DoubleVector = other.toDoubleVector() * (this.dot(other) / other.dot(other))
 
-    override fun cross(other: NumberVector<Double>): DoubleVector {
+    override fun cross(other: NumberVectors<Double>): DoubleVector {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
         }

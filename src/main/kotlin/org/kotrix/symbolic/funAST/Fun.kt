@@ -1,11 +1,8 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.scalar
-import org.kotrix.symbolic.funAST.interfaces.Differentiable
-import org.kotrix.symbolic.funAST.interfaces.EvalFun
-import org.kotrix.symbolic.funAST.interfaces.Simplify
 import org.kotrix.utils.Stringify
 import kotlin.math.E
+import org.kotrix.symbolic.funAST.extensions.*
 
 sealed class Fun(
     open val variables: Set<Variable> = emptySet()

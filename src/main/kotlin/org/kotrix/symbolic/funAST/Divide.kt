@@ -1,7 +1,6 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.pow
-import org.kotrix.symbolic.funAST.extensions.scalar
+import org.kotrix.symbolic.funAST.extensions.*
 
 data class Divide(val numerator: Fun, val denominator: Fun): Fun() {
     override val variables: Set<Variable>

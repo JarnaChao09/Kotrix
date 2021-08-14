@@ -3,7 +3,7 @@ package org.kotrix.vector
 import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 
-class BooleanVector(length: Int = 10, initBlock: (Int) -> Boolean = { false }): Vector<Boolean>(length, initBlock) {
+class BooleanVector(length: Int = 10, initBlock: (Int) -> Boolean = { false }): VectorImpl<Boolean>(length, initBlock) {
     constructor(length: Int = 10, initValue: Boolean): this(length, initBlock = { initValue })
 
     override val type: KClass<out Boolean>

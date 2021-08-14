@@ -93,8 +93,8 @@ infix fun DoubleVector.pow(other: Double): DoubleVector =
     DoubleVector(this.size) { i -> this[i].pow(other) }
 
 /** List Conversion **/
-inline fun <reified T> List<T>.toVector(): Vector<T> where T: Any {
-    val ret = Vector.nulls<T>(this.size)
+inline fun <reified T> List<T>.toVector(): VectorImpl<T> where T: Any {
+    val ret = VectorImpl.nulls<T>(this.size)
     for (i in 0 until ret.size) {
         ret[i] = this[i]
     }

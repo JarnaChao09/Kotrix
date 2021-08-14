@@ -1,15 +1,14 @@
 package org.kotrix.vector
 
 import org.kotrix.matrix.IntMatrix
-import kotlin.math.hypot
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.reflect.KClass
 
-class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(length, initBlock), NumberVector<Int> {
+class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): VectorImpl<Int>(length, initBlock), NumberVectors<Int> {
     constructor(length: Int = 10, initValue: Int): this(length, initBlock = { initValue })
 
-    constructor(copy: Vector<Int>): this(copy.size, initBlock = { i -> copy[i] })
+    constructor(copy: VectorImpl<Int>): this(copy.size, initBlock = { i -> copy[i] })
 
     constructor(list: List<Int>): this(list.size, initBlock = { i -> list[i] })
 
@@ -72,7 +71,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
             return sqrt(sum.toDouble())
         }
 
-    override fun plus(other: NumberVector<Int>): IntVector {
+    override fun plus(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] + other[i]
@@ -80,7 +79,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun minus(other: NumberVector<Int>): IntVector {
+    override fun minus(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] - other[i]
@@ -88,7 +87,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun times(other: NumberVector<Int>): IntVector {
+    override fun times(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] * other[i]
@@ -96,7 +95,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun div(other: NumberVector<Int>): IntVector {
+    override fun div(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] / other[i]
@@ -104,7 +103,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun rem(other: NumberVector<Int>): IntVector {
+    override fun rem(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i] % other[i]
@@ -112,7 +111,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun pow(other: NumberVector<Int>): IntVector {
+    override fun pow(other: NumberVectors<Int>): IntVector {
         val ret = IntVector(this.size)
         for (i in 0 until ret.size) {
             ret[i] = this[i].toDouble().pow(other[i].toDouble()).toInt()
@@ -120,37 +119,37 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return ret
     }
 
-    override fun plusAssign(other: NumberVector<Int>) {
+    override fun plusAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] += other[i]
         }
     }
 
-    override fun minusAssign(other: NumberVector<Int>) {
+    override fun minusAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] -= other[i]
         }
     }
 
-    override fun timesAssign(other: NumberVector<Int>) {
+    override fun timesAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] *= other[i]
         }
     }
 
-    override fun divAssign(other: NumberVector<Int>) {
+    override fun divAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] /= other[i]
         }
     }
 
-    override fun remAssign(other: NumberVector<Int>) {
+    override fun remAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] %= other[i]
         }
     }
 
-    override fun powAssign(other: NumberVector<Int>) {
+    override fun powAssign(other: NumberVectors<Int>) {
         for (i in 0 until this.size) {
             this[i] = this[i].toDouble().pow(other[i]).toInt()
         }
@@ -162,7 +161,7 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
     override fun unaryMinus(): IntVector =
         IntVector(this.size) { i -> -(this[i]) }
 
-    override fun dot(other: NumberVector<Int>): Int {
+    override fun dot(other: NumberVectors<Int>): Int {
         return IntVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
@@ -170,15 +169,15 @@ class IntVector(length: Int = 10, initBlock: (Int) -> Int = { 0 }): Vector<Int>(
         return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index]  }.sum()
     }
 
-    override fun scalarProject(other: NumberVector<Int>): Double = (this.dot(other)) / other.toIntVector().magnitude
+    override fun scalarProject(other: NumberVectors<Int>): Double = (this.dot(other)) / other.toIntVector().magnitude
 
     fun scalarProject(other: DoubleVector): Double = (this.dot(other)) / other.magnitude
 
-    override fun projectOnto(other: NumberVector<Int>): IntVector = other.toIntVector() * (this.dot(other) / other.dot(other))
+    override fun projectOnto(other: NumberVectors<Int>): IntVector = other.toIntVector() * (this.dot(other) / other.dot(other))
 
     fun projectOnto(other: DoubleVector): DoubleVector = other * (this.dot(other) / other.dot(other))
 
-    override fun cross(other: NumberVector<Int>): IntVector {
+    override fun cross(other: NumberVectors<Int>): IntVector {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
         }

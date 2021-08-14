@@ -1,6 +1,5 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.scalar
 import org.kotrix.symbolic.funAST.extensions.*
 
 data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
@@ -226,7 +225,7 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                             else -> l + r
                         }
                     }
-                    is Vector -> TODO()
+//                    is Vector -> TODO()
                 }
             }
 
@@ -369,7 +368,7 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                     is Ln -> TODO()
                     is Power -> TODO()
                     is Sin -> TODO()
-                    is Vector -> TODO()
+//                    is Vector -> TODO()
                 }
             }
 

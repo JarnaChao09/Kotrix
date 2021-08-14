@@ -7,8 +7,7 @@ import org.kotrix.matrix.BooleanMatrix
 import org.kotrix.utils.by
 import org.kotrix.utils.sliceTo
 import org.kotrix.vector.BooleanVector
-import org.kotrix.vector.Vector
-import org.kotrix.vector.forEachIndexed
+import org.kotrix.vector.VectorImpl
 import org.kotrix.vector.toVector
 
 class TruthTable(private val expression: BooleanAlgebra) {
@@ -19,9 +18,9 @@ class TruthTable(private val expression: BooleanAlgebra) {
     }
 
     private fun getAllOperations(
-            from: BooleanAlgebra = expression,
-            allOps: Vector<BooleanAlgebra> = Vector<BooleanAlgebra>(0) { expression },
-    ): Vector<BooleanAlgebra> {
+        from: BooleanAlgebra = expression,
+        allOps: VectorImpl<BooleanAlgebra> = VectorImpl<BooleanAlgebra>(0) { expression },
+    ): VectorImpl<BooleanAlgebra> {
         return when(from) {
             is Constant -> allOps.also { it.remove(from) }
             is Variable -> allOps.also { it.remove(from) }
@@ -98,7 +97,7 @@ class TruthTable(private val expression: BooleanAlgebra) {
         val variableList = this.variables.toList()
         for (r in 0 until this.varValues.rowLength) {
             index = 0
-            val dummy = Vector(0) { "" }
+            val dummy = VectorImpl(0) { "" }
             dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVector()
             for (op in sortedOperations) {
                 val values = Array<Pair<Variable, Constant>>(expression.variables.size) {

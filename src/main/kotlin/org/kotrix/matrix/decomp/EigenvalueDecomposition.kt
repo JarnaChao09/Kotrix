@@ -5,7 +5,7 @@ import org.kotrix.complex.complex
 import org.kotrix.matrix.DoubleMatrix
 import org.kotrix.matrix.Matrix
 import org.kotrix.matrix.NumberMatrix
-import org.kotrix.vector.Vector
+import org.kotrix.vector.VectorImpl
 import kotlin.math.*
 
 class EigenvalueDecomposition(matrix: DoubleMatrix) {
@@ -52,8 +52,8 @@ class EigenvalueDecomposition(matrix: DoubleMatrix) {
     }
 
     /**after ComplexVector creation, change return type**/
-    fun eigenvalues(): Vector<Complex> {
-        val values = Vector(d.size) { i -> Complex(d[i]) }
+    fun eigenvalues(): VectorImpl<Complex> {
+        val values = VectorImpl(d.size) { i -> Complex(d[i]) }
         e.forEachIndexed { i, imag -> values[i] = if (imag != 0.0) Complex(values[i], imag) else values[i] }
         return values
     }
@@ -64,14 +64,14 @@ class EigenvalueDecomposition(matrix: DoubleMatrix) {
 
     /**after ComplexMatrix creation, change return type**/
     private fun buildEigenvectors(): Matrix<Complex> {
-        val ret = Vector(this.e.size) { Vector(0) { Complex(0, 0) } }
+        val ret = VectorImpl(this.e.size) { VectorImpl(0) { Complex(0, 0) } }
         for ((i, imag) in e.withIndex()) {
             if (imag == 0.0) {
-                ret[i] = Vector(this.size) { j -> this.v[j][i].complex }
+                ret[i] = VectorImpl(this.size) { j -> this.v[j][i].complex }
             } else if (imag > 0.0) {
-                ret[i] = Vector(this.size) { j -> Complex(this.v[j][i], this.v[j][i + 1])}
+                ret[i] = VectorImpl(this.size) { j -> Complex(this.v[j][i], this.v[j][i + 1])}
             } else {
-                ret[i] = Vector(this.size) { j -> Complex(this.v[j][i - 1], -this.v[j][i])}
+                ret[i] = VectorImpl(this.size) { j -> Complex(this.v[j][i - 1], -this.v[j][i])}
             }
         }
         return Matrix(ret)

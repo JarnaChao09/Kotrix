@@ -1,4 +1,4 @@
-package org.kotrix.symbolic
+package org.kotrix.symbolic.funAST.extensions
 
 import org.kotrix.symbolic.funAST.Fun
 import org.kotrix.symbolic.funAST.Variable

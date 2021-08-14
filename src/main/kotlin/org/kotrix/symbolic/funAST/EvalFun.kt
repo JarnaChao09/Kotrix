@@ -1,7 +1,6 @@
-package org.kotrix.symbolic.funAST.interfaces
+package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.Fun
-import org.kotrix.symbolic.funAST.extensions.scalar
+import org.kotrix.symbolic.funAST.extensions.*
 
 interface EvalFun<X, Y, R: Fun> {
     fun partialEval(value: Map<X, Y>): R

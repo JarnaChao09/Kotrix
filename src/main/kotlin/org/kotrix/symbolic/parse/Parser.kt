@@ -50,34 +50,34 @@ class Parser(private var tokensList: List<Tokens>) {
                     }
                 }
             }
-            current is Tokens.Diamond && current.type == Tokens.DiamondType.Left -> {
-                val expressions = mutableListOf<Fun>()
-                advanceCurrent()
-
-                val current1 = currentToken
-
-                if (current1 is Tokens.Diamond && current1.type == Tokens.DiamondType.Right) {
-                    throw Exception("Invalid Syntax, can not create empty vector")
-                }
-
-                expressions.add(expr())
-
-                var current2 = currentToken
-                while (current2 is Tokens.Comma) {
-                    advanceCurrent()
-
-                    expressions.add(expr())
-
-                    current2 = currentToken
-                }
-
-                if (current2 !is Tokens.Diamond || current2.type != Tokens.DiamondType.Right) {
-                    throw Exception("Invalid Syntax, expected , or ending >")
-                }
-
-                advanceCurrent()
-                return Vector(expressions.toVector())
-            }
+//            current is Tokens.Diamond && current.type == Tokens.DiamondType.Left -> {
+//                val expressions = mutableListOf<Fun>()
+//                advanceCurrent()
+//
+//                val current1 = currentToken
+//
+//                if (current1 is Tokens.Diamond && current1.type == Tokens.DiamondType.Right) {
+//                    throw Exception("Invalid Syntax, can not create empty vector")
+//                }
+//
+//                expressions.add(expr())
+//
+//                var current2 = currentToken
+//                while (current2 is Tokens.Comma) {
+//                    advanceCurrent()
+//
+//                    expressions.add(expr())
+//
+//                    current2 = currentToken
+//                }
+//
+//                if (current2 !is Tokens.Diamond || current2.type != Tokens.DiamondType.Right) {
+//                    throw Exception("Invalid Syntax, expected , or ending >")
+//                }
+//
+//                advanceCurrent()
+//                return Vector(expressions.toVector())
+//            }
             current is Tokens.Scalar -> {
                 advanceCurrent()
                 Scalar(current.value)

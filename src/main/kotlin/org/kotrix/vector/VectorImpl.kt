@@ -7,12 +7,12 @@ import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
-open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where T: Any {
+open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where T: Any {
     constructor(size: Int = 10, initValue: T): this(size, initBlock = { initValue })
 
     constructor(list: List<T>): this(size = list.size, initBlock = { i -> list[i] })
 
-    constructor(vec: Vector<T>): this(size = vec.size, initBlock = { i -> vec[i] })
+    constructor(vec: VectorImpl<T>): this(size = vec.size, initBlock = { i -> vec[i] })
 
     sealed class Scope<T> where T: Any {
         val actions: MutableList<Scope<T>> = emptyList<Scope<T>>().toMutableList()
@@ -49,7 +49,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
             this@Scope.also { this@Scope.actions.add(Append(this)) }
     }
 
-    class VectorIterator<U>(val value: Vector<U>): Iterator<U> where U: Any {
+    class VectorIterator<U>(val value: VectorImpl<U>): Iterator<U> where U: Any {
         private var current = 0
         override fun hasNext(): Boolean {
             return current < value.size
@@ -61,7 +61,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
 
     }
 
-    class VectorIteratorWithIndices<U>(val value: Vector<U>): Iterator<IndexedValue<U>> where U: Any {
+    class VectorIteratorWithIndices<U>(val value: VectorImpl<U>): Iterator<IndexedValue<U>> where U: Any {
         private var current = 0
         override fun hasNext(): Boolean {
             return current < value.size
@@ -73,23 +73,23 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
 
     companion object {
         @JvmStatic
-        inline fun <reified T: Any> empty(size: Int = 1): Vector<T> =
+        inline fun <reified T: Any> empty(size: Int = 1): VectorImpl<T> =
             try {
-                Vector(size) { T::class.java.getDeclaredConstructor().newInstance() }
+                VectorImpl(size) { T::class.java.getDeclaredConstructor().newInstance() }
             } catch (e: Exception) {
                 throw IllegalArgumentException("Cannot instantiate instance of ${T::class.java}")
             }
 
         @JvmStatic
-        fun <T: Any> of(vararg elements: T): Vector<T> =
-            Vector(elements.size) { i -> elements[i] }
+        fun <T: Any> of(vararg elements: T): VectorImpl<T> =
+            VectorImpl(elements.size) { i -> elements[i] }
 
         @Suppress("UNCHECKED_CAST")
-        fun <T: Any> nulls(size: Int = 0): Vector<T> {
-            return Vector(size) { Any() as T }
+        fun <T: Any> nulls(size: Int = 0): VectorImpl<T> {
+            return VectorImpl(size) { Any() as T }
         }
 
-        operator fun <T: Any> invoke(size: Int): Vector<T> =
+        operator fun <T: Any> invoke(size: Int): VectorImpl<T> =
                 nulls(size = size)
     }
 
@@ -160,7 +160,7 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
 
     override operator fun get(index: Int): T = this.buffer[(size + index) % size]
 
-    override operator fun get(indexSlice: Slice): Vector<T> {
+    override operator fun get(indexSlice: Slice): VectorImpl<T> {
         val ret = nulls<T>()
         val subList: MutableList<T> = emptyList<T>().toMutableList()
         for (i: Int in indexSlice) {
@@ -202,14 +202,14 @@ open class Vector<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Vector<*>
+        other as VectorImpl<*>
 
         if (buffer != other.buffer) return false
 
         return true
     }
 
-    override fun equal(other: Vector<T>): BooleanVector =
+    override fun equal(other: VectorImpl<T>): BooleanVector =
         BooleanVector(this.size) { i -> this[i] == other[i] }
 
     override fun <U : VectorBase<T>> contains(element: U): Boolean =

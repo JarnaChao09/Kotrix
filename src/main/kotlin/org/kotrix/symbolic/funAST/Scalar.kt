@@ -1,6 +1,6 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.scalar
+import org.kotrix.symbolic.funAST.extensions.*
 
 data class Scalar(val value: Double): Fun() {
     constructor(n: Number): this(n.toDouble())

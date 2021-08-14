@@ -1,6 +1,6 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.scalar
+import org.kotrix.symbolic.funAST.extensions.*
 
 data class Subtract(val lhs: Fun, val rhs: Fun): Fun() {
     override val variables: Set<Variable>

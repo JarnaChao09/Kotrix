@@ -1,7 +1,4 @@
-package org.kotrix.discrete.booleanAlgebraAST.interfaces
-
-import org.kotrix.discrete.booleanAlgebraAST.BooleanAlgebra
-import org.kotrix.discrete.booleanAlgebraAST.Constant
+package org.kotrix.discrete.booleanAlgebraAST
 
 interface EvalBool<X, Y, R: BooleanAlgebra> {
     fun fullEval(value: Map<X, Y>): Boolean

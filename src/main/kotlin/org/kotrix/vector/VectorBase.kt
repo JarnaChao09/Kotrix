@@ -39,7 +39,7 @@ interface VectorBase<T>: Collection<T> where T: Any {
 
     operator fun <U: VectorBase<T>> contains(element: U): Boolean
 
-    infix fun equal(other: Vector<T>): Vector<Boolean>
+    infix fun equal(other: VectorImpl<T>): VectorImpl<Boolean>
 
     fun toMatrix(asCol: Boolean): Matrix<T>
 

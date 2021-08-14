@@ -1,6 +1,6 @@
 package org.kotrix.symbolic.funAST
 
-import org.kotrix.symbolic.funAST.extensions.scalar
+import org.kotrix.symbolic.funAST.extensions.*
 
 data class Ln(val value: Fun): Fun() {
     override val variables: Set<Variable>

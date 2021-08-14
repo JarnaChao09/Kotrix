@@ -1,8 +1,6 @@
 package org.kotrix.discrete.booleanAlgebraAST
 
-import org.kotrix.discrete.booleanAlgebraAST.interfaces.EvalBool
 import org.kotrix.utils.Stringify
-import java.util.*
 
 sealed class BooleanAlgebra(
         open val variables: Set<Variable> = emptySet()
