@@ -2,8 +2,8 @@ package org.kotrix.utils
 
 import kotlin.math.round
 
-class Slice(private val startInclusive: Int, private val lastExclusive: Int, val step: Int = 1): Iterable<Int> {
-    constructor(range: IntRange) : this(startInclusive = range.first, lastExclusive = range.last, step = range.step)
+class Slice(private val startInclusive: Int, private val endExclusive: Int, val step: Int = 1): Iterable<Int> {
+    constructor(range: IntRange) : this(startInclusive = range.first, endExclusive = range.last, step = range.step)
 
     class SliceIterator(private val slice: Slice) : Iterator<Int> {
         private var current: Int = slice.start
@@ -19,18 +19,15 @@ class Slice(private val startInclusive: Int, private val lastExclusive: Int, val
 
     }
 
-    enum class slice {
-        BEGINNING,
-        END
-    }
-
     val start: Int get() = startInclusive
-    val end: Int get() = lastExclusive
+    val end: Int get() = endExclusive
     val size: Int get() = round((end - start) / step.toDouble()).toInt()
 
     override fun iterator(): Iterator<Int> {
         return SliceIterator(this)
     }
+
+    override fun toString(): String = "[$startInclusive, $endExclusive)"
 
     companion object {
         @JvmStatic
@@ -48,3 +45,5 @@ infix fun Int.sliceTo(other: Int): Slice = Slice(this, other)
 
 infix fun Slice.step(other: Int): Slice =
     Slice(this.start, this.end, step = other)
+
+internal operator fun IntRange.contains(slice: Slice): Boolean = slice.start >= this.first && slice.end < this.last

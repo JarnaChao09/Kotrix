@@ -2,7 +2,7 @@ package org.kotrix.matrix
 
 import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
-import org.kotrix.vector.VectorImpl
+import org.kotrix.vector.VectorImplOld
 import org.kotrix.vector.VectorBase
 
 import java.util.stream.Stream
@@ -34,7 +34,7 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     infix fun equal(other: MatrixBase<T>): BooleanMatrix
 
-    operator fun get(index: Int): VectorImpl<T>
+    operator fun get(index: Int): VectorImplOld<T>
 
     operator fun get(indexSlice: Slice): MatrixBase<T>
 
@@ -42,11 +42,11 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     operator fun get(indexRSlice: Slice, indexCSlice: Slice): MatrixBase<T>
 
-    operator fun get(indexRSlice: Slice, indexC: Int): VectorImpl<T>
+    operator fun get(indexRSlice: Slice, indexC: Int): VectorImplOld<T>
 
     operator fun get(indexR: Int, indexCSlice: Slice): MatrixBase<T>
 
-    operator fun set(index: Int, value: VectorImpl<T>)
+    operator fun set(index: Int, value: VectorImplOld<T>)
 
     operator fun set(indexSlice: Slice, value: MatrixBase<T>)
 
@@ -54,9 +54,9 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     operator fun set(indexRSlice: Slice, indexCSlice: Slice, value: MatrixBase<T>)
 
-    operator fun set(indexRSlice: Slice, indexC: Int, value: VectorImpl<T>)
+    operator fun set(indexRSlice: Slice, indexC: Int, value: VectorImplOld<T>)
 
-    operator fun set(indexR: Int, indexCSlice: Slice, value: VectorImpl<T>)
+    operator fun set(indexR: Int, indexCSlice: Slice, value: VectorImplOld<T>)
 
     fun rowAppend(other: MatrixBase<T>): MatrixBase<T>
 
@@ -66,15 +66,15 @@ interface MatrixBase<T>: Iterable<T> where T: Any {
 
     fun removeCol(indexC: Int): VectorBase<T>
 
-    fun toVector(): VectorImpl<out VectorImpl<T>>
+    fun toVector(): VectorImplOld<out VectorImplOld<T>>
 
     fun toList(): List<List<T>>
 
-    operator fun component1(): VectorImpl<out T>
+    operator fun component1(): VectorImplOld<out T>
 
-    operator fun component2(): VectorImpl<out T>
+    operator fun component2(): VectorImplOld<out T>
 
-    operator fun component3(): VectorImpl<out T>
+    operator fun component3(): VectorImplOld<out T>
 
-    operator fun component4(): VectorImpl<out T>
+    operator fun component4(): VectorImplOld<out T>
 }

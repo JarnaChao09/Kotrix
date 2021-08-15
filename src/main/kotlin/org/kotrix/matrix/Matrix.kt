@@ -3,7 +3,7 @@ package org.kotrix.matrix
 import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
-import org.kotrix.vector.VectorImpl
+import org.kotrix.vector.VectorImplOld
 import java.lang.IllegalArgumentException
 import java.util.stream.Stream
 import kotlin.math.max
@@ -24,7 +24,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: VectorImpl<T>, asCol: Boolean = false):
+    constructor(vector: VectorImplOld<T>, asCol: Boolean = false):
             this(
                 dim = if (asCol) Size(vector.size, 1) else Size(
                     1,
@@ -33,7 +33,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
                 initBlock = if (asCol) { i, _ -> vector[i]} else { _, i -> vector[i]  }
             )
 
-    constructor(matListOfVector: VectorImpl<VectorImpl<T>>): this(
+    constructor(matListOfVector: VectorImplOld<VectorImplOld<T>>): this(
         dim = Size(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
@@ -45,9 +45,9 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     sealed class Scope<T> where T: Any {
         class Base<T: Any>: Scope<T>()
 
-        val matrix: VectorImpl<VectorImpl<T>> = VectorImpl(0) { VectorImpl.nulls<T>(0) }
+        val matrix: VectorImplOld<VectorImplOld<T>> = VectorImplOld(0) { VectorImplOld.nulls<T>(0) }
 
-        operator fun VectorImpl<T>.unaryPlus(): Scope<T> =
+        operator fun VectorImplOld<T>.unaryPlus(): Scope<T> =
             this@Scope.also { this@Scope.matrix.append(this) }
     }
 
@@ -64,9 +64,9 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
         @JvmStatic
         fun <T: Any> of(vararg matrix: List<T>): Matrix<T> {
-            val elements = VectorImpl(matrix.size) { VectorImpl.nulls<T>() }
+            val elements = VectorImplOld(matrix.size) { VectorImplOld.nulls<T>() }
             for (i in matrix.indices) {
-                elements[i] = VectorImpl(matrix[i])
+                elements[i] = VectorImplOld(matrix[i])
             }
             return Matrix(elements)
         }
@@ -119,9 +119,9 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     override var size: Size = dim
 
-    protected open var internalMatrix: VectorImpl<VectorImpl<T>> =
-        VectorImpl(dim.x) { i ->
-            VectorImpl(dim.y) { j ->
+    protected open var internalMatrix: VectorImplOld<VectorImplOld<T>> =
+        VectorImplOld(dim.x) { i ->
+            VectorImplOld(dim.y) { j ->
                 initBlock(
                     i,
                     j
@@ -140,7 +140,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     open val t: Matrix<T>
         get() = this.transpose()
 
-    open val vector: VectorImpl<out VectorImpl<T>>
+    open val vector: VectorImplOld<out VectorImplOld<T>>
         get() = this.toVector()
 
     open val list: List<List<T>>
@@ -149,7 +149,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     open val stream
         get() = this.stream()
 
-    override fun toVector(): VectorImpl<out VectorImpl<T>> = VectorImpl(this.internalMatrix)
+    override fun toVector(): VectorImplOld<out VectorImplOld<T>> = VectorImplOld(this.internalMatrix)
 
     override fun toList(): List<List<T>> {
         val ret = MutableList(this.size.x) { emptyList<T>() }
@@ -165,16 +165,16 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     override val withIndices: Iterator<Triple<T, Int, Int>>
         get() = MatrixIteratorWithIndex(this)
 
-    override operator fun get(index: Int): VectorImpl<T> =
-        VectorImpl(internalMatrix[index])
+    override operator fun get(index: Int): VectorImplOld<T> =
+        VectorImplOld(internalMatrix[index])
 
     override operator fun get(indexSlice: Slice): Matrix<T> =
         Matrix(internalMatrix[indexSlice])
 
     override operator fun get(indexR: Int, indexC: Int): T = internalMatrix[indexR][indexC]
 
-    override operator fun get(indexRSlice: Slice, indexC: Int): VectorImpl<T> {
-        val ret = VectorImpl(indexRSlice.size) { initBlock(0, 0) }
+    override operator fun get(indexRSlice: Slice, indexC: Int): VectorImplOld<T> {
+        val ret = VectorImplOld(indexRSlice.size) { initBlock(0, 0) }
         val copy = this[indexRSlice]
         var r = 0
         for (i in indexRSlice) {
@@ -205,7 +205,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         return ret
     }
 
-    override operator fun set(index: Int, value: VectorImpl<T>) {
+    override operator fun set(index: Int, value: VectorImplOld<T>) {
         if (this.colLength != value.size) throw IllegalArgumentException("VECTOR SIZE ${value.size} INCOMPATIBLE WITH ${this.dim}")
         this.internalMatrix[index] = value
     }
@@ -220,14 +220,14 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         this.internalMatrix[indexSlice] = value.internalMatrix
     }
 
-    override fun set(indexRSlice: Slice, indexC: Int, value: VectorImpl<T>) {
+    override fun set(indexRSlice: Slice, indexC: Int, value: VectorImplOld<T>) {
         var r = 0
         for (i in indexRSlice) {
             this[i, indexC] = value[r++]
         }
     }
 
-    override fun set(indexR: Int, indexCSlice: Slice, value: VectorImpl<T>) {
+    override fun set(indexR: Int, indexCSlice: Slice, value: VectorImplOld<T>) {
         var c = 0
         for (i in indexCSlice) {
             this[indexR, i] = value[c++]
@@ -263,7 +263,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
 
     override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.size = it.internalMatrix.size by it.internalMatrix[0].size }
 
-    override fun removeRow(indexR: Int): VectorImpl<T> =
+    override fun removeRow(indexR: Int): VectorImplOld<T> =
             this.internalMatrix.removeAt(indexR)
 
     override fun colAppend(other: MatrixBase<T>): Matrix<T> {
@@ -274,8 +274,8 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         return this.also { it.size = it.internalMatrix.size by it.internalMatrix[0].size }
     }
 
-    override fun removeCol(indexC: Int): VectorImpl<T> {
-        val ret = VectorImpl.nulls<T>()
+    override fun removeCol(indexC: Int): VectorImplOld<T> {
+        val ret = VectorImplOld.nulls<T>()
 
         this.internalMatrix.forEach {
             ret append it.removeAt(indexC)
@@ -293,11 +293,11 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     }
 
     override fun toString(): String {
-        val retString = List(size = 0) { VectorImpl(0) { "" } }.toMutableList()
+        val retString = List(size = 0) { VectorImplOld(0) { "" } }.toMutableList()
         var maxLength = 0
         internalMatrix.forEach { it.forEach { i -> maxLength = max(maxLength, i.toString().length) } }
         for (r  in internalMatrix) {
-            val dummy = VectorImpl(size = 0) { "" }
+            val dummy = VectorImplOld(size = 0) { "" }
             for (c in r) {
                 dummy append (" " * (maxLength - c.toString().length) + c.toString())
             }
@@ -334,15 +334,15 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         return result
     }
 
-    override fun component1(): VectorImpl<out T> =
+    override fun component1(): VectorImplOld<out T> =
         this[0]
 
-    override fun component2(): VectorImpl<out T> =
+    override fun component2(): VectorImplOld<out T> =
         this[1]
 
-    override fun component3(): VectorImpl<out T> =
+    override fun component3(): VectorImplOld<out T> =
         this[2]
 
-    override fun component4(): VectorImpl<out T> =
+    override fun component4(): VectorImplOld<out T> =
         this[3]
 }

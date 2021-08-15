@@ -6,7 +6,7 @@ import org.kotrix.complex.conjugate
 import org.kotrix.complex.times
 import org.kotrix.matrix.decomp.LUPDecomposition
 import org.kotrix.utils.Size
-import org.kotrix.vector.VectorImpl
+import org.kotrix.vector.VectorImplOld
 import kotlin.collections.all
 
 abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Matrix<T>(dim = dim, initBlock = initBlock) where T: Number {
@@ -15,9 +15,9 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: VectorImpl<T>): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
+    constructor(vector: VectorImplOld<T>): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
 
-    constructor(matListOfVector: VectorImpl<VectorImpl<T>>, unused: Boolean = true): this(
+    constructor(matListOfVector: VectorImplOld<VectorImplOld<T>>, unused: Boolean = true): this(
         dim = if (unused) Size(matListOfVector.size, matListOfVector[0].size) else Size(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
@@ -133,10 +133,10 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isNormal(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { i: Int, rowI: VectorImpl<T> ->
-            this.vector.forEachIndexed { j: Int, rowJ: VectorImpl<T> ->
+        this.vector.forEachIndexed { i: Int, rowI: VectorImplOld<T> ->
+            this.vector.forEachIndexed { j: Int, rowJ: VectorImplOld<T> ->
                 var s = Complex.ZERO
-                this.vector.forEachIndexed { k: Int, rowK: VectorImpl<T> ->
+                this.vector.forEachIndexed { k: Int, rowK: VectorImplOld<T> ->
                     s += rowI[k] * rowJ[k].conjugate - rowK[i].conjugate * rowK[j]
                 }
                 if (s != Complex.ZERO) {
@@ -150,7 +150,7 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isOrthogonal(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { i: Int, row: VectorImpl<T> ->
+        this.vector.forEachIndexed { i: Int, row: VectorImplOld<T> ->
             for (j in 0 until this.colLength) {
                 var s = Complex.ZERO
                 for (k in 0 until this.rowLength) {
@@ -168,7 +168,7 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         val cols = Array(this.colLength) { false }
         var ret = true
-        this.vector.forEachIndexed { _, row: VectorImpl<T> ->
+        this.vector.forEachIndexed { _, row: VectorImplOld<T> ->
             var found = false
             row.forEachIndexed { j, e ->
                 if (e == 1) {
@@ -223,7 +223,7 @@ abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Mat
     fun isUnitary(): Boolean {
         if (!this.isSquare()) throw Error.DimensionMisMatch()
         var ret = true
-        this.vector.forEachIndexed { i: Int, row: VectorImpl<T> ->
+        this.vector.forEachIndexed { i: Int, row: VectorImplOld<T> ->
             for (j in 0 until this.colLength) {
                 var s = Complex.ZERO
                 for (k in 0 until this.rowLength) {

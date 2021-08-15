@@ -2,36 +2,35 @@ package org.kotrix.vector
 
 import org.kotrix.matrix.Matrix
 import org.kotrix.utils.Slice
-import java.lang.Exception
-import java.lang.IllegalArgumentException
+import org.kotrix.utils.extensions.*
 import kotlin.reflect.KClass
 import kotlin.streams.toList
 
-open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> where T: Any {
-    constructor(size: Int = 10, initValue: T): this(size, initBlock = { initValue })
+open class VectorImplOld<T>(size: Int = 10, initBlock: (Int) -> T) : VectorBase<T> where T : Any {
+    constructor(size: Int = 10, initValue: T) : this(size, initBlock = { initValue })
 
-    constructor(list: List<T>): this(size = list.size, initBlock = { i -> list[i] })
+    constructor(list: List<T>) : this(size = list.size, initBlock = { i -> list[i] })
 
-    constructor(vec: VectorImpl<T>): this(size = vec.size, initBlock = { i -> vec[i] })
+    constructor(vec: VectorImplOld<T>) : this(size = vec.size, initBlock = { i -> vec[i] })
 
-    sealed class Scope<T> where T: Any {
+    sealed class Scope<T> where T : Any {
         val actions: MutableList<Scope<T>> = emptyList<Scope<T>>().toMutableList()
 
-        class Base<T : Any>: Scope<T>()
+        class Base<T : Any> : Scope<T>()
 
-        class Error(msg: String = "Illegal Type was found"): Throwable(msg)
+        class Error(msg: String = "Illegal Type was found") : Throwable(msg)
 
-        data class Append<T: Any>(val value: T, var times: Int = 1): Scope<T>()
+        data class Append<T : Any>(val value: T, var times: Int = 1) : Scope<T>()
 
-        data class Push<T: Any>(val value: T, var times: Int = 1): Scope<T>()
+        data class Push<T : Any>(val value: T, var times: Int = 1) : Scope<T>()
 
-        data class Put<T: Any>(val value: T, val at: Int, var times: Int = 1): Scope<T>()
+        data class Put<T : Any>(val value: T, val at: Int, var times: Int = 1) : Scope<T>()
 
-        data class Repeat<T: Any>(val times: Int, val repeat: Scope<T>.() -> Scope<T>): Scope<T>() {
+        data class Repeat<T : Any>(val times: Int, val repeat: Scope<T>.() -> Scope<T>) : Scope<T>() {
             fun run(): Scope<T> {
                 val base = Base<T>().repeat()
                 for (i in base.actions) {
-                    when(i) {
+                    when (i) {
                         is Append -> i.times = this.times
                         is Push -> i.times = this.times
                         is Put -> i.times = this.times
@@ -49,7 +48,7 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
             this@Scope.also { this@Scope.actions.add(Append(this)) }
     }
 
-    class VectorIterator<U>(val value: VectorImpl<U>): Iterator<U> where U: Any {
+    class VectorIterator<U>(val value: VectorImplOld<U>) : Iterator<U> where U : Any {
         private var current = 0
         override fun hasNext(): Boolean {
             return current < value.size
@@ -61,7 +60,7 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
 
     }
 
-    class VectorIteratorWithIndices<U>(val value: VectorImpl<U>): Iterator<IndexedValue<U>> where U: Any {
+    class VectorIteratorWithIndices<U>(val value: VectorImplOld<U>) : Iterator<IndexedValue<U>> where U : Any {
         private var current = 0
         override fun hasNext(): Boolean {
             return current < value.size
@@ -73,24 +72,24 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
 
     companion object {
         @JvmStatic
-        inline fun <reified T: Any> empty(size: Int = 1): VectorImpl<T> =
+        inline fun <reified T : Any> empty(size: Int = 1): VectorImplOld<T> =
             try {
-                VectorImpl(size) { T::class.java.getDeclaredConstructor().newInstance() }
+                VectorImplOld(size) { T::class.java.getDeclaredConstructor().newInstance() }
             } catch (e: Exception) {
                 throw IllegalArgumentException("Cannot instantiate instance of ${T::class.java}")
             }
 
         @JvmStatic
-        fun <T: Any> of(vararg elements: T): VectorImpl<T> =
-            VectorImpl(elements.size) { i -> elements[i] }
+        fun <T : Any> of(vararg elements: T): VectorImplOld<T> =
+            VectorImplOld(elements.size) { i -> elements[i] }
 
         @Suppress("UNCHECKED_CAST")
-        fun <T: Any> nulls(size: Int = 0): VectorImpl<T> {
-            return VectorImpl(size) { Any() as T }
+        fun <T : Any> nulls(size: Int = 0): VectorImplOld<T> {
+            return VectorImplOld(size) { Any() as T }
         }
 
-        operator fun <T: Any> invoke(size: Int): VectorImpl<T> =
-                nulls(size = size)
+        operator fun <T : Any> invoke(size: Int): VectorImplOld<T> =
+            nulls(size = size)
     }
 
     override fun appendAll(value: VectorBase<T>) {
@@ -133,20 +132,13 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
             return "<>"
         }
         val retString = List(0) { "" }.toMutableList()
-        val maxLength: Int = buffer.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList().toMutableList()[this.size-1] + 1
+        val maxLength: Int = buffer.map { x -> x }.stream().mapToInt { x -> x.toString().length }.sorted().toList()
+            .toMutableList()[this.size - 1] + 1
         for (i in this.buffer) {
             val currentLength = i.toString().length
             retString += " " * (maxLength - currentLength) + i.toString()
         }
         return retString.joinToString(prefix = "<", postfix = ">", separator = ",")
-    }
-
-    private operator fun String.times(maxLength: Int): String {
-        var dummy = ""
-        for (i in 0 until maxLength) {
-            dummy += this
-        }
-        return dummy
     }
 
     override operator fun iterator(): Iterator<T> =
@@ -160,7 +152,7 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
 
     override operator fun get(index: Int): T = this.buffer[(size + index) % size]
 
-    override operator fun get(indexSlice: Slice): VectorImpl<T> {
+    override operator fun get(indexSlice: Slice): VectorImplOld<T> {
         val ret = nulls<T>()
         val subList: MutableList<T> = emptyList<T>().toMutableList()
         for (i: Int in indexSlice) {
@@ -202,18 +194,18 @@ open class VectorImpl<T>(size: Int = 10, initBlock: (Int) -> T): VectorBase<T> w
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as VectorImpl<*>
+        other as VectorImplOld<*>
 
         if (buffer != other.buffer) return false
 
         return true
     }
 
-    override fun equal(other: VectorImpl<T>): BooleanVector =
+    override fun equal(other: VectorImplOld<T>): BooleanVector =
         BooleanVector(this.size) { i -> this[i] == other[i] }
 
     override fun <U : VectorBase<T>> contains(element: U): Boolean =
-            this.containsAll(element)
+        this.containsAll(element)
 
     override fun containsAll(elements: Collection<T>): Boolean =
         this.buffer.containsAll(elements)

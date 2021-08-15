@@ -5,7 +5,7 @@ import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.IntVector
-import org.kotrix.vector.VectorImpl
+import org.kotrix.vector.VectorImplOld
 import org.kotrix.vector.*
 
 import java.lang.IllegalArgumentException
@@ -29,7 +29,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
                 initBlock = if (asCol) { i, _ -> vector[i]} else { _, i -> vector[i]  }
             )
 
-    constructor(vectorOfVector: VectorImpl<IntVector>, asColVectors: Boolean = false): this(
+    constructor(vectorOfVector: VectorImplOld<IntVector>, asColVectors: Boolean = false): this(
         dim = if (asColVectors) Size(
             vectorOfVector[0].size,
             vectorOfVector.size
@@ -48,7 +48,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
     sealed class Scope {
         class Base: Scope()
 
-        val matrix: VectorImpl<IntVector> = VectorImpl(0) { IntVector.EMPTY }
+        val matrix: VectorImplOld<IntVector> = VectorImplOld(0) { IntVector.EMPTY }
 
         operator fun IntVector.not(): Scope =
             this@Scope.also { this@Scope.matrix.append(this) }
@@ -76,7 +76,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
         @JvmStatic
         @JvmName("ofInts")
         fun of(matrix: List<List<Int>>): IntMatrix {
-            val mat = VectorImpl(matrix.size) { IntVector(matrix[0].size) }
+            val mat = VectorImplOld(matrix.size) { IntVector(matrix[0].size) }
             for (i in 0 until mat.size) {
                 mat[i] = IntVector(matrix[i].size) { j -> matrix[i][j] }
             }
@@ -126,8 +126,8 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
     override fun component4(): IntVector =
         super.component4() as IntVector
 
-    override var internalMatrix: VectorImpl<VectorImpl<Int>> =
-        VectorImpl(dim.x) { i -> IntVector(dim.y) { j -> initBlock(i, j) } }
+    override var internalMatrix: VectorImplOld<VectorImplOld<Int>> =
+        VectorImplOld(dim.x) { i -> IntVector(dim.y) { j -> initBlock(i, j) } }
 
     override val inv: IntMatrix
         get() = this.inverse()
@@ -143,11 +143,11 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
     val intStream: IntStream
         get() = this.stream.mapToInt { x -> x }
 
-    override val vector: VectorImpl<IntVector>
+    override val vector: VectorImplOld<IntVector>
         get() = this.toVector()
 
-    override fun toVector(): VectorImpl<IntVector> =
-        VectorImpl(this.rowLength) { r -> IntVector(this.colLength) { c -> this[r, c] } }
+    override fun toVector(): VectorImplOld<IntVector> =
+        VectorImplOld(this.rowLength) { r -> IntVector(this.colLength) { c -> this[r, c] } }
 
     val intArray: Array<IntArray>
         get() {

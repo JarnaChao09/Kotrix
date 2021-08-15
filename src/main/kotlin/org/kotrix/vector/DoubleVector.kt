@@ -5,10 +5,10 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.reflect.KClass
 
-class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): VectorImpl<Double>(length, initBlock), NumberVectors<Double> {
+class DoubleVector(length: Int = 10, initBlock: (Int) -> Double = { 0.0 }): VectorImplOld<Double>(length, initBlock), NumberVectors<Double> {
     constructor(length: Int = 10, initValue: Double): this(length, initBlock = { initValue })
 
-    constructor(copy: VectorImpl<Double>): this(copy.size, initBlock = { i -> copy[i] })
+    constructor(copy: VectorImplOld<Double>): this(copy.size, initBlock = { i -> copy[i] })
 
     constructor(list: List<Double>): this(list.size, initBlock = { i -> list[i] })
 

@@ -7,8 +7,8 @@ import org.kotrix.matrix.BooleanMatrix
 import org.kotrix.utils.by
 import org.kotrix.utils.sliceTo
 import org.kotrix.vector.BooleanVector
-import org.kotrix.vector.VectorImpl
-import org.kotrix.vector.toVector
+import org.kotrix.vector.VectorImplOld
+import org.kotrix.vector.toVectorOld
 
 class TruthTable(private val expression: BooleanAlgebra) {
     private val variables: Set<Variable> by lazy { expression.variables.toSortedSet { l, r -> l.name.compareTo(r.name) } }
@@ -19,8 +19,8 @@ class TruthTable(private val expression: BooleanAlgebra) {
 
     private fun getAllOperations(
         from: BooleanAlgebra = expression,
-        allOps: VectorImpl<BooleanAlgebra> = VectorImpl<BooleanAlgebra>(0) { expression },
-    ): VectorImpl<BooleanAlgebra> {
+        allOps: VectorImplOld<BooleanAlgebra> = VectorImplOld<BooleanAlgebra>(0) { expression },
+    ): VectorImplOld<BooleanAlgebra> {
         return when(from) {
             is Constant -> allOps.also { it.remove(from) }
             is Variable -> allOps.also { it.remove(from) }
@@ -71,7 +71,7 @@ class TruthTable(private val expression: BooleanAlgebra) {
 
         val sortedOperations = this.getAllOperations()
                 .sortedBy { it.stringify().length }
-                .toVector()
+                .toVectorOld()
 
         val maxLengthList = MutableList(this.variables.size + sortedOperations.size) { 5 }
 
@@ -97,8 +97,8 @@ class TruthTable(private val expression: BooleanAlgebra) {
         val variableList = this.variables.toList()
         for (r in 0 until this.varValues.rowLength) {
             index = 0
-            val dummy = VectorImpl(0) { "" }
-            dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVector()
+            val dummy = VectorImplOld(0) { "" }
+            dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVectorOld()
             for (op in sortedOperations) {
                 val values = Array<Pair<Variable, Constant>>(expression.variables.size) {
                     variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const

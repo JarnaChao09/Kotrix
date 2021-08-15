@@ -5,7 +5,7 @@ import org.kotrix.utils.Size
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.DoubleVector
-import org.kotrix.vector.VectorImpl
+import org.kotrix.vector.VectorImplOld
 import org.kotrix.vector.*
 
 import java.lang.IllegalArgumentException
@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatrix<Double>(dim, initBlock) {
     constructor(x: Int, y: Int, initBlock: (Int) -> Double = { 0.0 }): this(dim = Size(x, y), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vectorOfVector: VectorImpl<DoubleVector>, asColVectors: Boolean = false): this(
+    constructor(vectorOfVector: VectorImplOld<DoubleVector>, asColVectors: Boolean = false): this(
         dim = if (asColVectors) vectorOfVector[0].size by vectorOfVector.size else vectorOfVector.size by vectorOfVector[0].size,
         initBlock = if (asColVectors) { r, c -> vectorOfVector[c][r] } else { r, c -> vectorOfVector[r][c] }
     )
@@ -42,7 +42,7 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
     sealed class Scope {
         class Base: Scope()
 
-        val matrix: VectorImpl<DoubleVector> = VectorImpl(0) { DoubleVector.EMPTY }
+        val matrix: VectorImplOld<DoubleVector> = VectorImplOld(0) { DoubleVector.EMPTY }
 
         operator fun DoubleVector.not(): Scope =
             this@Scope.also { this@Scope.matrix.append(this) }
@@ -70,7 +70,7 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
         @JvmStatic
         @JvmName("ofDoubles")
         fun of(matrix: List<List<Number>>): DoubleMatrix {
-            val mat = VectorImpl(matrix.size) { DoubleVector(matrix[0].size) }
+            val mat = VectorImplOld(matrix.size) { DoubleVector(matrix[0].size) }
             for (i in matrix.indices) {
                 mat[i] = DoubleVector(matrix[i].size) { j -> matrix[i][j].toDouble() }
             }
@@ -120,8 +120,8 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
     override fun component4(): DoubleVector =
         super.component4() as DoubleVector
 
-    override var internalMatrix: VectorImpl<VectorImpl<Double>> =
-        VectorImpl(dim.x) { i -> DoubleVector(dim.y) { j -> initBlock(i, j) } }
+    override var internalMatrix: VectorImplOld<VectorImplOld<Double>> =
+        VectorImplOld(dim.x) { i -> DoubleVector(dim.y) { j -> initBlock(i, j) } }
 
     override val inv: DoubleMatrix
         get() = this.inverse()
@@ -137,11 +137,11 @@ class DoubleMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Double): NumberMatr
     val doubleStream: DoubleStream
         get() = this.stream.mapToDouble { x -> x }
 
-    override val vector: VectorImpl<DoubleVector>
+    override val vector: VectorImplOld<DoubleVector>
         get() = this.toVector()
 
-    override fun toVector(): VectorImpl<DoubleVector> =
-        VectorImpl(this.rowLength) { r -> DoubleVector(this.colLength) { c -> this[r, c] } }
+    override fun toVector(): VectorImplOld<DoubleVector> =
+        VectorImplOld(this.rowLength) { r -> DoubleVector(this.colLength) { c -> this[r, c] } }
 
     val doubleArray: Array<DoubleArray>
         get() {

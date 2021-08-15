@@ -3,35 +3,35 @@ package org.kotrix.vector
 import org.kotrix.utils.Location
 
 /** Vector.Scope<T> **/
-infix fun <T: Any> VectorImpl.Scope<T>.append(other: T): VectorImpl.Scope<T> =
-    this.also { this.actions.add(VectorImpl.Scope.Append(other)) }
+infix fun <T: Any> VectorImplOld.Scope<T>.append(other: T): VectorImplOld.Scope<T> =
+    this.also { this.actions.add(VectorImplOld.Scope.Append(other)) }
 
-infix fun <T: Any> VectorImpl.Scope<T>.push(other: T): VectorImpl.Scope<T> =
-    this.also { this.actions.add(VectorImpl.Scope.Push(other)) }
+infix fun <T: Any> VectorImplOld.Scope<T>.push(other: T): VectorImplOld.Scope<T> =
+    this.also { this.actions.add(VectorImplOld.Scope.Push(other)) }
 
-infix fun <T: Any> VectorImpl.Scope<T>.put(other: Location<T, Int>): VectorImpl.Scope<T> =
-    this.also { this.actions.add(VectorImpl.Scope.Put(other.value, other.location)) }
+infix fun <T: Any> VectorImplOld.Scope<T>.put(other: Location<T, Int>): VectorImplOld.Scope<T> =
+    this.also { this.actions.add(VectorImplOld.Scope.Put(other.value, other.location)) }
 
-infix fun <T: Any> VectorImpl.Scope<T>.times(t: Int): VectorImpl.Scope<T> =
+infix fun <T: Any> VectorImplOld.Scope<T>.times(t: Int): VectorImplOld.Scope<T> =
     this.also {
         when (val last = this.actions.last()) {
-            is VectorImpl.Scope.Append -> last.times = t
-            is VectorImpl.Scope.Push -> last.times = t
-            is VectorImpl.Scope.Put -> last.times = t
+            is VectorImplOld.Scope.Append -> last.times = t
+            is VectorImplOld.Scope.Push -> last.times = t
+            is VectorImplOld.Scope.Put -> last.times = t
         }
     }
 
-fun <T: Any> VectorImpl.Scope<T>.repeat(t: Int, block: VectorImpl.Scope<T>.() -> VectorImpl.Scope<T>): VectorImpl.Scope<T> =
-    this.also { this.actions.addAll(VectorImpl.Scope.Repeat(t, block).run().actions) }
+fun <T: Any> VectorImplOld.Scope<T>.repeat(t: Int, block: VectorImplOld.Scope<T>.() -> VectorImplOld.Scope<T>): VectorImplOld.Scope<T> =
+    this.also { this.actions.addAll(VectorImplOld.Scope.Repeat(t, block).run().actions) }
 
-fun <T : Any> VectorImpl.Scope<T>.build(): VectorImpl<T> {
-    val ret = VectorImpl.nulls<T>(0)
+fun <T : Any> VectorImplOld.Scope<T>.build(): VectorImplOld<T> {
+    val ret = VectorImplOld.nulls<T>(0)
     for(i in this.actions) {
         when(i) {
-            is VectorImpl.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
-            is VectorImpl.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
-            is VectorImpl.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
-            else -> throw VectorImpl.Scope.Error()
+            is VectorImplOld.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
+            is VectorImplOld.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
+            is VectorImplOld.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
+            else -> throw VectorImplOld.Scope.Error()
         }
     }
     this.actions.clear()
@@ -67,7 +67,7 @@ fun IntVector.Scope.build(): IntVector {
             is IntVector.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
             is IntVector.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
             is IntVector.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
-            else -> throw VectorImpl.Scope.Error()
+            else -> throw VectorImplOld.Scope.Error()
         }
     }
     this.actions.clear()
@@ -103,7 +103,7 @@ fun DoubleVector.Scope.build(): DoubleVector {
             is DoubleVector.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
             is DoubleVector.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
             is DoubleVector.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
-            else -> throw VectorImpl.Scope.Error()
+            else -> throw VectorImplOld.Scope.Error()
         }
     }
     this.actions.clear()
