@@ -5,7 +5,7 @@ import org.kotrix.utils.sliceTo
 fun main() {
     val test1 = vectorOf<Int>()
     val test2 = mutableVectorOf(1, 2, 3)
-    val test3 = Vector(10) { 0 }.toMutableVector()
+    val test3 = MutableVector(10) { 0 }
     println(test1)
     println(test2)
     println(test3)

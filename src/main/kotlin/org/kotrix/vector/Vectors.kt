@@ -72,8 +72,8 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
     override fun subVector(slice: Slice): MutableVector<E>
 }
 
-interface NumericVector<E> :
-    Vector<E> where E : Number { // todo once algebraic data types are in, change type constraint
+// todo once algebraic data types are in, change type constraint
+interface NumericVector<E> : Vector<E> where E : Number {
     // Properties
     val magnitude: Double
 
@@ -104,8 +104,8 @@ interface NumericVector<E> :
     fun project(onto: NumericVector<E>): NumericVector<E>
 }
 
-interface MutableNumericVector<E> : NumericVector<E>,
-    MutableVector<E> where E : Number { // todo once algebraic data types are in, change type constraint
+// todo once algebraic data types are in, change type constraint
+interface MutableNumericVector<E> : NumericVector<E>, MutableVector<E> where E : Number {
     // Binary Modification Operations
     operator fun plusAssign(rhs: NumericVector<E>)
 
