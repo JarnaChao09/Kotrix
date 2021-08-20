@@ -1,11 +1,13 @@
-package org.kotrix.operations
+package org.kotrix.algebra
 
-interface Operation<T> where T : Any
+interface Operation<T> where T : Any {
+    fun number(value: Number): T
+}
 
 interface GroupOperation<T> : Operation<T> where T : Any {
     fun add(lhs: T, rhs: T): T
 
-    operator fun T.unaryPlus(): T = this
+    operator fun T.unaryPlus(): T
 
     operator fun T.unaryMinus(): T
 
@@ -46,4 +48,5 @@ interface Ring<T> : Group<T>, RingOperation<T> where T : Any {
 
 interface Field<T> : Ring<T>, FieldOperation<T> where T : Any
 
-interface Space<T> : Field<T>, SpaceOperation<T> where T : Any // todo determine if Space is appropriate name or use `Module` instead
+// todo determine if Space is appropriate name or use Module instead
+interface Space<T> : Field<T>, SpaceOperation<T> where T : Any
