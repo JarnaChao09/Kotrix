@@ -75,7 +75,7 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
 // todo once algebraic data types are in, change type constraint
 interface NumericVector<E> : Vector<E> where E : Number {
     // Properties
-    val magnitude: Double
+    val magnitude: E
 
     // Unary Operations
     operator fun unaryPlus(): NumericVector<E>
@@ -101,11 +101,29 @@ interface NumericVector<E> : Vector<E> where E : Number {
 
     fun scalarProject(onto: NumericVector<E>): E
 
+    fun scale(byValue: E): NumericVector<E>
+
     fun project(onto: NumericVector<E>): NumericVector<E>
 }
 
 // todo once algebraic data types are in, change type constraint
-interface MutableNumericVector<E> : NumericVector<E>, MutableVector<E> where E : Number {
+interface MutableNumericVector<E> : NumericVector<E>, Vector<E> where E : Number {
+    // Position Access Operations
+    operator fun set(index: Int, element: E): E
+
+    // Slice Access Operations
+    operator fun set(indexSlice: Slice, elements: Collection<E>): MutableNumericVector<E>
+
+    // List Iterators
+    override fun listIterator(): ListIterator<E>
+
+    override fun listIterator(index: Int): ListIterator<E>
+
+    // View
+    override fun subVector(fromIndex: Int, toIndex: Int): MutableNumericVector<E>
+
+    override fun subVector(slice: Slice): MutableNumericVector<E>
+
     // Binary Modification Operations
     operator fun plusAssign(rhs: NumericVector<E>)
 
@@ -118,6 +136,8 @@ interface MutableNumericVector<E> : NumericVector<E>, MutableVector<E> where E :
     operator fun remAssign(rhs: NumericVector<E>)
 
     fun powAssign(rhs: NumericVector<E>)
+
+    fun scaleAssign(byValue: E)
 
     fun projectAssign(onto: NumericVector<E>)
 }

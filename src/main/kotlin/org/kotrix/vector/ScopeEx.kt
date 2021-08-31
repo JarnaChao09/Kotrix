@@ -39,34 +39,34 @@ fun <T : Any> VectorImplOld.Scope<T>.build(): VectorImplOld<T> {
 }
 
 /** IntVector.Scope **/
-infix fun IntVector.Scope.put(loc: Location<Int, Int>): IntVector.Scope =
-    this.also { this.actions.add(IntVector.Scope.Put(loc.value, loc.location)) }
+infix fun IntVectorOld.Scope.put(loc: Location<Int, Int>): IntVectorOld.Scope =
+    this.also { this.actions.add(IntVectorOld.Scope.Put(loc.value, loc.location)) }
 
-infix fun IntVector.Scope.append(other: Int): IntVector.Scope =
-    this.also { this.actions.add(IntVector.Scope.Append(other)) }
+infix fun IntVectorOld.Scope.append(other: Int): IntVectorOld.Scope =
+    this.also { this.actions.add(IntVectorOld.Scope.Append(other)) }
 
-infix fun IntVector.Scope.push(other: Int): IntVector.Scope =
-    this.also { this.actions.add(IntVector.Scope.Push(other)) }
+infix fun IntVectorOld.Scope.push(other: Int): IntVectorOld.Scope =
+    this.also { this.actions.add(IntVectorOld.Scope.Push(other)) }
 
-infix fun IntVector.Scope.times(t: Int): IntVector.Scope =
+infix fun IntVectorOld.Scope.times(t: Int): IntVectorOld.Scope =
     this.also {
         when (val last = this.actions.last()) {
-            is IntVector.Scope.Append -> last.times = t
-            is IntVector.Scope.Push -> last.times = t
-            is IntVector.Scope.Put -> last.times = t
+            is IntVectorOld.Scope.Append -> last.times = t
+            is IntVectorOld.Scope.Push -> last.times = t
+            is IntVectorOld.Scope.Put -> last.times = t
         }
     }
 
-fun IntVector.Scope.repeat(t: Int, block: IntVector.Scope.() -> IntVector.Scope): IntVector.Scope =
-    this.also { this.actions.addAll(IntVector.Scope.Repeat(t, block).run().actions) }
+fun IntVectorOld.Scope.repeat(t: Int, block: IntVectorOld.Scope.() -> IntVectorOld.Scope): IntVectorOld.Scope =
+    this.also { this.actions.addAll(IntVectorOld.Scope.Repeat(t, block).run().actions) }
 
-fun IntVector.Scope.build(): IntVector {
-    val ret = IntVector(0)
+fun IntVectorOld.Scope.build(): IntVectorOld {
+    val ret = IntVectorOld(0)
     for(i in this.actions) {
         when(i) {
-            is IntVector.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
-            is IntVector.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
-            is IntVector.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
+            is IntVectorOld.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
+            is IntVectorOld.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
+            is IntVectorOld.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
             else -> throw VectorImplOld.Scope.Error()
         }
     }

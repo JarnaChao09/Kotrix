@@ -28,15 +28,15 @@ open class GenericVector<E> internal constructor(private val backing: MutableLis
         return backing[(size + index) % size]
     }
 
-    override fun get(indexSlice: Slice): GenericVector<E> {
+    override fun get(indexSlice: Slice): MutableVector<E> {
         require(indexSlice in -size until size) {
             "index slice $indexSlice was not inside range [${-size}, $size)"
         }
-        val ret = GenericVector<E>(indexSlice.size)
+        val ret = mutableListOf<E>()
         for (i in indexSlice) {
-            ret.add(this[(size + i) % size])
+            ret.add(backing[(size + i) % size])
         }
-        return ret
+        return GenericVector(ret)
     }
 
     override fun indexOf(element: E): Int = backing.indexOf(element)
@@ -62,22 +62,25 @@ open class GenericVector<E> internal constructor(private val backing: MutableLis
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return this[index].apply {
+        return backing[(size + index) % size].apply {
             this@GenericVector.backing[(size + index) % size] = element
         }
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<E>): GenericVector<E> {
+    override fun set(indexSlice: Slice, elements: Collection<E>): MutableVector<E> {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
         require(indexSlice in -size until size) {
             "index slice $indexSlice was not inside range [${-size}, $size)"
         }
+        require(elements.size <= backing.size) {
+            "size of new elements $elements cannot be bigger than size of vector $backing"
+        }
         val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
-            this[(size + sliceIterator.next()) % size] = e
+            backing[(size + sliceIterator.next()) % size] = e
         }
         return ret
     }
@@ -91,12 +94,12 @@ open class GenericVector<E> internal constructor(private val backing: MutableLis
     override fun listIterator(index: Int): MutableListIterator<E> = backing.listIterator(index)
 
     override fun subVector(fromIndex: Int, toIndex: Int): MutableVector<E> =
-        GenericVector(backing.subList(fromIndex, toIndex))
+        GenericVector(backing.subList((size + fromIndex) % size, (size + toIndex) % size))
 
-    override fun subVector(slice: Slice): GenericVector<E> {
+    override fun subVector(slice: Slice): MutableVector<E> {
         val backingSubList = mutableListOf<E>()
         for(i in slice) {
-            backingSubList.add(this[i])
+            backingSubList.add(backing[(size + i) % size])
         }
         return GenericVector(backingSubList.subList(0, backingSubList.size))
     }
@@ -106,7 +109,7 @@ open class GenericVector<E> internal constructor(private val backing: MutableLis
             return "<>"
         }
         var ret = "<"
-        for ((index, value) in this.withIndex()) {
+        for ((index, value) in backing.withIndex()) {
             ret += if(index == size - 1) {
                 "$value>"
             } else {
