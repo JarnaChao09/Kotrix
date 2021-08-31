@@ -26,11 +26,12 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
             return kotlin.math.sqrt(ret).toInt()
         }
 
-    override fun isEmpty(): Boolean = backing.isEmpty()
+    @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+    override inline fun isEmpty(): Boolean = false
 
     override fun contains(element: Int): Boolean = backing.contains(element)
 
-    override fun iterator(): Iterator<Int> = backing.iterator()
+    override fun iterator(): IntIterator = backing.iterator()
 
     override fun containsAll(elements: Collection<Int>): Boolean {
         for (e in elements) {
@@ -190,9 +191,11 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
 
     override fun scalarProject(onto: NumericVector<Int>): Int = (this.dot(onto)) / onto.magnitude
 
-    override fun scale(byValue: Int): NumericVector<Int> = IntVector(IntArray(backing.size) { backing[it] * byValue })
+    override fun scale(byValue: Int): NumericVector<Int> =
+        IntVector(IntArray(backing.size) { backing[it] * byValue })
 
-    override fun project(onto: NumericVector<Int>): NumericVector<Int> = onto.scale(this.dot(onto) / onto.dot(onto))
+    override fun project(onto: NumericVector<Int>): NumericVector<Int> =
+        onto.scale(this.dot(onto) / onto.dot(onto))
 
     private inline fun mutatingPerform(
         lhs: NumericVector<Int>,
@@ -253,7 +256,7 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         }
         var ret = "<"
         for ((index, value) in backing.withIndex()) {
-            ret += if(index == size - 1) {
+            ret += if (index == size - 1) {
                 "$value>"
             } else {
                 "$value, "

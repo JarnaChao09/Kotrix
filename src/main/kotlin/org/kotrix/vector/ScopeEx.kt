@@ -75,34 +75,34 @@ fun IntVectorOld.Scope.build(): IntVectorOld {
 }
 
 /** DoubleVector.Scope **/
-infix fun DoubleVector.Scope.put(loc: Location<Double, Int>): DoubleVector.Scope =
-    this.also { this.actions.add(DoubleVector.Scope.Put(loc.value, loc.location)) }
+infix fun DoubleVectorOld.Scope.put(loc: Location<Double, Int>): DoubleVectorOld.Scope =
+    this.also { this.actions.add(DoubleVectorOld.Scope.Put(loc.value, loc.location)) }
 
-infix fun DoubleVector.Scope.append(other: Double): DoubleVector.Scope =
-    this.also { this.actions.add(DoubleVector.Scope.Append(other)) }
+infix fun DoubleVectorOld.Scope.append(other: Double): DoubleVectorOld.Scope =
+    this.also { this.actions.add(DoubleVectorOld.Scope.Append(other)) }
 
-infix fun DoubleVector.Scope.push(other: Double): DoubleVector.Scope =
-    this.also { this.actions.add(DoubleVector.Scope.Push(other)) }
+infix fun DoubleVectorOld.Scope.push(other: Double): DoubleVectorOld.Scope =
+    this.also { this.actions.add(DoubleVectorOld.Scope.Push(other)) }
 
-infix fun DoubleVector.Scope.times(t: Int): DoubleVector.Scope =
+infix fun DoubleVectorOld.Scope.times(t: Int): DoubleVectorOld.Scope =
     this.also {
         when (val last = this.actions.last()) {
-            is DoubleVector.Scope.Append -> last.times = t
-            is DoubleVector.Scope.Push -> last.times = t
-            is DoubleVector.Scope.Put -> last.times = t
+            is DoubleVectorOld.Scope.Append -> last.times = t
+            is DoubleVectorOld.Scope.Push -> last.times = t
+            is DoubleVectorOld.Scope.Put -> last.times = t
         }
     }
 
-fun DoubleVector.Scope.repeat(t: Int, block: DoubleVector.Scope.() -> DoubleVector.Scope): DoubleVector.Scope =
-    this.also { this.actions.addAll(DoubleVector.Scope.Repeat(t, block).run().actions) }
+fun DoubleVectorOld.Scope.repeat(t: Int, block: DoubleVectorOld.Scope.() -> DoubleVectorOld.Scope): DoubleVectorOld.Scope =
+    this.also { this.actions.addAll(DoubleVectorOld.Scope.Repeat(t, block).run().actions) }
 
-fun DoubleVector.Scope.build(): DoubleVector {
-    val ret = DoubleVector(0)
+fun DoubleVectorOld.Scope.build(): DoubleVectorOld {
+    val ret = DoubleVectorOld(0)
     for(i in this.actions) {
         when(i) {
-            is DoubleVector.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
-            is DoubleVector.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
-            is DoubleVector.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
+            is DoubleVectorOld.Scope.Append -> for (u in 0 until i.times) ret.append(i.value)
+            is DoubleVectorOld.Scope.Push -> for (u in 0 until i.times) ret.push(i.value)
+            is DoubleVectorOld.Scope.Put -> for (u in 0 until i.times) ret.put(i.value, i.at)
             else -> throw VectorImplOld.Scope.Error()
         }
     }

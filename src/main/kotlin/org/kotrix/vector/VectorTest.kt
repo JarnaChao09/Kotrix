@@ -32,11 +32,11 @@ fun main() {
 //
 //    println(mutableVector)
 //    println(subVector)
-    val test = MutableNumericVector(4) { it }
-    test[0] = 10
+    val test = MutableNumericVector<Double>(4) { it.toDouble() }
+    test[0] = 10.0
     println(test)
 
-    val test2 = emptyMutableNumericVector<Int>(4)
-    test2[0] = 20
+    val test2 = emptyMutableNumericVector<Double>(4)
+    test2[0] = 20.0
     println(test2)
 }

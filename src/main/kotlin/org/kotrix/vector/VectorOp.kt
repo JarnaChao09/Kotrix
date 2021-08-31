@@ -6,91 +6,91 @@ import kotlin.math.pow
 operator fun Int.plus(other: IntVectorOld): IntVectorOld =
     other + this
 
-operator fun Int.plus(other: DoubleVector): DoubleVector =
+operator fun Int.plus(other: DoubleVectorOld): DoubleVectorOld =
     other + this
 
-operator fun Double.plus(other: DoubleVector): DoubleVector =
+operator fun Double.plus(other: DoubleVectorOld): DoubleVectorOld =
     other + this
 
-operator fun Double.plus(other: IntVectorOld): DoubleVector =
+operator fun Double.plus(other: IntVectorOld): DoubleVectorOld =
     other + this
 
 /** Subtraction **/
 operator fun Int.minus(other: IntVectorOld): IntVectorOld =
     -other + this
 
-operator fun Int.minus(other: DoubleVector): DoubleVector =
+operator fun Int.minus(other: DoubleVectorOld): DoubleVectorOld =
     -other + this
 
-operator fun Double.minus(other: IntVectorOld): DoubleVector =
+operator fun Double.minus(other: IntVectorOld): DoubleVectorOld =
     this - other.toDoubleVector()
 
-operator fun Double.minus(other: DoubleVector): DoubleVector =
+operator fun Double.minus(other: DoubleVectorOld): DoubleVectorOld =
     -other + this
 
 /** Multiplication **/
 operator fun Int.times(other: IntVectorOld): IntVectorOld =
     other * this
 
-operator fun Int.times(other: DoubleVector): DoubleVector =
+operator fun Int.times(other: DoubleVectorOld): DoubleVectorOld =
     other * this
 
-operator fun Double.times(other: IntVectorOld): DoubleVector =
+operator fun Double.times(other: IntVectorOld): DoubleVectorOld =
     other * this
 
-operator fun Double.times(other: DoubleVector): DoubleVector =
+operator fun Double.times(other: DoubleVectorOld): DoubleVectorOld =
     other * this
 
 /** Division **/
 operator fun Int.div(other: IntVectorOld): IntVectorOld =
     (this / other.toDoubleVector()).toIntVector()
 
-operator fun Int.div(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size) { i -> this / other[i] }
+operator fun Int.div(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size) { i -> this / other[i] }
 
-operator fun Double.div(other: IntVectorOld): DoubleVector =
+operator fun Double.div(other: IntVectorOld): DoubleVectorOld =
     this / other.toDoubleVector()
 
-operator fun Double.div(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { index, _ -> this / other[index] } as DoubleVector
+operator fun Double.div(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size).mapIndexed { index, _ -> this / other[index] } as DoubleVectorOld
 
 /** Remainder **/
 operator fun Int.rem(other: IntVectorOld): IntVectorOld =
     IntVectorOld(other.size).mapIndexed { index, _ -> this % other[index] } as IntVectorOld
 
-operator fun Int.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
+operator fun Int.rem(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVectorOld
 
-operator fun Double.rem(other: IntVectorOld): DoubleVector =
-    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
+operator fun Double.rem(other: IntVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVectorOld
 
-operator fun Double.rem(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVector
+operator fun Double.rem(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size).mapIndexed { index, _ -> this % other[index] } as DoubleVectorOld
 
 /** Power **/
 infix fun Int.pow(other: IntVectorOld): IntVectorOld =
     IntVectorOld(other.size) { this } pow other
 
-infix fun Int.pow(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size) { this.toDouble() } pow other
+infix fun Int.pow(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size) { this.toDouble() } pow other
 
-infix fun Double.pow(other: IntVectorOld): DoubleVector =
-    DoubleVector(other.size) { this } pow other.toDoubleVector()
+infix fun Double.pow(other: IntVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size) { this } pow other.toDoubleVector()
 
-infix fun Double.pow(other: DoubleVector): DoubleVector =
-    DoubleVector(other.size) { this } pow other
+infix fun Double.pow(other: DoubleVectorOld): DoubleVectorOld =
+    DoubleVectorOld(other.size) { this } pow other
 
 infix fun IntVectorOld.pow(other: Int): IntVectorOld =
     IntVectorOld(this.size) { i -> (this[i].toDouble()).pow(other).toInt() }
 
-infix fun IntVectorOld.pow(other: Double): DoubleVector =
-    DoubleVector(this.size) { i -> (this[i].toDouble()).pow(other) }
+infix fun IntVectorOld.pow(other: Double): DoubleVectorOld =
+    DoubleVectorOld(this.size) { i -> (this[i].toDouble()).pow(other) }
 
-infix fun DoubleVector.pow(other: Int): DoubleVector =
-    DoubleVector(this.size) { i -> this[i].pow(other) }
+infix fun DoubleVectorOld.pow(other: Int): DoubleVectorOld =
+    DoubleVectorOld(this.size) { i -> this[i].pow(other) }
 
-infix fun DoubleVector.pow(other: Double): DoubleVector =
-    DoubleVector(this.size) { i -> this[i].pow(other) }
+infix fun DoubleVectorOld.pow(other: Double): DoubleVectorOld =
+    DoubleVectorOld(this.size) { i -> this[i].pow(other) }
 
 /** List Conversion **/
 inline fun <reified T> List<T>.toVectorOld(): VectorImplOld<T> where T: Any {
@@ -109,15 +109,15 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecAddDouble")
-    fun ivad(vec: IntVectorOld, double: Double): DoubleVector = vec + double
+    fun ivad(vec: IntVectorOld, double: Double): DoubleVectorOld = vec + double
 
     @JvmStatic
     @JvmName(name = "doubleVecAddInt")
-    fun dvai(vec: DoubleVector, int: Int): DoubleVector = vec + int
+    fun dvai(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec + int
 
     @JvmStatic
     @JvmName(name = "doubleVecAddDouble")
-    fun dvad(vec: DoubleVector, double: Double): DoubleVector = vec + double
+    fun dvad(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec + double
 
     /** Subtraction **/
     @JvmStatic
@@ -130,27 +130,27 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecSubDouble")
-    fun ivsd(vec: IntVectorOld, double: Double): DoubleVector = vec - double
+    fun ivsd(vec: IntVectorOld, double: Double): DoubleVectorOld = vec - double
 
     @JvmStatic
     @JvmName(name = "doubleSubIntVec")
-    fun dsiv(double: Double, vec: IntVectorOld): DoubleVector = double - vec
+    fun dsiv(double: Double, vec: IntVectorOld): DoubleVectorOld = double - vec
 
     @JvmStatic
     @JvmName(name = "doubleVecSubInt")
-    fun dvsi(vec: DoubleVector, int: Int): DoubleVector = vec - int
+    fun dvsi(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec - int
 
     @JvmStatic
     @JvmName(name = "intSubDoubleVec")
-    fun isdv(int: Int, vec: DoubleVector): DoubleVector = int - vec
+    fun isdv(int: Int, vec: DoubleVectorOld): DoubleVectorOld = int - vec
 
     @JvmStatic
     @JvmName(name = "doubleVecSubDouble")
-    fun dvsd(vec: DoubleVector, double: Double): DoubleVector = vec - double
+    fun dvsd(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec - double
 
     @JvmStatic
     @JvmName(name = "doubleSubDoubleVec")
-    fun dsdv(double: Double, vec: DoubleVector): DoubleVector = double - vec
+    fun dsdv(double: Double, vec: DoubleVectorOld): DoubleVectorOld = double - vec
 
     /** Multiplication **/
     @JvmStatic
@@ -159,15 +159,15 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecMultDouble")
-    fun ivmd(vec: IntVectorOld, double: Double): DoubleVector = vec * double
+    fun ivmd(vec: IntVectorOld, double: Double): DoubleVectorOld = vec * double
 
     @JvmStatic
     @JvmName(name = "doubleVecMultInt")
-    fun dvmi(vec: DoubleVector, int: Int): DoubleVector = vec * int
+    fun dvmi(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec * int
 
     @JvmStatic
     @JvmName(name = "doubleVecMultDouble")
-    fun dvmd(vec: DoubleVector, double: Double): DoubleVector = vec * double
+    fun dvmd(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec * double
 
     /** Division **/
     @JvmStatic
@@ -180,27 +180,27 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecDivDouble")
-    fun ivdd(vec: IntVectorOld, double: Double): DoubleVector = vec / double
+    fun ivdd(vec: IntVectorOld, double: Double): DoubleVectorOld = vec / double
 
     @JvmStatic
     @JvmName(name = "doubleDivIntVec")
-    fun ddiv(double: Double, vec: IntVectorOld): DoubleVector = double / vec
+    fun ddiv(double: Double, vec: IntVectorOld): DoubleVectorOld = double / vec
 
     @JvmStatic
     @JvmName(name = "doubleVecDivInt")
-    fun dvdi(vec: DoubleVector, int: Int): DoubleVector = vec / int
+    fun dvdi(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec / int
 
     @JvmStatic
     @JvmName(name = "intDivDoubleVec")
-    fun iddv(int: Int, vec: DoubleVector): DoubleVector = int / vec
+    fun iddv(int: Int, vec: DoubleVectorOld): DoubleVectorOld = int / vec
 
     @JvmStatic
     @JvmName(name = "doubleVecDivDouble")
-    fun dvdd(vec: DoubleVector, double: Double): DoubleVector = vec / double
+    fun dvdd(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec / double
 
     @JvmStatic
     @JvmName(name = "doubleDivDoubleVec")
-    fun dddv(double: Double, vec: DoubleVector): DoubleVector = double / vec
+    fun dddv(double: Double, vec: DoubleVectorOld): DoubleVectorOld = double / vec
 
     /** Remainder **/
     @JvmStatic
@@ -213,27 +213,27 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecRemDouble")
-    fun ivrd(vec: IntVectorOld, double: Double): DoubleVector = vec % double
+    fun ivrd(vec: IntVectorOld, double: Double): DoubleVectorOld = vec % double
 
     @JvmStatic
     @JvmName(name = "doubleRemIntVec")
-    fun driv(double: Double, vec: IntVectorOld): DoubleVector = double % vec
+    fun driv(double: Double, vec: IntVectorOld): DoubleVectorOld = double % vec
 
     @JvmStatic
     @JvmName(name = "doubleVecRemInt")
-    fun dvri(vec: DoubleVector, int: Int): DoubleVector = vec % int
+    fun dvri(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec % int
 
     @JvmStatic
     @JvmName(name = "intRemDoubleVec")
-    fun irdv(int: Int, vec: DoubleVector): DoubleVector = int % vec
+    fun irdv(int: Int, vec: DoubleVectorOld): DoubleVectorOld = int % vec
 
     @JvmStatic
     @JvmName(name = "doubleVecRemDouble")
-    fun dvrd(vec: DoubleVector, double: Double): DoubleVector = vec % double
+    fun dvrd(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec % double
 
     @JvmStatic
     @JvmName(name = "doubleRemDoubleVec")
-    fun drdv(double: Double, vec: DoubleVector): DoubleVector = double % vec
+    fun drdv(double: Double, vec: DoubleVectorOld): DoubleVectorOld = double % vec
 
     /** Power **/
     @JvmStatic
@@ -246,25 +246,25 @@ object VectorOp {
 
     @JvmStatic
     @JvmName(name = "intVecPowDouble")
-    fun ivpd(vec: IntVectorOld, double: Double): DoubleVector = vec pow double
+    fun ivpd(vec: IntVectorOld, double: Double): DoubleVectorOld = vec pow double
 
     @JvmStatic
     @JvmName(name = "doublePowIntVec")
-    fun dpiv(double: Double, vec: IntVectorOld): DoubleVector = double pow vec
+    fun dpiv(double: Double, vec: IntVectorOld): DoubleVectorOld = double pow vec
 
     @JvmStatic
     @JvmName(name = "doubleVecPowInt")
-    fun dvpi(vec: DoubleVector, int: Int): DoubleVector = vec pow int
+    fun dvpi(vec: DoubleVectorOld, int: Int): DoubleVectorOld = vec pow int
 
     @JvmStatic
     @JvmName(name = "intPowDoubleVec")
-    fun ipdv(int: Int, vec: DoubleVector): DoubleVector = int pow vec
+    fun ipdv(int: Int, vec: DoubleVectorOld): DoubleVectorOld = int pow vec
 
     @JvmStatic
     @JvmName(name = "doubleVecPowDouble")
-    fun dvpd(vec: DoubleVector, double: Double): DoubleVector = vec pow double
+    fun dvpd(vec: DoubleVectorOld, double: Double): DoubleVectorOld = vec pow double
 
     @JvmStatic
     @JvmName(name = "doublePowDoubleVec")
-    fun dpdv(double: Double, vec: DoubleVector): DoubleVector = double pow vec
+    fun dpdv(double: Double, vec: DoubleVectorOld): DoubleVectorOld = double pow vec
 }

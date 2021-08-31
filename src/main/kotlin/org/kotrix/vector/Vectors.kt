@@ -40,7 +40,11 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
     // Modification Operations
     override fun add(element: E): Boolean
 
+    fun add(index: Int, element: E)
+
     override fun remove(element: E): Boolean
+
+    fun removeAt(index: Int): E
 
     // Bulk Modification Operations
     override fun addAll(elements: Collection<E>): Boolean
@@ -56,10 +60,6 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
 
     // Slice Access Operations
     operator fun set(indexSlice: Slice, elements: Collection<E>): MutableVector<E>
-
-    fun add(index: Int, element: E)
-
-    fun removeAt(index: Int): E
 
     // List Iterators
     override fun listIterator(): MutableListIterator<E>

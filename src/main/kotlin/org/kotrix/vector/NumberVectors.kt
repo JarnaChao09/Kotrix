@@ -43,5 +43,5 @@ interface NumberVectors<T>: VectorBase<T> where T: Number {
 
     fun toIntVector(): IntVectorOld
 
-    fun toDoubleVector(): DoubleVector
+    fun toDoubleVector(): DoubleVectorOld
 }

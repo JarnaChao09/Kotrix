@@ -165,17 +165,17 @@ class IntVectorOld(length: Int = 10, initBlock: (Int) -> Int = { 0 }): VectorImp
         return IntVectorOld(this.size).mapIndexed { index: Int, _ -> this[index] * other[index] }.sum()
     }
 
-    fun dot(other: DoubleVector): Double {
-        return DoubleVector(this.size).mapIndexed { index: Int, _ -> this[index] * other[index]  }.sum()
+    fun dot(other: DoubleVectorOld): Double {
+        return DoubleVectorOld(this.size).mapIndexed { index: Int, _ -> this[index] * other[index]  }.sum()
     }
 
     override fun scalarProject(other: NumberVectors<Int>): Double = (this.dot(other)) / other.toIntVector().magnitude
 
-    fun scalarProject(other: DoubleVector): Double = (this.dot(other)) / other.magnitude
+    fun scalarProject(other: DoubleVectorOld): Double = (this.dot(other)) / other.magnitude
 
     override fun projectOnto(other: NumberVectors<Int>): IntVectorOld = other.toIntVector() * (this.dot(other) / other.dot(other))
 
-    fun projectOnto(other: DoubleVector): DoubleVector = other * (this.dot(other) / other.dot(other))
+    fun projectOnto(other: DoubleVectorOld): DoubleVectorOld = other * (this.dot(other) / other.dot(other))
 
     override fun cross(other: NumberVectors<Int>): IntVectorOld {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
@@ -193,11 +193,11 @@ class IntVectorOld(length: Int = 10, initBlock: (Int) -> Int = { 0 }): VectorImp
         return ret
     }
 
-    fun cross(other: DoubleVector): DoubleVector {
+    fun cross(other: DoubleVectorOld): DoubleVectorOld {
         if (this.size > 3 || other.size > 3 || this.size == 1 || other.size == 1) {
             throw IllegalArgumentException("CROSS PRODUCT ONLY DEFINED FOR 2-3D")
         }
-        val ret = DoubleVector(3)
+        val ret = DoubleVectorOld(3)
         if (this.size == 2 && other.size == 2) {
             ret[0] = this[0] * other[1] - this[1] * other[0]
         }
@@ -209,49 +209,49 @@ class IntVectorOld(length: Int = 10, initBlock: (Int) -> Int = { 0 }): VectorImp
         return ret
     }
 
-    operator fun plus(other: DoubleVector): DoubleVector =
+    operator fun plus(other: DoubleVectorOld): DoubleVectorOld =
         this.toDoubleVector() + other
 
-    operator fun minus(other: DoubleVector): DoubleVector =
+    operator fun minus(other: DoubleVectorOld): DoubleVectorOld =
         this.toDoubleVector() - other
 
-    operator fun times(other: DoubleVector): DoubleVector = this.toDoubleVector() * other
+    operator fun times(other: DoubleVectorOld): DoubleVectorOld = this.toDoubleVector() * other
 
-    operator fun div(other: DoubleVector): DoubleVector = this.toDoubleVector() / other
+    operator fun div(other: DoubleVectorOld): DoubleVectorOld = this.toDoubleVector() / other
 
-    operator fun rem(other: DoubleVector): DoubleVector = this.toDoubleVector() % other
+    operator fun rem(other: DoubleVectorOld): DoubleVectorOld = this.toDoubleVector() % other
 
-    fun pow(other: DoubleVector): DoubleVector = this.toDoubleVector().pow(other)
+    fun pow(other: DoubleVectorOld): DoubleVectorOld = this.toDoubleVector().pow(other)
 
     operator fun plus(other: Int): IntVectorOld =
         IntVectorOld(this.size).mapIndexed { index, _ -> this[index] + other } as IntVectorOld
 
-    operator fun plus(other: Double): DoubleVector =
-        DoubleVector(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVector
+    operator fun plus(other: Double): DoubleVectorOld =
+        DoubleVectorOld(this.size).mapIndexed { index, _ -> this[index] + other } as DoubleVectorOld
 
     operator fun minus(other: Int): IntVectorOld =
         IntVectorOld(this.size).mapIndexed { index, _ -> this[index] - other } as IntVectorOld
 
-    operator fun minus(other: Double): DoubleVector =
-        DoubleVector(this.size).mapIndexed { index, _ -> this[index] - other } as DoubleVector
+    operator fun minus(other: Double): DoubleVectorOld =
+        DoubleVectorOld(this.size).mapIndexed { index, _ -> this[index] - other } as DoubleVectorOld
 
     operator fun times(other: Int): IntVectorOld =
         IntVectorOld(this.size) { i -> this[i] * other }
 
-    operator fun times(other: Double): DoubleVector =
-        DoubleVector(this.size) { i -> this[i] * other }
+    operator fun times(other: Double): DoubleVectorOld =
+        DoubleVectorOld(this.size) { i -> this[i] * other }
 
     operator fun div(other: Int): IntVectorOld =
         IntVectorOld(this.size) { i -> this[i] / other }
 
-    operator fun div(other: Double): DoubleVector =
-        DoubleVector(this.size) { i -> this[i] / other }
+    operator fun div(other: Double): DoubleVectorOld =
+        DoubleVectorOld(this.size) { i -> this[i] / other }
 
     operator fun rem(other: Int): IntVectorOld =
         IntVectorOld(this.size) { i -> this[i] % other }
 
-    operator fun rem(other: Double): DoubleVector =
-        DoubleVector(this.size) { i -> this[i] % other }
+    operator fun rem(other: Double): DoubleVectorOld =
+        DoubleVectorOld(this.size) { i -> this[i] % other }
 
     override fun toMatrix(asCol: Boolean): IntMatrix = IntMatrix(this, asCol)
 
@@ -259,6 +259,6 @@ class IntVectorOld(length: Int = 10, initBlock: (Int) -> Int = { 0 }): VectorImp
 
     override fun toIntVector(): IntVectorOld = IntVectorOld(this)
 
-    override fun toDoubleVector(): DoubleVector =
-        DoubleVector(this.size) { i -> this[i].toDouble() }
+    override fun toDoubleVector(): DoubleVectorOld =
+        DoubleVectorOld(this.size) { i -> this[i].toDouble() }
 }

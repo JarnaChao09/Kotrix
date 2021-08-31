@@ -1,11 +1,10 @@
 package org.kotrix.matrix.decomp
 
 import org.kotrix.matrix.DoubleMatrix
-import org.kotrix.matrix.IntMatrix
 import org.kotrix.matrix.Matrix
 import org.kotrix.matrix.NumberMatrix
 import org.kotrix.utils.by
-import org.kotrix.vector.DoubleVector
+import org.kotrix.vector.DoubleVectorOld
 
 import kotlin.math.min
 import kotlin.math.abs
@@ -99,7 +98,7 @@ class LUPDecomposition(matrix: DoubleMatrix) {
         return DoubleMatrix(nx by nx) { r, c -> m[r][c] }
     }
 
-    fun solve(_b: DoubleVector): DoubleVector {
+    fun solve(_b: DoubleVectorOld): DoubleVectorOld {
         val b = _b.toArray()
 
         if (b.size != this.rowCount) {
@@ -122,7 +121,7 @@ class LUPDecomposition(matrix: DoubleMatrix) {
                 m[i] -= m[k] * this.lu[i][k]
             }
         }
-        return DoubleVector(m.size) { i -> m[i] }
+        return DoubleVectorOld(m.size) { i -> m[i] }
     }
 
     val l
