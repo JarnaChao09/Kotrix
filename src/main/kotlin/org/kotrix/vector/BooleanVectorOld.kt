@@ -3,7 +3,7 @@ package org.kotrix.vector
 import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
 
-class BooleanVector(length: Int = 10, initBlock: (Int) -> Boolean = { false }): VectorImplOld<Boolean>(length, initBlock) {
+class BooleanVectorOld(length: Int = 10, initBlock: (Int) -> Boolean = { false }): VectorImplOld<Boolean>(length, initBlock) {
     constructor(length: Int = 10, initValue: Boolean): this(length, initBlock = { initValue })
 
     override val type: KClass<out Boolean>
@@ -19,24 +19,24 @@ class BooleanVector(length: Int = 10, initBlock: (Int) -> Boolean = { false }): 
         return BooleanArray(this.size) { i -> this[i] }
     }
 
-    operator fun not(): BooleanVector =
-        BooleanVector(this.size) { i -> !this[i] }
+    operator fun not(): BooleanVectorOld =
+        BooleanVectorOld(this.size) { i -> !this[i] }
 }
 
-infix fun BooleanVector.and(other: BooleanVector): BooleanVector =
+infix fun BooleanVectorOld.and(other: BooleanVectorOld): BooleanVectorOld =
     if (this.size != other.size)
         throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.size) { i -> this[i] && other[i] }
+        BooleanVectorOld(this.size) { i -> this[i] && other[i] }
 
-infix fun BooleanVector.or(other: BooleanVector): BooleanVector =
+infix fun BooleanVectorOld.or(other: BooleanVectorOld): BooleanVectorOld =
     if (this.size != other.size)
         throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.size) { i -> this[i] || other[i] }
+        BooleanVectorOld(this.size) { i -> this[i] || other[i] }
 
-infix fun BooleanVector.xor(other: BooleanVector): BooleanVector =
+infix fun BooleanVectorOld.xor(other: BooleanVectorOld): BooleanVectorOld =
     if (this.size != other.size)
         throw IllegalArgumentException("${this.size} != ${other.size}")
     else
-        BooleanVector(this.size) { i -> this[i] xor other[i] }
+        BooleanVectorOld(this.size) { i -> this[i] xor other[i] }

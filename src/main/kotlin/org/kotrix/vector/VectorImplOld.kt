@@ -201,8 +201,8 @@ open class VectorImplOld<T>(size: Int = 10, initBlock: (Int) -> T) : VectorBase<
         return true
     }
 
-    override fun equal(other: VectorImplOld<T>): BooleanVector =
-        BooleanVector(this.size) { i -> this[i] == other[i] }
+    override fun equal(other: VectorImplOld<T>): BooleanVectorOld =
+        BooleanVectorOld(this.size) { i -> this[i] == other[i] }
 
     override fun <U : VectorBase<T>> contains(element: U): Boolean =
         this.containsAll(element)

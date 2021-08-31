@@ -1,7 +1,5 @@
 package org.kotrix.vector
 
-import org.kotrix.utils.sliceTo
-
 fun main() {
 //    val test1 = vectorOf<Int>()
 //    val test2 = mutableVectorOf(1, 2, 3)
@@ -32,11 +30,12 @@ fun main() {
 //
 //    println(mutableVector)
 //    println(subVector)
-    val test = MutableNumericVector<Double>(4) { it.toDouble() }
-    test[0] = 10.0
-    println(test)
+//    val test = MutableNumericVector(4) { it.toLong() }
+//    test[0] = 10L
+//    println(test)
+//
+//    val test5 = MutableNumericVector<Double>(4)
+//    test5[0] = 20.0
+//    println(test5)
 
-    val test2 = emptyMutableNumericVector<Double>(4)
-    test2[0] = 20.0
-    println(test2)
 }

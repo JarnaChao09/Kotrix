@@ -2,7 +2,7 @@ package org.kotrix.matrix
 
 import org.kotrix.utils.Size
 import org.kotrix.utils.by
-import org.kotrix.vector.BooleanVector
+import org.kotrix.vector.BooleanVectorOld
 import org.kotrix.vector.VectorImplOld
 import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
@@ -13,12 +13,12 @@ class BooleanMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Boolean): Matrix<B
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vectorOfVector: VectorImplOld<BooleanVector>, asColVectors: Boolean = false): this(
+    constructor(vectorOfVector: VectorImplOld<BooleanVectorOld>, asColVectors: Boolean = false): this(
         dim = if (asColVectors) vectorOfVector[0].size by vectorOfVector.size else vectorOfVector.size by vectorOfVector[0].size,
         initBlock = if (asColVectors) { r, c -> vectorOfVector[c][r] } else { r, c -> vectorOfVector[r][c] }
     )
 
-    constructor(vector: BooleanVector, asCol: Boolean = false):
+    constructor(vector: BooleanVectorOld, asCol: Boolean = false):
             this(
                 dim = if (asCol) Size(vector.size, 1) else Size(
                     1,

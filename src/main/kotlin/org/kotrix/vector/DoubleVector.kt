@@ -5,7 +5,11 @@ import org.kotrix.utils.contains
 import kotlin.math.pow
 
 class DoubleVector internal constructor(private val backing: DoubleArray) : MutableNumericVector<Double>, RandomAccess {
-    constructor(size: Int) : this(DoubleArray(size))
+    constructor(size: Int) : this(DoubleArray(size)) {
+        require(size > 0) {
+            "size must be greater than 0"
+        }
+    }
 
     constructor(elements: Collection<Double>) : this(DoubleArray(elements.size)) {
         for ((index, element) in elements.withIndex()) {
@@ -244,9 +248,6 @@ class DoubleVector internal constructor(private val backing: DoubleArray) : Muta
     }
 
     override fun toString(): String {
-        if (size == 0) {
-            return "<>"
-        }
         var ret = "<"
         for ((index, value) in backing.withIndex()) {
             ret += if (index == size - 1) {

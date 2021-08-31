@@ -3,14 +3,14 @@ package org.kotrix.vector
 import org.kotrix.utils.Slice
 import org.kotrix.utils.contains
 
-class IntVector internal constructor(private val backing: IntArray) : MutableNumericVector<Int>, RandomAccess {
-    constructor(size: Int) : this(IntArray(size)) {
+class LongVector internal constructor(private val backing: LongArray) : MutableNumericVector<Long>, RandomAccess {
+    constructor(size: Int) : this(LongArray(size)) {
         require(size > 0) {
             "size must be greater than 0"
         }
     }
 
-    constructor(elements: Collection<Int>) : this(IntArray(elements.size)) {
+    constructor(elements: Collection<Long>) : this(LongArray(elements.size)) {
         for ((index, element) in elements.withIndex()) {
             backing[index] = element
         }
@@ -19,7 +19,7 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
     override val size: Int
         get() = backing.size
 
-    override val magnitude: Int
+    override val magnitude: Long
         get() {
             var ret = 0.0
 
@@ -27,17 +27,17 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
                 ret += e * e
             }
 
-            return kotlin.math.sqrt(ret).toInt()
+            return kotlin.math.sqrt(ret).toLong()
         }
 
     @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
     override inline fun isEmpty(): Boolean = false
 
-    override fun contains(element: Int): Boolean = backing.contains(element)
+    override fun contains(element: Long): Boolean = backing.contains(element)
 
-    override fun iterator(): IntIterator = backing.iterator()
+    override fun iterator(): LongIterator = backing.iterator()
 
-    override fun containsAll(elements: Collection<Int>): Boolean {
+    override fun containsAll(elements: Collection<Long>): Boolean {
         for (e in elements) {
             if (e !in backing) {
                 return false
@@ -46,39 +46,39 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         return true
     }
 
-    override fun get(index: Int): Int {
+    override fun get(index: Int): Long {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
         return backing[(size + index) % size]
     }
 
-    override fun get(indexSlice: Slice): NumericVector<Int> {
+    override fun get(indexSlice: Slice): NumericVector<Long> {
         require(indexSlice in -size until size) {
             "index slice $indexSlice was not inside range [${-size}, $size)"
         }
-        val bret = IntArray(indexSlice.size)
+        val bret = LongArray(indexSlice.size)
         var c = 0
         for (i in indexSlice) {
             bret[c++] = backing[(size + i) % size]
         }
-        return IntVector(bret)
+        return LongVector(bret)
     }
 
-    override fun indexOf(element: Int): Int = backing.indexOf(element)
+    override fun indexOf(element: Long): Int = backing.indexOf(element)
 
-    override fun lastIndexOf(element: Int): Int = backing.lastIndexOf(element)
+    override fun lastIndexOf(element: Long): Int = backing.lastIndexOf(element)
 
-    override fun set(index: Int, element: Int): Int {
+    override fun set(index: Int, element: Long): Long {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
         return backing[(size + index) % size].apply {
-            this@IntVector.backing[(size + index) % size] = element
+            this@LongVector.backing[(size + index) % size] = element
         }
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Int>): MutableNumericVector<Int> {
+    override fun set(indexSlice: Slice, elements: Collection<Long>): MutableNumericVector<Long> {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -93,23 +93,23 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Int>
+        return ret as MutableNumericVector<Long>
     }
 
-    override fun listIterator(): ListIterator<Int> = backing.toList().listIterator()
+    override fun listIterator(): ListIterator<Long> = backing.toList().listIterator()
 
-    override fun listIterator(index: Int): ListIterator<Int> = backing.toList().listIterator(index)
+    override fun listIterator(index: Int): ListIterator<Long> = backing.toList().listIterator(index)
 
-    override fun subVector(slice: Slice): MutableNumericVector<Int> =
+    override fun subVector(slice: Slice): MutableNumericVector<Long> =
         TODO("Decide if sub vectors of numeric vectors is allowed")
 
-    override fun subVector(fromIndex: Int, toIndex: Int): MutableNumericVector<Int> =
+    override fun subVector(fromIndex: Int, toIndex: Int): MutableNumericVector<Long> =
         TODO("Decide if sub vectors of numeric vectors is allowed")
 
-    override fun unaryPlus(): NumericVector<Int> = IntVector(this)
+    override fun unaryPlus(): NumericVector<Long> = LongVector(this)
 
-    override fun unaryMinus(): NumericVector<Int> {
-        val ret = IntVector(this)
+    override fun unaryMinus(): NumericVector<Long> {
+        val ret = LongVector(this)
 
         for (i in 0 until ret.size) {
             ret[i] = -ret[i]
@@ -118,10 +118,10 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
     }
 
     private inline fun perform(
-        lhs: NumericVector<Int>,
-        rhs: NumericVector<Int>,
-        action: (Int, Int) -> Int
-    ): NumericVector<Int> {
+        lhs: NumericVector<Long>,
+        rhs: NumericVector<Long>,
+        action: (Long, Long) -> Long
+    ): NumericVector<Long> {
         for (i in 0 until this.size) {
             val l = if (i < lhs.size) lhs[i] else 0
             val r = if (i < rhs.size) rhs[i] else 0
@@ -130,45 +130,45 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         return this
     }
 
-    override fun plus(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+    override fun plus(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
             l + r
         }
 
-    override fun minus(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+    override fun minus(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
             l - r
         }
 
-    override fun times(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+    override fun times(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
             l * r
         }
 
-    override fun div(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+    override fun div(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
             l / r
         }
 
-    override fun rem(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+    override fun rem(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
             l % r
         }
 
-    override fun pow(rhs: NumericVector<Int>): NumericVector<Int> =
-        IntVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
-            var ret = 1
+    override fun pow(rhs: NumericVector<Long>): NumericVector<Long> =
+        LongVector(kotlin.math.max(this.size, rhs.size)).perform(this, rhs) { l, r ->
+            var ret = 1L
             for (t in 0 until r) {
                 ret *= l
             }
             ret
         }
 
-    override fun dot(rhs: NumericVector<Int>): Int {
+    override fun dot(rhs: NumericVector<Long>): Long {
         require(this.size == rhs.size) {
             "size of vector $this must be the same size as $rhs"
         }
-        var ret = 0
+        var ret = 0L
 
         for (i in 0 until this.size) {
             ret += this[i] * rhs[i]
@@ -177,11 +177,11 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         return ret
     }
 
-    override fun cross(rhs: NumericVector<Int>): NumericVector<Int> {
+    override fun cross(rhs: NumericVector<Long>): NumericVector<Long> {
         require((this.size == 2 || this.size == 3) && this.size == rhs.size) {
             "cross product is only defined for 2 and 3 dimensional vectors"
         }
-        val ret = IntVector(3)
+        val ret = LongVector(3)
         if (this.size == 2) {
             ret[2] = this[0] * rhs[1] - this[1] * rhs[0]
         } else {
@@ -193,18 +193,18 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         return ret
     }
 
-    override fun scalarProject(onto: NumericVector<Int>): Int = (this.dot(onto)) / onto.magnitude
+    override fun scalarProject(onto: NumericVector<Long>): Long = (this.dot(onto)) / onto.magnitude
 
-    override fun scale(byValue: Int): NumericVector<Int> =
-        IntVector(IntArray(backing.size) { backing[it] * byValue })
+    override fun scale(byValue: Long): NumericVector<Long> =
+        LongVector(LongArray(backing.size) { backing[it] * byValue })
 
-    override fun project(onto: NumericVector<Int>): NumericVector<Int> =
+    override fun project(onto: NumericVector<Long>): NumericVector<Long> =
         onto.scale(this.dot(onto) / onto.dot(onto))
 
     private inline fun mutatingPerform(
-        lhs: NumericVector<Int>,
-        rhs: NumericVector<Int>,
-        action: (Int, Int) -> Int
+        lhs: NumericVector<Long>,
+        rhs: NumericVector<Long>,
+        action: (Long, Long) -> Long
     ) {
         for (i in 0 until this.size) {
             val l = if (i < lhs.size) lhs[i] else 0
@@ -213,41 +213,41 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         }
     }
 
-    override fun plusAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
+    override fun plusAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
         l + r
     }
 
-    override fun minusAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
+    override fun minusAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
         l - r
     }
 
-    override fun timesAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
+    override fun timesAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
         l * r
     }
 
-    override fun divAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
+    override fun divAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
         l / r
     }
 
-    override fun remAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
+    override fun remAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
         l % r
     }
 
-    override fun powAssign(rhs: NumericVector<Int>) = this.mutatingPerform(this, rhs) { l, r ->
-        var ret = 1
+    override fun powAssign(rhs: NumericVector<Long>) = this.mutatingPerform(this, rhs) { l, r ->
+        var ret = 1L
         for (t in 0 until r) {
             ret *= l
         }
         ret
     }
 
-    override fun scaleAssign(byValue: Int) {
+    override fun scaleAssign(byValue: Long) {
         for (i in 0 until this.size) {
             this[i] *= byValue
         }
     }
 
-    override fun projectAssign(onto: NumericVector<Int>) {
+    override fun projectAssign(onto: NumericVector<Long>) {
         val scaleBy = this.dot(onto) / onto.dot(onto)
         for (i in 0 until this.size) {
             this[i] = onto[i] * scaleBy

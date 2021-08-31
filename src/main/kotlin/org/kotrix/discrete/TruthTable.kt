@@ -6,7 +6,7 @@ import kotlin.math.max
 import org.kotrix.matrix.BooleanMatrix
 import org.kotrix.utils.by
 import org.kotrix.utils.sliceTo
-import org.kotrix.vector.BooleanVector
+import org.kotrix.vector.BooleanVectorOld
 import org.kotrix.vector.VectorImplOld
 import org.kotrix.vector.toVectorOld
 
@@ -52,9 +52,9 @@ class TruthTable(private val expression: BooleanAlgebra) {
         for (i in expression.variables.indices) {
             targetSize /= 2
             var fillValue = true
-            val insertVector = BooleanVector(0)
+            val insertVector = BooleanVectorOld(0)
             while (insertVector.size != rowSize) {
-                insertVector.appendAll(BooleanVector(targetSize) { fillValue })
+                insertVector.appendAll(BooleanVectorOld(targetSize) { fillValue })
                 fillValue = !fillValue
             }
             ret[0 sliceTo rowSize, i] = insertVector
