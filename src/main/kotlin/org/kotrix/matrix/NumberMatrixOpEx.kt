@@ -45,7 +45,7 @@ infix fun IntMatrix.matMult(other: DoubleMatrix): DoubleMatrix =
     this.toDoubleMatrix() matMult other
 
 infix fun DoubleMatrix.matMult(other: DoubleMatrix): DoubleMatrix =
-    this.matMult(other)
+    this.matMul(other)
 
 infix fun DoubleMatrix.matMult(other: IntMatrix): DoubleMatrix =
     this matMult other.toDoubleMatrix()

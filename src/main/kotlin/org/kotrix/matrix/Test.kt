@@ -5,6 +5,25 @@ import org.kotrix.utils.*
 import org.kotrix.vector.*
 
 fun main() {
+    val backing = arrayOf(
+        arrayOf(2.0, -3.0, 4.0, 3.0),
+        arrayOf(6.0, -9.0, 12.0, 8.0),
+        arrayOf(4.0, -5.0, 6.0, 7.0),
+        arrayOf(2.0, 1.0, -1.0, 8.0),
+    )
+    val mat = DoubleMatrix(4 by 4) { r, c -> backing[r][c] }
+    println(mat)
+    println()
+    val (l, u, p) = mat.lup
+    println(l)
+    println()
+    println(u)
+    println()
+    println(p)
+    println()
+    println(p matMult mat)
+    println()
+    println(p.inv matMult l matMult u)
 //    val testS: Slice = 0 to 2
 //    for (i: Int in testS) {
 //        println(i)

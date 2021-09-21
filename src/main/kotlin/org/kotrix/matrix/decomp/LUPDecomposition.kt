@@ -158,7 +158,7 @@ class LUPDecomposition(matrix: DoubleMatrix) {
 
     private fun p(): DoubleMatrix {
         val rows = Array(this.rowCount) { IntArray(this.rowCount) }
-        this.pivots.forEachIndexed { p, i -> rows[i][p] = 1 }
+        this.pivots.forEachIndexed { i, p -> rows[i][p] = 1 }
         return DoubleMatrix(rows.size by rows[0].size) { r, c -> rows[r][c].toDouble() }
     }
 
