@@ -54,14 +54,14 @@ fun main() {
         (2 + x) + 2
     }.simpleString())
 
-//    val x2 = (2 + x) + x
-//
-//    println(x2.stringify())
-//
-//    println(x2.simplify())
-//
-//    println(x2.simpleString())
-//
+    val x2 = (2 + x) + x
+
+    println(x2.stringify())
+
+    println(x2.simplify())
+
+    println(x2.simpleString())
+
 //    val x3 = (x + x) + (2 * x)
 //
 //    println(x3.stringify())
