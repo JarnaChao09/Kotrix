@@ -9,6 +9,8 @@ fun main() {
 
     val expression = (p OR q) AND ((p.NOT) OR r) arrow (q OR r)
 
+    println("test")
+
     val truthTable = TruthTable(expression)
 
     println(truthTable)
