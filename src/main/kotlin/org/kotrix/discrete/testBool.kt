@@ -7,10 +7,8 @@ fun main() {
     val q = Variable("q")
     val r = Variable("r")
 
-    val expression = (p OR q) AND ((p.NOT) OR r) arrow (q OR r)
-
-    println("test")
-
+    val expression = q.NOT iff (p OR r)
+    
     val truthTable = TruthTable(expression)
 
     println(truthTable)
