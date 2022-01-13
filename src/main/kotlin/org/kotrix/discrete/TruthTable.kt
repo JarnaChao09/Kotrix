@@ -6,40 +6,38 @@ import kotlin.math.max
 import org.kotrix.matrix.BooleanMatrix
 import org.kotrix.utils.by
 import org.kotrix.utils.sliceTo
-import org.kotrix.vector.BooleanVectorOld
-import org.kotrix.vector.VectorImplOld
-import org.kotrix.vector.toVectorOld
+import org.kotrix.vector.*
 
-class TruthTable(private val expression: BooleanAlgebra) {
+class TruthTable(private val expression: BooleanAlgebra, private val order: Array<Variable>) {
     private val variables: Set<Variable> by lazy { expression.variables.toSortedSet { l, r -> l.name.compareTo(r.name) } }
 
     private val varIndex: Map<Variable, Int> by lazy {
-        mapOf(*Array<Pair<Variable, Int>>(expression.variables.size) { expression.variables.toList()[it] to it })
+        mapOf(*Array(expression.variables.size) { order[it] to it })
     }
 
     private fun getAllOperations(
         from: BooleanAlgebra = expression,
-        allOps: VectorImplOld<BooleanAlgebra> = VectorImplOld<BooleanAlgebra>(0) { expression },
-    ): VectorImplOld<BooleanAlgebra> {
+        allOps: MutableVector<BooleanAlgebra> = mutableVectorOf(),
+    ): MutableVector<BooleanAlgebra> {
         return when(from) {
             is Constant -> allOps.also { it.remove(from) }
             is Variable -> allOps.also { it.remove(from) }
             is To -> getAllOperations(from.sufficient, getAllOperations(from.necessary, allOps.also {
-                it.append(from)
+                it.add(from)
             }))
             is Iff -> getAllOperations(from.leftexpr, getAllOperations(from.rightexpr, allOps.also {
-                it.append(from)
+                it.add(from)
             }))
             is And -> getAllOperations(from.leftop, getAllOperations(from.rightop, allOps.also {
-                it.append(from)
+                it.add(from)
             }))
             is Or -> getAllOperations(from.leftop, getAllOperations(from.rightop, allOps.also {
-                it.append(from)
+                it.add(from)
             }))
             is Xor -> getAllOperations(from.leftop, getAllOperations(from.rightop, allOps.also {
-                it.append(from)
+                it.add(from)
             }))
-            is Not -> getAllOperations(from.expr, allOps.also { it.append(from) })
+            is Not -> getAllOperations(from.expr, allOps.also { it.add(from) })
         }
     }
 
@@ -100,9 +98,10 @@ class TruthTable(private val expression: BooleanAlgebra) {
             val dummy = VectorImplOld(0) { "" }
             dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVectorOld()
             for (op in sortedOperations) {
-                val values = Array<Pair<Variable, Constant>>(expression.variables.size) {
+                val values = Array(expression.variables.size) {
                     variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const
                 }
+
                 val temp = (op(*values) as Constant).value.toString()
                 dummy append (temp + (" " * (maxLengthList[index++] - temp.length)))
             }

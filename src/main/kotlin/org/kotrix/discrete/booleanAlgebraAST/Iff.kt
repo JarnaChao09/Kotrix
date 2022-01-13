@@ -8,7 +8,7 @@ data class Iff(
         get() = leftexpr.variables union rightexpr.variables
 
     override fun stringify(): String =
-        "(${leftexpr.stringify()} <==> ${rightexpr.stringify()})"
+        "(${leftexpr.stringify()} <=> ${rightexpr.stringify()})"
 
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val left = leftexpr.fullEval(value)

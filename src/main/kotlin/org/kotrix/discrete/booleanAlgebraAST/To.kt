@@ -8,7 +8,7 @@ data class To(
         get() = sufficient.variables union necessary.variables
 
     override fun stringify(): String =
-        "(${sufficient.stringify()} ==> ${necessary.stringify()})"
+        "(${sufficient.stringify()} => ${necessary.stringify()})"
 
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val left = sufficient.fullEval(value)
