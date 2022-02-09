@@ -7,6 +7,9 @@ data class Not(val expr: BooleanAlgebra) : BooleanAlgebra() {
     override fun stringify(): String =
         "!(${expr.stringify()})"
 
+    override fun toLaTeX(): String =
+        "\\neg{${expr.toLaTeX()}}"
+
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val res = expr.fullEval(value)
 

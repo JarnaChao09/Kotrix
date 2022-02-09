@@ -10,6 +10,9 @@ data class Iff(
     override fun stringify(): String =
         "(${leftexpr.stringify()} <=> ${rightexpr.stringify()})"
 
+    override fun toLaTeX(): String =
+        "(${leftexpr.toLaTeX()} \\leftrightarrow ${rightexpr.toLaTeX()})"
+
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val left = leftexpr.fullEval(value)
         val right = rightexpr.fullEval(value)

@@ -116,4 +116,52 @@ class TruthTable(private val expression: BooleanAlgebra, private val order: Arra
             }
         }"
     }
+
+    fun toLaTeX(): String {
+        var ret = "\\begin{array}{|"
+
+        val numVariables = order.size
+
+        for(i in 0 until numVariables) {
+            ret += "c${if (i != numVariables - 1) " " else ""}"
+        }
+        ret += "|"
+
+        val sortedOperations = this.getAllOperations()
+            .sortedBy { it.stringify().length }
+
+        for(i in sortedOperations.indices) {
+            ret += "c|"
+        }
+        ret += "} \\hline "
+
+        for(i in order) {
+            ret += "${i.name} & "
+        }
+
+        for((i, v) in sortedOperations.withIndex()) {
+            ret += "${v.toLaTeX()}${if(i != sortedOperations.size - 1) " & " else "\\\\ "}"
+        }
+        ret += "\\hline "
+
+        val variableList = this.variables.toList()
+        for (r in 0 until this.varValues.rowLength) {
+            for(i in this.varValues[r].toList()) {
+                ret += "${i.const.toLaTeX()} & "
+            }
+            for ((i, op) in sortedOperations.withIndex()) {
+                val values = Array(expression.variables.size) {
+                    variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const
+                }
+
+                val temp = (op(*values) as Constant).value.const.toLaTeX()
+                ret += "$temp${if(i != sortedOperations.size - 1) " & " else ""}"
+            }
+            ret += "\\\\ "
+        }
+
+        ret += "\\hline \\end{array}"
+
+        return ret
+    }
 }

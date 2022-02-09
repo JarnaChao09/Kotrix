@@ -9,6 +9,9 @@ data class Variable(val name: String) : BooleanAlgebra() {
     override fun stringify(): String =
         this.name
 
+    override fun toLaTeX(): String =
+        this.name
+
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         for ((i, j) in value) {
             when (i) {

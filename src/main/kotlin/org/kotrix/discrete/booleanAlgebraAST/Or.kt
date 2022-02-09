@@ -10,6 +10,9 @@ data class Or(
     override fun stringify(): String =
         "(${leftop.stringify()} || ${rightop.stringify()})"
 
+    override fun toLaTeX(): String =
+        "(${leftop.toLaTeX()} \\lor ${rightop.toLaTeX()})"
+
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val left = leftop.fullEval(value)
         val right = rightop.fullEval(value)

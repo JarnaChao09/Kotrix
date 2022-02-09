@@ -10,6 +10,9 @@ data class To(
     override fun stringify(): String =
         "(${sufficient.stringify()} => ${necessary.stringify()})"
 
+    override fun toLaTeX(): String =
+        "(${sufficient.toLaTeX()} \\rightarrow ${necessary.toLaTeX()})"
+
     override fun fullEval(value: Map<BooleanAlgebra, Constant>): Boolean {
         val left = sufficient.fullEval(value)
         val right = necessary.fullEval(value)
