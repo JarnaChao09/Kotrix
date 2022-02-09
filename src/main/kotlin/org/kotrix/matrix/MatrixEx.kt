@@ -74,7 +74,7 @@ fun <T: Any> Matrix<T>.all(only: Selector = Selector.ALL, check: (T) -> Boolean)
 }
 
 fun <T: Any> Matrix<T>.any(only: Selector = Selector.ALL, check: (T) -> Boolean): Boolean {
-    var ret = true
+    var ret = false
     for ((v, r, c) in this.withIndices) {
         ret = ret || (if (only.check(r, c)) check(v) else true)
     }

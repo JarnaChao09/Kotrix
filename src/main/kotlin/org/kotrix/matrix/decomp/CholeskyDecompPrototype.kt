@@ -1,7 +1,6 @@
-package org.kotrix
+package org.kotrix.matrix.decomp
 
 import org.kotrix.matrix.DoubleMatrix
-import org.kotrix.matrix.decomp.CholeskyDecomposition
 import org.kotrix.utils.by
 import kotlin.math.max
 import kotlin.math.sqrt
