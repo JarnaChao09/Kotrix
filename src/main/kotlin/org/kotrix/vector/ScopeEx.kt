@@ -18,6 +18,7 @@ infix fun <T: Any> VectorImplOld.Scope<T>.times(t: Int): VectorImplOld.Scope<T> 
             is VectorImplOld.Scope.Append -> last.times = t
             is VectorImplOld.Scope.Push -> last.times = t
             is VectorImplOld.Scope.Put -> last.times = t
+            else -> {}
         }
     }
 
@@ -54,6 +55,7 @@ infix fun IntVectorOld.Scope.times(t: Int): IntVectorOld.Scope =
             is IntVectorOld.Scope.Append -> last.times = t
             is IntVectorOld.Scope.Push -> last.times = t
             is IntVectorOld.Scope.Put -> last.times = t
+            else -> {}
         }
     }
 
@@ -90,6 +92,7 @@ infix fun DoubleVectorOld.Scope.times(t: Int): DoubleVectorOld.Scope =
             is DoubleVectorOld.Scope.Append -> last.times = t
             is DoubleVectorOld.Scope.Push -> last.times = t
             is DoubleVectorOld.Scope.Put -> last.times = t
+            else -> {}
         }
     }
 
