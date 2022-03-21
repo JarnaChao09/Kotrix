@@ -73,6 +73,6 @@ fun main() {
     val t = DoubleMatrix.of(2 by 2, 0.0, -kotlin.math.PI, kotlin.math.PI, 0.0)
     val t1 = DoubleMatrix.of(3 by 3, 3.0, 1.0, 4.0, 1.0, 5.0, 9.0, 2.0, 6.0, 5.0)
 
-    println("$t\n${expm(t)}")
+    println("$t\n${expm(t)}\n")
     println("$t1\n${expm(t1)}")
 }
