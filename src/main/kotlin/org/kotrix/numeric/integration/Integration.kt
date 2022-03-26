@@ -1,4 +1,4 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.numeric.integration
 
 import kotlin.math.absoluteValue
 

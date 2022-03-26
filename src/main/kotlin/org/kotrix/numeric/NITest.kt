@@ -1,8 +1,8 @@
-package org.kotrix.symbolic
+package org.kotrix.numeric
 
-import org.kotrix.symbolic.funAST.GaussLegendre
-import org.kotrix.symbolic.funAST.NewtonCoatesIntegration
-import org.kotrix.symbolic.funAST.RiemannIntegration
+import org.kotrix.numeric.integration.GaussLegendre
+import org.kotrix.numeric.integration.NewtonCoatesIntegration
+import org.kotrix.numeric.integration.RiemannIntegration
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 import kotlin.math.sin
