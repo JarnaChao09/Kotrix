@@ -30,7 +30,7 @@ private fun eulerStep(
  * @param toFind x_n, the x value we are trying to approximate the y value for
  * @param delta how much to increment x by
  * @param derivative dy/dx, the differential equation
- * @return
+ * @return y(x_n)
  */
 fun euler(
     initialStart: Double,
@@ -42,8 +42,8 @@ fun euler(
     return eulerStep(
         initialStart,
         initialValue,
-        kotlin.math.ceil((toFind - initialStart) / delta).toInt(),
-        delta,
+        kotlin.math.ceil(kotlin.math.abs(toFind - initialStart) / delta).toInt(),
+        if(initialStart > toFind) -delta else delta,
         derivative,
     )
 }
