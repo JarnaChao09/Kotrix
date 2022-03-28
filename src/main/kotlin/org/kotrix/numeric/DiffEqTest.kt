@@ -23,4 +23,12 @@ fun main() {
             }
         }"
     )
+
+    println(
+        "Approximation of d(dy/dx)/dx = -2y' - 2y, given initial conditions of y(0) = 1 and y'(0) = 0, y(1) = ${
+            euler(0.0, 1.0, 0.0, 1.0) { _: Double, y: Double, yPrime: Double ->
+                -2 * yPrime - 2 * y
+            }
+        }"
+    )
 }
