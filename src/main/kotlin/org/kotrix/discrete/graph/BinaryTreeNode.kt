@@ -3,7 +3,7 @@ package org.kotrix.discrete.graph
 open class BinaryTreeNode<T>(
     data: T,
     private var leftNode: BinaryTreeNode<T>? = null,
-    private var rightNode: BinaryTreeNode<T>? = null
+    private var rightNode: BinaryTreeNode<T>? = null,
 ):
     TreeNode<T>(
         data = data,

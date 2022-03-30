@@ -24,18 +24,24 @@ fun main() {
 //
 //    binaryRoot.preOrder(::println)
 
-    val binaryRoot = BinaryTreeNode(1, BinaryTreeNode(2, BinaryTreeNode(4), BinaryTreeNode(5)), BinaryTreeNode(3))
+    /*
+         1
+      2     3
+    4   5
+     */
+    val binaryRoot = BinaryTreeNode(
+        1,
+        BinaryTreeNode(
+            2,
+            BinaryTreeNode(4),
+            BinaryTreeNode(5)
+        ),
+        BinaryTreeNode(3)
+    )
 
     binaryRoot.preOrder(::println)
     println()
     binaryRoot.inOrder(::println)
     println()
     binaryRoot.postOrder(::println)
-
-    val list = mutableListOf<Int>()
-    binaryRoot.inOrder {
-        list.add(it)
-    }
-
-    println(list)
 }
