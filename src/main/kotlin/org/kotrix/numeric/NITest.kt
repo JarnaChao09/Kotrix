@@ -32,7 +32,7 @@ fun main() {
         sin(it * it)
     }
 
-    val actual = -0.022318845283755027008
+    val actual = -0.022318845283755027
     val error: Double.(Double) -> Double = {
         (this - it).absoluteValue
     }
