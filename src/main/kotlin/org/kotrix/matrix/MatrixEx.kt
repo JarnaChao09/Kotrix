@@ -50,7 +50,7 @@ fun <T: Any> Matrix<T>.forEachIndexed(which: Selector = Selector.ALL, action: (T
 }
 
 fun <T: Any> Matrix<T>.map(which: Selector = Selector.ALL, action: (T) -> T): Matrix<T> {
-    val mat = Matrix.nulls<T>(this.size)
+    val mat = Matrix.nulls<T>(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v) else v
     }
@@ -58,7 +58,7 @@ fun <T: Any> Matrix<T>.map(which: Selector = Selector.ALL, action: (T) -> T): Ma
 }
 
 fun <T: Any> Matrix<T>.mapIndexed(which: Selector = Selector.ALL, action: (T, ri: Int, ci: Int) -> T): Matrix<T> {
-    val mat = Matrix.nulls<T>(this.size)
+    val mat = Matrix.nulls<T>(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v, r, c) else v
     }
@@ -82,7 +82,7 @@ fun <T: Any> Matrix<T>.any(only: Selector = Selector.ALL, check: (T) -> Boolean)
 }
 
 fun <T: Any> Matrix<T>.replace(only: Selector = Selector.ALL, replacement: T, check: (T) -> Boolean): Matrix<T> {
-    val mat = Matrix.nulls<T>(this.size)
+    val mat = Matrix.nulls<T>(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && check(v)) replacement else v
     }
@@ -90,7 +90,7 @@ fun <T: Any> Matrix<T>.replace(only: Selector = Selector.ALL, replacement: T, ch
 }
 
 fun <T: Any> Matrix<T>.replaceNot(only: Selector = Selector.ALL, replacement: T, check: (T) -> Boolean): Matrix<T> {
-    val mat = Matrix.nulls<T>(this.size)
+    val mat = Matrix.nulls<T>(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && !check(v)) replacement else v
     }

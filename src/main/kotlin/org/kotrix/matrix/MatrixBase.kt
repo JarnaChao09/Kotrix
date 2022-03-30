@@ -1,6 +1,6 @@
 package org.kotrix.matrix
 
-import org.kotrix.utils.Size
+import org.kotrix.utils.Shape
 import org.kotrix.utils.Slice
 import org.kotrix.vector.VectorImplOld
 import org.kotrix.vector.VectorBase
@@ -10,7 +10,7 @@ import java.util.stream.Stream
 import kotlin.reflect.KClass
 
 interface MatrixBase<T>: Iterable<T> where T: Any {
-    var size: Size
+    var shape: Shape
 
     val type: KClass<out T>
 

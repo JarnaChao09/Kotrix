@@ -22,7 +22,7 @@ private fun checkForConvergence(current: DoubleMatrix, previous: DoubleMatrix, t
 }
 
 operator fun DoubleMatrix.div(n: Double): DoubleMatrix =
-    DoubleMatrix(this.size) { r, c ->
+    DoubleMatrix(this.shape) { r, c ->
         this[r, c] / n
     }
 
@@ -50,8 +50,8 @@ fun expm(m: DoubleMatrix, tolerance: Double = 1e-15): DoubleMatrix {
         "Matrix exponentiation only operates on square matrices"
     }
 
-    var curr = DoubleMatrix.zeros(m.size)
-    var prev = DoubleMatrix.zeros(m.size)
+    var curr = DoubleMatrix.zeros(m.shape)
+    var prev = DoubleMatrix.zeros(m.shape)
     val factorial = mutableListOf<Double>()
 
     var i = 0

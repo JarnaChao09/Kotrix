@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 class CholeskyDecomposition(matrix: DoubleMatrix) {
     constructor(mat: NumberMatrix<*>): this(mat.toDoubleMatrix())
 
-    private val lower = DoubleMatrix(matrix.size)
+    private val lower = DoubleMatrix(matrix.shape)
 
     init {
         for (i in matrix.rowRange) {

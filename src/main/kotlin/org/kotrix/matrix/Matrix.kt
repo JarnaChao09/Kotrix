@@ -1,6 +1,6 @@
 package org.kotrix.matrix
 
-import org.kotrix.utils.Size
+import org.kotrix.utils.Shape
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.VectorImplOld
@@ -11,7 +11,7 @@ import kotlin.math.min
 import kotlin.reflect.KClass
 
 @Suppress()
-open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int) -> T):
+open class Matrix<T>(val dim: Shape = Shape(3, 3), val initBlock: (r: Int, c: Int) -> T):
     MatrixBase<T> where T: Any {
     sealed class Error(e: String): Throwable(e) {
         data class DimensionMisMatch(val e: String = "Dimension mismatch"): Error(e)
@@ -19,14 +19,14 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         data class NotRegular(val e: String = "Not Regular Matrix"): Error(e)
     }
 
-    constructor(x: Int, y: Int, initBlock: (Int) -> T): this(dim = Size(
+    constructor(x: Int, y: Int, initBlock: (Int) -> T): this(dim = Shape(
         x,
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
     constructor(vector: VectorImplOld<T>, asCol: Boolean = false):
             this(
-                dim = if (asCol) Size(vector.size, 1) else Size(
+                dim = if (asCol) Shape(vector.size, 1) else Shape(
                     1,
                     vector.size
                 ),
@@ -34,13 +34,13 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
             )
 
     constructor(matListOfVector: VectorImplOld<VectorImplOld<T>>): this(
-        dim = Size(matListOfVector.size, matListOfVector[0].size),
+        dim = Shape(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
 
-    constructor(matrix: Matrix<T>): this(dim = matrix.size, initBlock = { r, c -> matrix[r, c]})
+    constructor(matrix: Matrix<T>): this(dim = matrix.shape, initBlock = { r, c -> matrix[r, c]})
 
-    constructor(dim1: Size, asCols: Boolean, initBlock: (Int) -> T): this(dim = dim1, initBlock = if (asCols) { i, _ -> initBlock(i) } else { _, i -> initBlock(i) })
+    constructor(dim1: Shape, asCols: Boolean, initBlock: (Int) -> T): this(dim = dim1, initBlock = if (asCols) { i, _ -> initBlock(i) } else { _, i -> initBlock(i) })
 
     sealed class Scope<T> where T: Any {
         class Base<T: Any>: Scope<T>()
@@ -52,13 +52,13 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     }
 
     companion object {
-        inline fun <reified T: Any> empty(dim: Size): Matrix<T> {
+        inline fun <reified T: Any> empty(dim: Shape): Matrix<T> {
             return Matrix(dim, asCols = true) { T::class.java.getDeclaredConstructor().newInstance() }
         }
 
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
-        fun <T: Any> nulls(dim: Size): Matrix<T> {
+        fun <T: Any> nulls(dim: Shape): Matrix<T> {
             return Matrix(dim, asCols = true) { Any() as T }
         }
 
@@ -72,7 +72,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         }
 
         @JvmStatic
-        fun <T: Any> of(dim: Size, vararg elements: T): Matrix<T> {
+        fun <T: Any> of(dim: Shape, vararg elements: T): Matrix<T> {
             val mat = nulls<T>(dim)
             for (i in 0 until dim.x) {
                 for (j in 0 until dim.y) {
@@ -117,7 +117,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         }
     }
 
-    override var size: Size = dim
+    override var shape: Shape = dim
 
     protected open var internalMatrix: VectorImplOld<VectorImplOld<T>> =
         VectorImplOld(dim.x) { i ->
@@ -132,10 +132,10 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     override val type: KClass<out T> by lazy { this.internalMatrix[0][0]::class }
 
     override val rowLength
-        get() = size.x
+        get() = shape.x
 
     override val colLength
-        get() = size.y
+        get() = shape.y
 
     open val t: Matrix<T>
         get() = this.transpose()
@@ -152,7 +152,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     override fun toVector(): VectorImplOld<out VectorImplOld<T>> = VectorImplOld(this.internalMatrix)
 
     override fun toList(): List<List<T>> {
-        val ret = MutableList(this.size.x) { emptyList<T>() }
+        val ret = MutableList(this.shape.x) { emptyList<T>() }
         var index = 0
         for (i in this.internalMatrix) {
             ret[index++] = i.toList()
@@ -215,7 +215,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     }
 
     override operator fun set(indexSlice: Slice, value: MatrixBase<T>) {
-        if (indexSlice.end > this.rowLength) throw IllegalArgumentException("MATRIX SIZE ${value.size} INCOMPATIBLE WITH ${this.dim}")
+        if (indexSlice.end > this.rowLength) throw IllegalArgumentException("MATRIX SIZE ${value.shape} INCOMPATIBLE WITH ${this.dim}")
         value as Matrix<T>
         this.internalMatrix[indexSlice] = value.internalMatrix
     }
@@ -261,7 +261,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         return ret.build()
     }
 
-    override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.size = it.internalMatrix.size by it.internalMatrix[0].size }
+    override fun rowAppend(other: MatrixBase<T>): Matrix<T> = this.also { other as Matrix<T>; it.internalMatrix.appendAll(other.internalMatrix); it.shape = it.internalMatrix.size by it.internalMatrix[0].size }
 
     override fun removeRow(indexR: Int): VectorImplOld<T> =
             this.internalMatrix.removeAt(indexR)
@@ -271,7 +271,7 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
         for (i in 0 until min(this.internalMatrix.size, other.internalMatrix.size)) {
             this.internalMatrix[i].appendAll(other.internalMatrix[i])
         }
-        return this.also { it.size = it.internalMatrix.size by it.internalMatrix[0].size }
+        return this.also { it.shape = it.internalMatrix.size by it.internalMatrix[0].size }
     }
 
     override fun removeCol(indexC: Int): VectorImplOld<T> {
@@ -321,15 +321,15 @@ open class Matrix<T>(val dim: Size = Size(3, 3), val initBlock: (r: Int, c: Int)
     }
 
     override fun equal(other: MatrixBase<T>): BooleanMatrix =
-        if (this.size != other.size)
+        if (this.shape != other.shape)
             throw Error.DimensionMisMatch()
         else
-            BooleanMatrix(this.size) { r, c -> this[r, c] == other[r, c]}
+            BooleanMatrix(this.shape) { r, c -> this[r, c] == other[r, c]}
 
     override fun hashCode(): Int {
         var result = dim.hashCode()
         result = 31 * result + initBlock.hashCode()
-        result = 31 * result + size.hashCode()
+        result = 31 * result + shape.hashCode()
         result = 31 * result + internalMatrix.hashCode()
         return result
     }

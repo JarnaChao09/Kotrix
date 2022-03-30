@@ -1,7 +1,7 @@
 package org.kotrix.matrix
 
 import org.kotrix.matrix.decomp.LUPDecomposition
-import org.kotrix.utils.Size
+import org.kotrix.utils.Shape
 import org.kotrix.utils.Slice
 import org.kotrix.utils.by
 import org.kotrix.vector.IntVectorOld
@@ -15,14 +15,14 @@ import kotlin.math.pow
 
 import kotlin.reflect.KClass
 
-class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int>(dim, initBlock) {
-    constructor(x: Int, y: Int, initBlock: (Int) -> Int = { 0 }): this(dim = Size(x, y), initBlock = { _, _ -> initBlock(0)})
+class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int>(dim, initBlock) {
+    constructor(x: Int, y: Int, initBlock: (Int) -> Int = { 0 }): this(dim = Shape(x, y), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: IntVectorOld): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
+    constructor(vector: IntVectorOld): this(dim = Shape(1, vector.size), initBlock = { _, i -> vector[i]  })
 
     constructor(vector: IntVectorOld, asCol: Boolean = false):
             this(
-                dim = if (asCol) Size(vector.size, 1) else Size(
+                dim = if (asCol) Shape(vector.size, 1) else Shape(
                     1,
                     vector.size
                 ),
@@ -30,20 +30,20 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
             )
 
     constructor(vectorOfVector: VectorImplOld<IntVectorOld>, asColVectors: Boolean = false): this(
-        dim = if (asColVectors) Size(
+        dim = if (asColVectors) Shape(
             vectorOfVector[0].size,
             vectorOfVector.size
-        ) else Size(vectorOfVector.size, vectorOfVector[0].size),
+        ) else Shape(vectorOfVector.size, vectorOfVector[0].size),
         initBlock = if (asColVectors) { r, c -> vectorOfVector[c][r] } else { r, c -> vectorOfVector[r][c] }
     )
 
     constructor(matrix: Matrix<Int>): this(dim = matrix.dim, initBlock = { r, c -> matrix[r, c] })
 
-    constructor(dim1: Size, asRows: Boolean, initBlock: (Int) -> Int): this(dim = dim1, initBlock = if (asRows) { _, i -> initBlock(i)} else { r, _ -> initBlock(r)})
+    constructor(dim1: Shape, asRows: Boolean, initBlock: (Int) -> Int): this(dim = dim1, initBlock = if (asRows) { _, i -> initBlock(i)} else { r, _ -> initBlock(r)})
 
-    constructor(dim1: Size): this(dim1, initBlock = { _, _ -> 0 })
+    constructor(dim1: Shape): this(dim1, initBlock = { _, _ -> 0 })
 
-    constructor(): this(Size(3, 3), initBlock = { _, _ -> 0 })
+    constructor(): this(Shape(3, 3), initBlock = { _, _ -> 0 })
 
     sealed class Scope {
         class Base: Scope()
@@ -56,13 +56,13 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
 
     companion object {
         @JvmStatic
-        fun empty(dim: Size) = IntMatrix(dim, asRows = true) { 0 }
+        fun empty(dim: Shape) = IntMatrix(dim, asRows = true) { 0 }
 
         @JvmStatic
-        fun zeros(dim: Size): IntMatrix = empty(dim)
+        fun zeros(dim: Shape): IntMatrix = empty(dim)
 
         @JvmStatic
-        fun ones(dim: Size): IntMatrix = IntMatrix(dim, asRows = true) { 1 }
+        fun ones(dim: Shape): IntMatrix = IntMatrix(dim, asRows = true) { 1 }
 
         @JvmStatic
         fun identity(n: Int): IntMatrix = IntMatrix(n by n) { r, c -> if (r == c) 1 else 0 }
@@ -85,7 +85,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
 
         @JvmStatic
         @JvmName("ofInts")
-        fun of(dim: Size, vararg elements: Int): IntMatrix {
+        fun of(dim: Shape, vararg elements: Int): IntMatrix {
             val mat = IntMatrix(dim)
             for (i in 0 until dim.x) {
                 for(j in 0 until dim.y) {
@@ -160,7 +160,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
         }
 
     override fun toArray(): Array<Array<Int>> {
-        val ret = MutableList(this.size.x) { Array(this.size.y) { 0 } }
+        val ret = MutableList(this.shape.x) { Array(this.shape.y) { 0 } }
         var index = 0
         for (i in this.toList()) {
             ret[index++] = i.toTypedArray()
@@ -287,7 +287,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
         IntMatrix(this)
 
     override fun toDoubleMatrix(): DoubleMatrix =
-        DoubleMatrix(this.size) { r, c -> this[r, c].toDouble() }
+        DoubleMatrix(this.shape) { r, c -> this[r, c].toDouble() }
 
     override fun trace(): Int {
         var sum = 0
@@ -414,7 +414,7 @@ class IntMatrix(dim: Size, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<Int
     }
 
     override fun adjugate(): IntMatrix =
-        IntMatrix(this.size) { r, c ->
+        IntMatrix(this.shape) { r, c ->
             this.cofactor(c, r)
         }
 

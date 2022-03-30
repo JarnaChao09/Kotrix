@@ -14,9 +14,9 @@ class LUPDecomposition(matrix: DoubleMatrix) {
 
     val lu: Array<DoubleArray> = matrix.doubleArray
 
-    val rowCount: Int = matrix.size.x
+    val rowCount: Int = matrix.shape.x
 
-    val colCount: Int = matrix.size.y
+    val colCount: Int = matrix.shape.y
 
     val pivots: IntArray = IntArray(rowCount) { i -> i }
 

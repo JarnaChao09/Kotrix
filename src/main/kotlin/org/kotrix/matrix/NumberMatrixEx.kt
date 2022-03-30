@@ -7,7 +7,7 @@ inline fun doubleMatrix(actions: DoubleMatrix.Scope.() -> DoubleMatrix.Scope): D
     DoubleMatrix(DoubleMatrix.Scope.Base().actions().matrix)
 
 fun IntMatrix.map(which: Selector, action: (Int) -> Int): IntMatrix {
-    val mat = IntMatrix(this.size)
+    val mat = IntMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v) else v
     }
@@ -15,7 +15,7 @@ fun IntMatrix.map(which: Selector, action: (Int) -> Int): IntMatrix {
 }
 
 fun IntMatrix.mapIndexed(which: Selector, action: (Int, ri: Int, ci: Int) -> Int): IntMatrix {
-    val mat = IntMatrix(this.size)
+    val mat = IntMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v, r, c) else v
     }
@@ -23,7 +23,7 @@ fun IntMatrix.mapIndexed(which: Selector, action: (Int, ri: Int, ci: Int) -> Int
 }
 
 fun IntMatrix.replace(only: Selector, replacement: Int, check: (Int) -> Boolean): IntMatrix {
-    val mat = IntMatrix(this.size)
+    val mat = IntMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && check(v)) replacement else v
     }
@@ -31,7 +31,7 @@ fun IntMatrix.replace(only: Selector, replacement: Int, check: (Int) -> Boolean)
 }
 
 fun IntMatrix.replaceNot(only: Selector, replacement: Int, check: (Int) -> Boolean): IntMatrix {
-    val mat = IntMatrix(this.size)
+    val mat = IntMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && !check(v)) replacement else v
     }
@@ -39,7 +39,7 @@ fun IntMatrix.replaceNot(only: Selector, replacement: Int, check: (Int) -> Boole
 }
 
 fun DoubleMatrix.map(which: Selector, action: (Double) -> Double): DoubleMatrix {
-    val mat = DoubleMatrix(this.size)
+    val mat = DoubleMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v) else v
     }
@@ -47,7 +47,7 @@ fun DoubleMatrix.map(which: Selector, action: (Double) -> Double): DoubleMatrix 
 }
 
 fun DoubleMatrix.mapIndexed(which: Selector, action: (Double, ri: Int, ci: Int) -> Double): DoubleMatrix {
-    val mat = DoubleMatrix(this.size)
+    val mat = DoubleMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (which.check(r, c)) action(v, r, c) else v
     }
@@ -55,7 +55,7 @@ fun DoubleMatrix.mapIndexed(which: Selector, action: (Double, ri: Int, ci: Int) 
 }
 
 fun DoubleMatrix.replace(only: Selector, replacement: Double, check: (Double) -> Boolean): DoubleMatrix {
-    val mat = DoubleMatrix(this.size)
+    val mat = DoubleMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && check(v)) replacement else v
     }
@@ -63,7 +63,7 @@ fun DoubleMatrix.replace(only: Selector, replacement: Double, check: (Double) ->
 }
 
 fun DoubleMatrix.replaceNot(only: Selector, replacement: Double, check: (Double) -> Boolean): DoubleMatrix {
-    val mat = DoubleMatrix(this.size)
+    val mat = DoubleMatrix(this.shape)
     for ((v, r, c) in this.withIndices) {
         mat[r, c] = if (only.check(r, c) && !check(v)) replacement else v
     }

@@ -5,24 +5,24 @@ import org.kotrix.complex.complex
 import org.kotrix.complex.conjugate
 import org.kotrix.complex.times
 import org.kotrix.matrix.decomp.LUPDecomposition
-import org.kotrix.utils.Size
+import org.kotrix.utils.Shape
 import org.kotrix.vector.VectorImplOld
 import kotlin.collections.all
 
-abstract class NumberMatrix<T>(dim: Size, initBlock: (r: Int, c: Int) -> T): Matrix<T>(dim = dim, initBlock = initBlock) where T: Number {
-    constructor(x: Int, y: Int, initBlock: (Int) -> T): this(dim = Size(
+abstract class NumberMatrix<T>(dim: Shape, initBlock: (r: Int, c: Int) -> T): Matrix<T>(dim = dim, initBlock = initBlock) where T: Number {
+    constructor(x: Int, y: Int, initBlock: (Int) -> T): this(dim = Shape(
         x,
         y
     ), initBlock = { _, _ -> initBlock(0)})
 
-    constructor(vector: VectorImplOld<T>): this(dim = Size(1, vector.size), initBlock = { _, i -> vector[i]  })
+    constructor(vector: VectorImplOld<T>): this(dim = Shape(1, vector.size), initBlock = { _, i -> vector[i]  })
 
     constructor(matListOfVector: VectorImplOld<VectorImplOld<T>>, unused: Boolean = true): this(
-        dim = if (unused) Size(matListOfVector.size, matListOfVector[0].size) else Size(matListOfVector.size, matListOfVector[0].size),
+        dim = if (unused) Shape(matListOfVector.size, matListOfVector[0].size) else Shape(matListOfVector.size, matListOfVector[0].size),
         initBlock = { r, c -> matListOfVector[r][c] }
     )
 
-    constructor(dim1: Size, emptyOrSingle: Boolean, initBlock: (Int) -> T): this(dim = if (emptyOrSingle) dim1 else dim1, initBlock = { _, i -> initBlock(i)})
+    constructor(dim1: Shape, emptyOrSingle: Boolean, initBlock: (Int) -> T): this(dim = if (emptyOrSingle) dim1 else dim1, initBlock = { _, i -> initBlock(i)})
 
     open val inv: NumberMatrix<T>
         get() = this.inverse()
