@@ -1,7 +1,5 @@
 package org.kotrix.numeric.diffeq
 
-import org.kotrix.symbolic.funAST.extensions.sec
-
 private fun RK4(
     initialStart: Double,
     initialValue: Double,
@@ -57,7 +55,7 @@ fun rungeKutta4(
     initialStart: Double,
     initialValue: Double,
     toFind: Double,
-    delta: Double = 1e-5,
+    delta: Double = 1e-2,
     firstDerivative: (Double, Double) -> Double,
 ): Double {
     return RK4(
@@ -74,7 +72,7 @@ fun rungeKutta4(
     initialValue: Double,
     initialDerivative: Double,
     toFind: Double,
-    delta: Double = 1e-5,
+    delta: Double = 1e-2,
     secondDerivative: (Double, Double, Double) -> Double,
 ): Double {
     return RK4SecondOrder(
