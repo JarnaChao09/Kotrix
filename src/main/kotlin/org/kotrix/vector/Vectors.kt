@@ -56,10 +56,10 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
     override fun clear()
 
     // Position Access Operations
-    operator fun set(index: Int, element: E): E
+    operator fun set(index: Int, element: E)
 
     // Slice Access Operations
-    operator fun set(indexSlice: Slice, elements: Collection<E>): MutableVector<E>
+    operator fun set(indexSlice: Slice, elements: Collection<E>)
 
     // List Iterators
     override fun listIterator(): MutableListIterator<E>
