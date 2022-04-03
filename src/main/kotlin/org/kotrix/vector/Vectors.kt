@@ -198,7 +198,7 @@ fun <T> emptyVector(): Vector<T> = EmptyVector
 
 fun <T> vectorOf(): Vector<T> = emptyVector()
 
-fun <T> vectorOf(vararg elements: T): Vector<T> = if (elements.isNotEmpty()) elements.asVector() else emptyVector()
+fun <T> vectorOf(vararg elements: T): Vector<T> = if (elements.isNotEmpty()) elements.toVector() else emptyVector()
 
 fun <T> mutableVectorOf(): MutableVector<T> = GenericVector()
 
@@ -219,7 +219,9 @@ inline fun <T> MutableVector(size: Int, init: (index: Int) -> T): MutableVector<
 
 //-----------------------------------------------------Extensions-----------------------------------------------------//
 
-fun <T> Array<T>.asVector(): Vector<T> = GenericVector(this.toList())
+fun <T> Array<T>.asVector(): Vector<T> = GenericVector(this.asList())
+
+fun <T> Array<T>.toVector(): Vector<T> = GenericVector(this.toList())
 
 fun <T> Collection<T>.toVector(): Vector<T> = GenericVector(this)
 
