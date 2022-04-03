@@ -55,6 +55,7 @@ interface MutableVector<E> : Vector<E>, MutableCollection<E> {
     override fun retainAll(elements: Collection<E>): Boolean
     override fun clear()
 
+    // todo determine if returning old value in sets is a good idea
     // Position Access Operations
     operator fun set(index: Int, element: E)
 
@@ -108,6 +109,7 @@ interface NumericVector<E> : Vector<E> where E : Number {
 
 // todo once algebraic data types are in, change type constraint
 interface MutableNumericVector<E> : NumericVector<E>, Vector<E> where E : Number {
+    // todo determine if returning old value in sets is a good idea
     // Position Access Operations
     operator fun set(index: Int, element: E)
 
