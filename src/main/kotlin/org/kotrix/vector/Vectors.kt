@@ -109,10 +109,10 @@ interface NumericVector<E> : Vector<E> where E : Number {
 // todo once algebraic data types are in, change type constraint
 interface MutableNumericVector<E> : NumericVector<E>, Vector<E> where E : Number {
     // Position Access Operations
-    operator fun set(index: Int, element: E): E
+    operator fun set(index: Int, element: E)
 
     // Slice Access Operations
-    operator fun set(indexSlice: Slice, elements: Collection<E>): MutableNumericVector<E>
+    operator fun set(indexSlice: Slice, elements: Collection<E>)
 
     // List Iterators
     override fun listIterator(): ListIterator<E>
@@ -156,7 +156,7 @@ internal object EmptyIterator : ListIterator<Nothing> {
 internal object EmptyVector : Vector<Nothing>, RandomAccess {
     override fun equals(other: Any?): Boolean = other is Vector<*> && other.isEmpty()
     override fun hashCode(): Int = 1
-    override fun toString(): String = "<>"
+    override fun toString(): String = "[]"
 
     override val size: Int get() = 0
     override fun isEmpty(): Boolean = true

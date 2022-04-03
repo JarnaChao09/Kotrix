@@ -70,16 +70,14 @@ class DoubleVector internal constructor(private val backing: DoubleArray) : Muta
 
     override fun lastIndexOf(element: Double): Int = backing.indexOfLast { it == element }
 
-    override fun set(index: Int, element: Double): Double {
+    override fun set(index: Int, element: Double) {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return backing[(size + index) % size].apply {
-            this@DoubleVector.backing[(size + index) % size] = element
-        }
+        this.backing[(size + index) % size] = element
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Double>): MutableNumericVector<Double> {
+    override fun set(indexSlice: Slice, elements: Collection<Double>) {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -89,12 +87,10 @@ class DoubleVector internal constructor(private val backing: DoubleArray) : Muta
         require(elements.size <= backing.size) {
             "size of new elements $elements cannot be bigger than size of vector $backing"
         }
-        val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Double>
     }
 
     override fun listIterator(): ListIterator<Double> = backing.toList().listIterator()

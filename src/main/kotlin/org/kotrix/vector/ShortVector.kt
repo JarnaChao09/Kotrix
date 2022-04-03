@@ -69,16 +69,14 @@ class ShortVector internal constructor(private val backing: ShortArray) : Mutabl
 
     override fun lastIndexOf(element: Short): Int = backing.lastIndexOf(element)
 
-    override fun set(index: Int, element: Short): Short {
+    override fun set(index: Int, element: Short) {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return backing[(size + index) % size].apply {
-            this@ShortVector.backing[(size + index) % size] = element
-        }
+        this.backing[(size + index) % size] = element
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Short>): MutableNumericVector<Short> {
+    override fun set(indexSlice: Slice, elements: Collection<Short>) {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -88,12 +86,10 @@ class ShortVector internal constructor(private val backing: ShortArray) : Mutabl
         require(elements.size <= backing.size) {
             "size of new elements $elements cannot be bigger than size of vector $backing"
         }
-        val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Short>
     }
 
     override fun listIterator(): ListIterator<Short> = backing.toList().listIterator()

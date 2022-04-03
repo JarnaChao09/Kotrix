@@ -69,16 +69,14 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
 
     override fun lastIndexOf(element: Int): Int = backing.lastIndexOf(element)
 
-    override fun set(index: Int, element: Int): Int {
+    override fun set(index: Int, element: Int) {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return backing[(size + index) % size].apply {
-            this@IntVector.backing[(size + index) % size] = element
-        }
+        this.backing[(size + index) % size] = element
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Int>): MutableNumericVector<Int> {
+    override fun set(indexSlice: Slice, elements: Collection<Int>) {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -88,12 +86,10 @@ class IntVector internal constructor(private val backing: IntArray) : MutableNum
         require(elements.size <= backing.size) {
             "size of new elements $elements cannot be bigger than size of vector $backing"
         }
-        val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Int>
     }
 
     override fun listIterator(): ListIterator<Int> = backing.toList().listIterator()

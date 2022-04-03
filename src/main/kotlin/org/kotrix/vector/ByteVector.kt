@@ -69,16 +69,14 @@ class ByteVector internal constructor(private val backing: ByteArray) : MutableN
 
     override fun lastIndexOf(element: Byte): Int = backing.lastIndexOf(element)
 
-    override fun set(index: Int, element: Byte): Byte {
+    override fun set(index: Int, element: Byte) {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return backing[(size + index) % size].apply {
-            this@ByteVector.backing[(size + index) % size] = element
-        }
+        this.backing[(size + index) % size] = element
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Byte>): MutableNumericVector<Byte> {
+    override fun set(indexSlice: Slice, elements: Collection<Byte>) {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -88,12 +86,10 @@ class ByteVector internal constructor(private val backing: ByteArray) : MutableN
         require(elements.size <= backing.size) {
             "size of new elements $elements cannot be bigger than size of vector $backing"
         }
-        val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Byte>
     }
 
     override fun listIterator(): ListIterator<Byte> = backing.toList().listIterator()

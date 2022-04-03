@@ -70,16 +70,14 @@ class FloatVector internal constructor(private val backing: FloatArray) : Mutabl
 
     override fun lastIndexOf(element: Float): Int = backing.indexOfLast { it == element }
 
-    override fun set(index: Int, element: Float): Float {
+    override fun set(index: Int, element: Float) {
         require(index in -size until size) {
             "index $index was not inside range [${-size}, $size)"
         }
-        return backing[(size + index) % size].apply {
-            this@FloatVector.backing[(size + index) % size] = element
-        }
+        this.backing[(size + index) % size] = element
     }
 
-    override fun set(indexSlice: Slice, elements: Collection<Float>): MutableNumericVector<Float> {
+    override fun set(indexSlice: Slice, elements: Collection<Float>) {
         require(indexSlice.size == elements.size) {
             "size of indexSlice $indexSlice must equal size of elements $elements"
         }
@@ -89,12 +87,10 @@ class FloatVector internal constructor(private val backing: FloatArray) : Mutabl
         require(elements.size <= backing.size) {
             "size of new elements $elements cannot be bigger than size of vector $backing"
         }
-        val ret = this[indexSlice]
         val sliceIterator = indexSlice.iterator()
         for (e in elements) {
             backing[(size + sliceIterator.next()) % size] = e
         }
-        return ret as MutableNumericVector<Float>
     }
 
     override fun listIterator(): ListIterator<Float> = backing.toList().listIterator()
