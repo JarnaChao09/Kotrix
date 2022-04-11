@@ -1,5 +1,7 @@
 package org.kotrix.algebra
 
+// TODO("CHANGE TO USE CONTEXT RECEIVERS")
+
 interface Operation<T> where T : Any {
     fun number(value: Number): T
 }
