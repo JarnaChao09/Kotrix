@@ -1,6 +1,6 @@
 package org.kotrix.discrete.graph
 
-sealed interface GraphEdge<V : GraphVertex<*, *>> {
+sealed interface GraphEdge<V : GraphVertex<*>> {
     var initialVertex: V
     var arrivalVertex: V
 
@@ -8,13 +8,13 @@ sealed interface GraphEdge<V : GraphVertex<*, *>> {
     operator fun component2(): V = this.arrivalVertex
 }
 
-sealed interface WeightedGraphEdge<W : Comparable<W>, V : GraphVertex<*, *>> : GraphEdge<V> {
+sealed interface WeightedGraphEdge<W : Comparable<W>, V : GraphVertex<*>> : GraphEdge<V> {
     var weight: W
 
     operator fun component3(): W = this.weight
 }
 
-sealed interface DirectionalGraphEdge<V : GraphVertex<*, *>> : GraphEdge<V> {
+sealed interface DirectionalGraphEdge<V : GraphVertex<*>> : GraphEdge<V> {
     var head: V
     var tail: V
 
@@ -34,23 +34,23 @@ sealed interface DirectionalGraphEdge<V : GraphVertex<*, *>> : GraphEdge<V> {
     override fun component2(): V = this.tail
 }
 
-data class GenericEdge<V : GraphVertex<*, *>>(
+data class GenericEdge<V : GraphVertex<*>>(
     override var initialVertex: V,
     override var arrivalVertex: V,
 ) : GraphEdge<V>
 
-data class GenericWeightedEdge<W : Comparable<W>, V : GraphVertex<*, *>>(
+data class GenericWeightedEdge<W : Comparable<W>, V : GraphVertex<*>>(
     override var initialVertex: V,
     override var arrivalVertex: V,
     override var weight: W,
 ) : WeightedGraphEdge<W, V>
 
-data class GenericDirectionalEdge<V : GraphVertex<*, *>>(
+data class GenericDirectionalEdge<V : GraphVertex<*>>(
     override var head: V,
     override var tail: V,
 ) : DirectionalGraphEdge<V>
 
-data class GenericDirectionalWeightedEdge<W : Comparable<W>, V : GraphVertex<*, *>>(
+data class GenericDirectionalWeightedEdge<W : Comparable<W>, V : GraphVertex<*>>(
     override var head: V,
     override var tail: V,
     override var weight: W,
