@@ -7,10 +7,8 @@ data class Cos(val angle: Fun): Fun() {
         get() = this.angle.variables
 
     override fun simplify(): Fun {
-        val a = angle.simplify()
-
-        return when {
-            a is Scalar -> {
+        return when (val a = angle.simplify()) {
+            is Scalar -> {
                 when (a) {
                     0.scalar, (2.0 * kotlin.math.PI).scalar -> 1.scalar
                     (kotlin.math.PI / 2.0).scalar, ((3.0 * kotlin.math.PI) / 2.0).scalar -> 0.scalar
@@ -18,7 +16,6 @@ data class Cos(val angle: Fun): Fun() {
                     else -> kotlin.math.cos(a.value).scalar
                 }
             }
-
             else -> cos(a)
         }
     }
