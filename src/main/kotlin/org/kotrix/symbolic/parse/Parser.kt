@@ -1,6 +1,6 @@
 package org.kotrix.symbolic.parse
 
-import org.kotrix.symbolic.funAST.*
+import org.kotrix.symbolic.ast.*
 
 class Parser(private var tokensList: List<Tokens>) {
     private var tokensIterator = tokensList.listIterator()

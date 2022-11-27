@@ -1,6 +1,6 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
-import org.kotrix.symbolic.funAST.extensions.*
+import org.kotrix.symbolic.ast.extensions.*
 
 data class Subtract(val lhs: Fun, val rhs: Fun): Fun() {
     override val variables: Set<Variable>
@@ -23,7 +23,7 @@ data class Subtract(val lhs: Fun, val rhs: Fun): Fun() {
 
     override fun sub(replace: Variable, with: Fun): Fun = lhs.sub(replace, with) - rhs.sub(replace, with)
 
-    override fun stringify(): String = "(${lhs.stringify()} + ${rhs.stringify()}"
+    override fun stringify(): String = "(${lhs.stringify()} - ${rhs.stringify()}"
 
     override fun diff(by: Variable): Fun = this.lhs.diff(by) - this.rhs.diff(by)
 

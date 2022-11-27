@@ -1,4 +1,4 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
 //import org.kotrix.vector.map
 //

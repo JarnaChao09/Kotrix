@@ -1,8 +1,8 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
-import org.kotrix.symbolic.funAST.extensions.*
+import org.kotrix.symbolic.ast.extensions.*
 
-data class Cos(val angle: Fun): Fun() {
+data class Cos(val angle: Fun) : Fun() {
     override val variables: Set<Variable>
         get() = this.angle.variables
 
@@ -16,6 +16,7 @@ data class Cos(val angle: Fun): Fun() {
                     else -> kotlin.math.cos(a.value).scalar
                 }
             }
+
             else -> cos(a)
         }
     }

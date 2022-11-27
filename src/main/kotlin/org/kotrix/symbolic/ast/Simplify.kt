@@ -1,4 +1,4 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
 interface Simplify<X: Fun> {
     fun simplify(): X

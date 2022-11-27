@@ -1,4 +1,4 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
 // TODO determine if UnaryPlus object is a better option over Times(+1, value)
 data class UnaryPlus(val value: Fun): Fun() {

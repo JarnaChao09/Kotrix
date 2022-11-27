@@ -1,6 +1,6 @@
-package org.kotrix.symbolic.funAST.extensions
+package org.kotrix.symbolic.ast.extensions
 
-import org.kotrix.symbolic.funAST.*
+import org.kotrix.symbolic.ast.*
 
 infix fun Fun.pow(other: Fun): Fun = Power(this, other)
 

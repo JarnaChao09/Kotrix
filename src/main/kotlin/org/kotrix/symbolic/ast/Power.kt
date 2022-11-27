@@ -1,7 +1,7 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
 import kotlin.math.pow
-import org.kotrix.symbolic.funAST.extensions.*
+import org.kotrix.symbolic.ast.extensions.*
 
 data class Power(val base: Fun, val exponent: Fun): Fun() {
     override val variables: Set<Variable>

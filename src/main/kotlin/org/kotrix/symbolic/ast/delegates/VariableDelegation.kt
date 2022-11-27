@@ -1,6 +1,6 @@
-package org.kotrix.symbolic.funAST.delegates
+package org.kotrix.symbolic.ast.delegates
 
-import org.kotrix.symbolic.funAST.Variable
+import org.kotrix.symbolic.ast.Variable
 import kotlin.reflect.KProperty
 
 class VariableDelegation(private val name: String? = null) {

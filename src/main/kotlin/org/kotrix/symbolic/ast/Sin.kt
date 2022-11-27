@@ -1,16 +1,14 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
-import org.kotrix.symbolic.funAST.extensions.*
+import org.kotrix.symbolic.ast.extensions.*
 
-data class Sin(val angle: Fun): Fun() {
+data class Sin(val angle: Fun) : Fun() {
     override val variables: Set<Variable>
         get() = this.angle.variables
 
     override fun simplify(): Fun {
-        val a = angle.simplify()
-
-        return when {
-            a is Scalar -> {
+        return when (val a = angle.simplify()) {
+            is Scalar -> {
                 when (a) {
                     0.scalar, (2.0 * kotlin.math.PI).scalar, (kotlin.math.PI).scalar -> 0.scalar
                     (kotlin.math.PI / 2.0).scalar -> 1.scalar

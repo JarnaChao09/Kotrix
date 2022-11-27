@@ -1,7 +1,7 @@
-package org.kotrix.symbolic.funAST.extensions
+package org.kotrix.symbolic.ast.extensions
 
-import org.kotrix.symbolic.funAST.Fun
-import org.kotrix.symbolic.funAST.Scalar
+import org.kotrix.symbolic.ast.Fun
+import org.kotrix.symbolic.ast.Scalar
 
 val Number.scalar: Scalar
     get() = Scalar(this)

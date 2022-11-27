@@ -1,6 +1,6 @@
-package org.kotrix.symbolic.funAST.delegates
+package org.kotrix.symbolic.ast.delegates
 
-import org.kotrix.symbolic.funAST.Fun
+import org.kotrix.symbolic.ast.Fun
 import org.kotrix.symbolic.parse.Lexer
 import org.kotrix.symbolic.parse.Parser
 import kotlin.reflect.KProperty

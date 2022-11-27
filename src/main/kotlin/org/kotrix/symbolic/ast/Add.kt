@@ -1,6 +1,6 @@
-package org.kotrix.symbolic.funAST
+package org.kotrix.symbolic.ast
 
-import org.kotrix.symbolic.funAST.extensions.*
+import org.kotrix.symbolic.ast.extensions.*
 
 data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
     override val variables: Set<Variable>
@@ -226,6 +226,7 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                         }
                     }
 //                    is Vector -> TODO()
+                    is Series -> TODO()
                 }
             }
 
@@ -369,6 +370,7 @@ data class Add(val lhs: Fun, val rhs: Fun) : Fun() {
                     is Power -> TODO()
                     is Sin -> TODO()
 //                    is Vector -> TODO()
+                    is Series -> TODO()
                 }
             }
 
