@@ -20,6 +20,10 @@ data class Complex(var real: Double, var imag: Double): Number() {
 
     override fun toByte(): Byte = radius.toInt().toByte()
 
+    @Deprecated(
+        "Direct conversion to Char is deprecated. Use toInt().toChar() or Char constructor instead.\nIf you override toChar() function in your Number inheritor, it's recommended to gradually deprecate the overriding function and then remove it.\nSee https://youtrack.jetbrains.com/issue/KT-46465 for details about the migration",
+        replaceWith = ReplaceWith("this.toInt().toChar()")
+    )
     override fun toChar(): Char = radius.toInt().toChar()
 
     override fun toDouble(): Double = radius
