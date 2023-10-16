@@ -82,9 +82,9 @@ fun atom(state: ParserState): Pair<Grammar, ParserState> {
     var ret: Grammar? = null
     var curr: Grammar? = null
 
-    while ((currentState.value?.type?.equals(TokenType.ID) ?: false) ||
-        (currentState.value?.type?.equals(TokenType.AC) ?: false) ||
-        (currentState.value?.type?.equals(TokenType.AS) ?: false)) {
+    while ((currentState.value?.type?.equals(TokenType.ID) == true) ||
+        (currentState.value?.type?.equals(TokenType.AC) == true) ||
+        (currentState.value?.type?.equals(TokenType.AS) == true)) {
         val value = currentState.value!!
         when (value.type) {
             TokenType.ID -> {
@@ -127,14 +127,14 @@ fun atom(state: ParserState): Pair<Grammar, ParserState> {
 fun rule(state: ParserState): Pair<Grammar, ParserState> {
     var (expr: Grammar, currentState) = atom(state)
 
-    if (currentState.value?.type?.equals(TokenType.EQ) ?: false) {
+    if (currentState.value?.type?.equals(TokenType.EQ) == true) {
         val rules = buildList {
             do {
                 currentState = currentState.nextState
                 val (c, s) = atom(currentState)
                 add(c)
                 currentState = s
-            } while (currentState.value?.type?.equals(TokenType.OR) ?: false)
+            } while (currentState.value?.type?.equals(TokenType.OR) == true)
         }
         expr = Rule(expr, rule=rules)
     }
@@ -159,7 +159,7 @@ fun parse(input: List<Token>): Grammar {
             curr!!.next = tr
             curr = curr.next
         }
-    } while (currentState.value?.type?.equals(TokenType.NL) ?: false)
+    } while (currentState.value?.type?.equals(TokenType.NL) == true)
 
     return ret!!
 }
@@ -168,31 +168,48 @@ data class NFANode(val stateID: String, val transitions: Map<String, String>, va
 
 class NFA(val startState: String, val acceptStates: Set<String>, val nfaNodes: Map<String, NFANode>) {
     fun accepts(value: String): Boolean {
-        var currentStates = setOf<String>(startState)
+        var currentStates = setOf(startState to 0)
+        val finishedStates = mutableSetOf<Pair<String, Int>>()
 
-        var i = 0
-        while (i < value.length) {
-            val currentCharacter = "${value[i++]}"
-            currentStates = buildSet<String> {
-                for (state in currentStates) {
-                    val node = nfaNodes[state]!!
-                    if (currentCharacter in node.transitions) {
-                        add(node.transitions[currentCharacter]!!)
+        while (currentStates.isNotEmpty()) {
+            currentStates = buildSet {
+                for ((currentState, currentIndex) in currentStates) {
+                    if (currentIndex < value.length) {
+                        val node = nfaNodes[currentState]!!
+                        for ((transitionString, destinationNode) in node.transitions) {
+                            if (currentIndex + transitionString.length <= value.length && value.substring(currentIndex..<currentIndex + transitionString.length) == transitionString) {
+                                add(destinationNode to currentIndex + transitionString.length)
+                            }
+                        }
+                        addAll(node.lambdaTransitions.map { it to currentIndex })
+                    } else {
+                        finishedStates.add(currentState to currentIndex)
                     }
-                    addAll(node.lambdaTransitions)
                 }
             }
         }
 
-        return (acceptStates intersect currentStates).isNotEmpty()
+        return finishedStates.any { (s, _) -> s in acceptStates }
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append("Start State: ${this@NFA.startState} | Accept States: ${this@NFA.acceptStates}")
+            append('\n')
+            for ((lhs, node) in this@NFA.nfaNodes) {
+                append("    $lhs -> $node")
+                append('\n')
+            }
+        }
     }
 }
 
-fun grammar2NFA(grammar: Grammar, startState: String): NFA {
+fun grammar2NFA(grammar: Grammar, startState: String, defaultAcceptState: String="X"): NFA {
     var current: Grammar? = grammar
 
-    val acceptingStateSet = mutableSetOf<String>()
+    val acceptingStateSet = mutableSetOf(defaultAcceptState)
     val nfaMap = buildMap {
+        put(defaultAcceptState, NFANode(defaultAcceptState, emptyMap(), emptySet()))
         while (current != null) {
             val currentLambdaTransitions = mutableSetOf<String>()
             val currentTransitions = mutableMapOf<String, String>()
@@ -216,6 +233,9 @@ fun grammar2NFA(grammar: Grammar, startState: String): NFA {
                                         is AlphabetCharacter -> {
                                             sum += currentChar.character
                                             currentChar = currentChar.next
+                                            if (currentChar == null) {
+                                                currentTransitions[sum] = defaultAcceptState
+                                            }
                                         }
                                         is Ident -> {
                                             currentTransitions[sum] = currentChar.name
@@ -251,15 +271,8 @@ fun main() {
     println(tree)
     val nfa = grammar2NFA(tree, "S")
 
-    /*
-    val S = NFANode("S", mapOf("0" to "S", "1" to "A"))
-    val A = NFANode("A", mapOf("1" to "S", "0" to "B"))
-    val B = NFANode("B", mapOf(), setOf("S"))
-
-    val nfa = NFA("S", setOf("B"), mapOf("S" to S, "A" to A, "B" to B))
-    */
-
     println(nfa.accepts("0000101110"))
     println(nfa.accepts("10"))
     println(nfa.accepts("00"))
+    println(nfa.accepts("100000"))
 }
