@@ -258,6 +258,24 @@ fun grammar2NFA(grammar: Grammar, startState: String, defaultAcceptState: String
     return NFA(startState, acceptingStateSet, nfaMap)
 }
 
+fun enumerate(size: Int, alphabet: Set<Char>): Sequence<String> {
+    return sequence {
+        var prev = listOf("")
+
+        repeat(size) {
+            prev = buildList {
+                for (str in prev) {
+                    for (alphabetCharacter in alphabet) {
+                        val tmp = str + alphabetCharacter
+                        add(tmp)
+                        yield(tmp)
+                    }
+                }
+            }
+        }
+    }
+}
+
 fun main() {
     val grammar = """
     	S = 0S | 1A
@@ -266,13 +284,16 @@ fun main() {
         C = 0000 | S
     """.trimIndent()
 
-    val tokens = lex(grammar, setOf('0', '1'), "x")
+    val alphabet = setOf('0', '1')
+
+    val tokens = lex(grammar, alphabet, "x")
     val tree = parse(tokens)
     println(tree)
     val nfa = grammar2NFA(tree, "S")
 
-    println(nfa.accepts("0000101110"))
-    println(nfa.accepts("10"))
-    println(nfa.accepts("00"))
-    println(nfa.accepts("100000"))
+    for (enumeratedString in enumerate(6, alphabet)) {
+        if (nfa.accepts(enumeratedString)) {
+            println("$enumeratedString is accepted")
+        }
+    }
 }
