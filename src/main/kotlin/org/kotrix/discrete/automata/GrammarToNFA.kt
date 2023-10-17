@@ -1,6 +1,23 @@
 package org.kotrix.discrete.automata
 
 /**
+ * Helper function to wrap output in visual line breaks
+ *
+ * @param title title of the specific section
+ * @param separator string to use as the line break string
+ * @param n length of the line break
+ * @param block block of code to run in between the line breaks
+ */
+fun wrap(title: String, separator: String = "-", n: Int = 20, block: () -> Unit): Unit {
+    println(title)
+    repeat(n) { print(separator) }
+    println()
+    block()
+    repeat(n) { print(separator) }
+    println()
+}
+
+/**
  * Enum for differentiating the token type
  *
  * ID: identifiers
@@ -265,7 +282,7 @@ fun parse(input: List<Token>): Grammar {
  */
 data class NFANode(
     val stateID: String,
-    val transitions: Map<String, String>,
+    val transitions: Map<String, Set<String>>,
     val lambdaTransitions: Set<String> = setOf(),
 )
 
@@ -300,7 +317,9 @@ class NFA(val startState: String, val acceptStates: Set<String>, val nfaNodes: M
                         val node = nfaNodes[currentState]!!
                         for ((transitionString, destinationNode) in node.transitions) {
                             if (currentIndex + transitionString.length <= value.length && value.substring(currentIndex..<currentIndex + transitionString.length) == transitionString) {
-                                add(destinationNode to currentIndex + transitionString.length)
+                                destinationNode.forEach {
+                                    add(it to currentIndex + transitionString.length)
+                                }
                             }
                         }
                         addAll(node.lambdaTransitions.map { it to currentIndex })
@@ -348,11 +367,13 @@ fun grammar2NFA(grammar: Grammar, startState: String, defaultAcceptState: String
     val nfaMap = buildMap {
         // add a default accept state to be used in certain cases [covered later]
         put(defaultAcceptState, NFANode(defaultAcceptState, emptyMap(), emptySet()))
+
         while (current != null) {
             // current set of lambda transitions
             val currentLambdaTransitions = mutableSetOf<String>()
             // current set of labelled transitions
-            val currentTransitions = mutableMapOf<String, String>()
+            // set of nodes a transition goes to as this is an NFA
+            val currentTransitions = mutableMapOf<String, Set<String>>()
             // current node in the vine
             val c = current
             // traverse to the next node in the vine
@@ -384,7 +405,7 @@ fun grammar2NFA(grammar: Grammar, startState: String, defaultAcceptState: String
                                             currentChar = currentChar.next
                                             // if the next character is null, this is a terminal branch, add a transition to the default accept state to follow the right linear grammar syntax
                                             if (currentChar == null) {
-                                                currentTransitions[sum] = defaultAcceptState
+                                                currentTransitions[sum] = currentTransitions.getOrDefault(sum, emptySet()) union setOf(defaultAcceptState)
                                             }
                                         }
 
@@ -392,7 +413,7 @@ fun grammar2NFA(grammar: Grammar, startState: String, defaultAcceptState: String
                                         // assume this is the end of the string as the grammar parser can only handle right linear grammars
                                         // add a transition to the identifier
                                         is Ident -> {
-                                            currentTransitions[sum] = currentChar.name
+                                            currentTransitions[sum] = currentTransitions.getOrDefault(sum, emptySet()) union setOf(currentChar.name)
                                             currentChar = currentChar.next
                                         }
 
@@ -462,7 +483,7 @@ fun main() {
         print("[${i++ + 1}]>>> ")
         val line = readln()
         when (val l = line.trim()) {
-            ":f", ":F", ":fail" -> currentRejectedStrings.forEach(::println)
+            ":f", ":F", ":fail" -> wrap("Rejected Strings") { currentRejectedStrings.forEach(::println) }
             ":h", ":H", ":help" -> println(
                 """
                 Grammar to NFA automation program v0.0.1
@@ -490,7 +511,7 @@ fun main() {
             )
 
             ":l", ":L", ":list" -> currentGrammar.forEachIndexed { index, s -> println("$index: $s") }
-            ":p", ":P", ":pass" -> currentAcceptedStrings.forEach(::println)
+            ":p", ":P", ":pass" -> wrap("Accepted Strings") { currentAcceptedStrings.forEach(::println) }
             ":q", ":Q", ":quit" -> kotlin.system.exitProcess(0)
             else -> l.split(" ").run {
                 when (this[0]) {
@@ -505,8 +526,8 @@ fun main() {
                             currentAlphabet,
                             currentAcceptingState
                         )
-                        val tree = parse(tokens)
-                        val nfa = grammar2NFA(tree, currentStartState)
+                        val tree = parse(tokens).also { wrap("Grammar") { println(it) } }
+                        val nfa = grammar2NFA(tree, currentStartState).also { wrap("NFA") { println(it) } }
                         enumerate(n, currentAlphabet).partition {
                             nfa.accepts(it)
                         }.run {
