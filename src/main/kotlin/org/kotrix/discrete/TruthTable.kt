@@ -69,7 +69,6 @@ class TruthTable(private val expression: BooleanAlgebra, private val order: Arra
 
         val sortedOperations = this.getAllOperations()
                 .sortedBy { it.stringify().length }
-                .toVectorOld()
 
         val maxLengthList = MutableList(this.variables.size + sortedOperations.size) { 5 }
 
@@ -95,17 +94,17 @@ class TruthTable(private val expression: BooleanAlgebra, private val order: Arra
         val variableList = this.variables.toList()
         for (r in 0 until this.varValues.rowLength) {
             index = 0
-            val dummy = VectorImplOld(0) { "" }
-            dummy appendAll this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" }.toVectorOld()
+            val dummy = MutableList(0) { "" }
+            dummy.addAll(this.varValues[r].toList().map { "$it${" " * (maxLengthList[index++] - it.toString().length)}" })
             for (op in sortedOperations) {
                 val values = Array(expression.variables.size) {
                     variableList[it] to this.varValues[r, this.varIndex.getValue(variableList[it])].const
                 }
 
                 val temp = (op(*values) as Constant).value.toString()
-                dummy append (temp + (" " * (maxLengthList[index++] - temp.length)))
+                dummy.add(temp + (" " * (maxLengthList[index++] - temp.length)))
             }
-            tableString += dummy.toList().toMutableList()
+            tableString += dummy
         }
 
         return "${
