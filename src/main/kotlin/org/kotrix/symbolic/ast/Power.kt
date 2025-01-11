@@ -27,7 +27,7 @@ data class Power(val base: Fun, val exponent: Fun): Fun() {
                 this * Ln(this.base) * this.exponent.diff(by)
             this.base !is Scalar && this.exponent is Scalar ->
                 if (this.exponent == 1.scalar)
-                    Ln(this.base) * this.base.diff(by)
+                    this.base.diff(by)
                 else
                     this.exponent * (this.base pow (this.exponent.value - 1).scalar) * this.base.diff(by)
             else -> {

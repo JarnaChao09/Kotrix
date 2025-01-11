@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "2.1.0"
 }
 
 group = "org.example"
@@ -18,7 +18,7 @@ kotlin {
 }
 
 dependencies {
-    val kotestVersion = "5.6.0"
+    val kotestVersion = "5.9.0"
 
     implementation(kotlin("reflect"))
     testImplementation(kotlin("test"))

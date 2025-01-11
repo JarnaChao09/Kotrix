@@ -8,18 +8,24 @@ import org.kotrix.symbolic.ast.sum
 
 fun main() {
     val x by Var()
-    val n by Var()
+    val y by Var()
+    // val n by Var()
+
+    val pow = x pow y
+
+    println(pow.diff(x).simpleString())
+    println(pow.diff(y).simpleString())
 //    val series = Series(x pow n, n, 0..5)
 //    val series = sum(x pow n, 0, 5)
-    val series = prod(x pow n, 0, 5)
+//     val series = prod(x pow n, 0, 5)
 //    val ddxSeries = series.diff(x)
 
     // todo figure out series structure to limit diff to only sum series
     // todo figure out how to change stringify based on function passed in op
 
-    println(series.stringify())
+    // println(series.stringify())
 //    println(ddxSeries.simpleString())
-    println(series.partialEval(emptyMap()).simpleString())
+//     println(series.partialEval(emptyMap()).simpleString())
 //    println(ddxSeries.partialEval(emptyMap()).simpleString())
 }
 
