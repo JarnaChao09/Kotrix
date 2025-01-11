@@ -102,7 +102,7 @@ data class Times(val lhs: Fun, val rhs: Fun): Fun() {
                         }
                     }
                     else -> l * r
-                }.simplify()
+                }
             }
 
             l is Scalar && r is Times -> {

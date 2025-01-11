@@ -13,8 +13,30 @@ fun main() {
 
     val pow = x pow y
 
+    println(pow.diff(x).stringify())
     println(pow.diff(x).simpleString())
+
+    println()
+
+    println(pow.diff(y).stringify())
     println(pow.diff(y).simpleString())
+
+    println()
+
+    val pow10 = 10.scalar pow (x pow 2.scalar)
+    println(pow10.diff(x).stringify())
+    println(pow10.diff(x).simpleString())
+
+    println()
+
+    val powN = { n: Int -> sin(x) pow n.scalar }
+    println(powN(1).diff(x).stringify())
+    println(powN(1).diff(x).simpleString())
+
+    println()
+
+    println(powN(5).diff(x).stringify())
+    println(powN(5).diff(x).simpleString())
 //    val series = Series(x pow n, n, 0..5)
 //    val series = sum(x pow n, 0, 5)
 //     val series = prod(x pow n, 0, 5)
