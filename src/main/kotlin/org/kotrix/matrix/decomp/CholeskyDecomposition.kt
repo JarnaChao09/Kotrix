@@ -10,21 +10,17 @@ class CholeskyDecomposition(matrix: DoubleMatrix) {
     private val lower = DoubleMatrix(matrix.shape)
 
     init {
+        // Cholesky–Banachiewicz algorithm
         for (i in matrix.rowRange) {
-            for (j in matrix.colRange) {
-                var sum = 0.0
-                if (i == j) {
-                    for (k in 0 until j) {
-                        sum += lower[j,k] * lower[j,k]
-                    }
-                    lower[i,j] = sqrt(matrix[j,j] - sum)
+            for (j in 0..i) {
+                val sum = (0..<j).sumOf {
+                    lower[i, it] * lower[j, it]
+                }
+
+                lower[i, j] = if (i == j) {
+                    sqrt(matrix[i, j] - sum)
                 } else {
-                    for (k in 0 until j) {
-                        sum += lower[i,k] * lower[j,k]
-                    }
-                    if (lower[j,j] > 0) {
-                        lower[i,j] = (matrix[i,j] - sum) / lower[j,j]
-                    }
+                    1.0 / lower[j, j] * (matrix[i, j] - sum)
                 }
             }
         }

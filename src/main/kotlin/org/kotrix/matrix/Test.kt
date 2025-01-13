@@ -1,29 +1,61 @@
 package org.kotrix.matrix
 
 import org.kotrix.matrix.*
+import org.kotrix.matrix.decomp.CholeskyDecomposition
 import org.kotrix.utils.*
 import org.kotrix.vector.*
 
 fun main() {
-    val backing = arrayOf(
-        arrayOf(2.0, -3.0, 4.0, 3.0),
-        arrayOf(6.0, -9.0, 12.0, 8.0),
-        arrayOf(4.0, -5.0, 6.0, 7.0),
-        arrayOf(2.0, 1.0, -1.0, 8.0),
+    val test1 = DoubleMatrix.of(3 by 3,
+          4,  12, -16,
+         12,  37, -43,
+        -16, -43,  98,
     )
-    val mat = DoubleMatrix(4 by 4) { r, c -> backing[r][c] }
-    println(mat)
-    println()
-    val (l, u, p) = mat.lup
-    println(l)
-    println()
-    println(u)
-    println()
-    println(p)
-    println()
-    println(p matMult mat)
-    println()
-    println(p.inv matMult l matMult u)
+    val (l1, lt1) = CholeskyDecomposition(test1)
+    val llt1 = l1 matMult lt1
+
+    println("l1=\n$l1\nlt1=\n$lt1\n\noriginal=\n${test1}\nrecomputed=\n${llt1}\n${if (test1 == llt1) "equal" else "not equal"}\n\n")
+
+    val test2 = DoubleMatrix.of(3 by 3,
+        25.0, 15.0, -5.0,
+        15.0, 18.0,  0.0,
+        -5.0,  0.0, 11.0,
+    )
+    val (l2, lt2) = CholeskyDecomposition(test2)
+    val llt2 = l2 matMult lt2
+
+    println("l2=\n$l2\nlt2=\n$lt2\n\noriginal=\n${test2}\nrecomputed=\n${llt2}\n${if (test2 == llt2) "equal" else "not equal"}\n\n")
+
+    val test3 = DoubleMatrix.of(4 by 4,
+        18.0, 22.0,  54.0,  42.0,
+        22.0, 70.0,  86.0,  62.0,
+        54.0, 86.0, 174.0, 134.0,
+        42.0, 62.0, 134.0, 106.0,
+    )
+    val (l3, lt3) = CholeskyDecomposition(test3)
+    val llt3 = l3 matMult lt3
+
+    println("l3=\n$l3\nlt3=\n$lt3\n\noriginal=\n${test3}\nrecomputed=\n${llt3}\n${if (test3 == llt3) "equal" else "not equal"}\n\n")
+
+    // val backing = arrayOf(
+    //     arrayOf(2.0, -3.0, 4.0, 3.0),
+    //     arrayOf(6.0, -9.0, 12.0, 8.0),
+    //     arrayOf(4.0, -5.0, 6.0, 7.0),
+    //     arrayOf(2.0, 1.0, -1.0, 8.0),
+    // )
+    // val mat = DoubleMatrix(4 by 4) { r, c -> backing[r][c] }
+    // println(mat)
+    // println()
+    // val (l, u, p) = mat.lup
+    // println(l)
+    // println()
+    // println(u)
+    // println()
+    // println(p)
+    // println()
+    // println(p matMult mat)
+    // println()
+    // println(p.inv matMult l matMult u)
 //    val testS: Slice = 0 to 2
 //    for (i: Int in testS) {
 //        println(i)
