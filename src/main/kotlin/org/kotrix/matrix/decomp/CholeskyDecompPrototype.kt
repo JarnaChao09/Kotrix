@@ -72,6 +72,6 @@ fun main() {
     for (i in 0..1) println()
 
     val matrix = DoubleMatrix.of(3 by 3, 4,12,-16,12,37,-43,-16,-43,98)
-    val (L1, L_T1) = CholeskyDecomposition(matrix)
+    val (L1, L_T1) = CholeskyDecomposition(matrix, CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
     println("$L1\n$L_T1")
 }

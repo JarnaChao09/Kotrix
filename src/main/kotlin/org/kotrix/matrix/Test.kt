@@ -5,13 +5,14 @@ import org.kotrix.matrix.decomp.CholeskyDecomposition
 import org.kotrix.utils.*
 import org.kotrix.vector.*
 
-fun main() {
+fun runTest(algorithm: CholeskyDecomposition.Algorithm) {
+    println("running tests with $algorithm algorithm")
     val test1 = DoubleMatrix.of(3 by 3,
-          4,  12, -16,
-         12,  37, -43,
+        4,  12, -16,
+        12,  37, -43,
         -16, -43,  98,
     )
-    val (l1, lt1) = CholeskyDecomposition(test1)
+    val (l1, lt1) = CholeskyDecomposition(test1, algorithm)
     val llt1 = l1 matMult lt1
 
     println("l1=\n$l1\nlt1=\n$lt1\n\noriginal=\n${test1}\nrecomputed=\n${llt1}\n${if (test1 == llt1) "equal" else "not equal"}\n\n")
@@ -21,7 +22,7 @@ fun main() {
         15.0, 18.0,  0.0,
         -5.0,  0.0, 11.0,
     )
-    val (l2, lt2) = CholeskyDecomposition(test2)
+    val (l2, lt2) = CholeskyDecomposition(test2, algorithm)
     val llt2 = l2 matMult lt2
 
     println("l2=\n$l2\nlt2=\n$lt2\n\noriginal=\n${test2}\nrecomputed=\n${llt2}\n${if (test2 == llt2) "equal" else "not equal"}\n\n")
@@ -32,11 +33,15 @@ fun main() {
         54.0, 86.0, 174.0, 134.0,
         42.0, 62.0, 134.0, 106.0,
     )
-    val (l3, lt3) = CholeskyDecomposition(test3)
+    val (l3, lt3) = CholeskyDecomposition(test3, algorithm)
     val llt3 = l3 matMult lt3
 
     println("l3=\n$l3\nlt3=\n$lt3\n\noriginal=\n${test3}\nrecomputed=\n${llt3}\n${if (test3 == llt3) "equal" else "not equal"}\n\n")
+}
 
+fun main() {
+    runTest(CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
+    runTest(CholeskyDecomposition.Algorithm.CHOLESKY_CROUT)
     // val backing = arrayOf(
     //     arrayOf(2.0, -3.0, 4.0, 3.0),
     //     arrayOf(6.0, -9.0, 12.0, 8.0),
