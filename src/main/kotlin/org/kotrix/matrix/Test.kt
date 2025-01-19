@@ -2,6 +2,7 @@ package org.kotrix.matrix
 
 import org.kotrix.matrix.*
 import org.kotrix.matrix.decomp.CholeskyDecomposition
+import org.kotrix.matrix.decomp.QRDecomposition
 import org.kotrix.utils.*
 import org.kotrix.vector.*
 
@@ -40,8 +41,25 @@ fun runTest(algorithm: CholeskyDecomposition.Algorithm) {
 }
 
 fun main() {
-    runTest(CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
-    runTest(CholeskyDecomposition.Algorithm.CHOLESKY_CROUT)
+    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
+    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_CROUT)
+
+    val matrix = DoubleMatrix.of(3 by 3,
+        1.0, 1.0, 0.0,
+        1.0, 0.0, 1.0,
+        0.0, 1.0, 1.0,
+    )
+
+    // val matrix = DoubleMatrix.of(3 by 3,
+    //     12.0, -51.0,   4.0,
+    //      6.0, 167.0, -68.0,
+    //     -4.0,  24.0, -41.0,
+    // )
+
+    val (Q, R) = QRDecomposition(matrix)
+
+    println("$Q\n\n$R\n\n${Q matMult R}")
+
     // val backing = arrayOf(
     //     arrayOf(2.0, -3.0, 4.0, 3.0),
     //     arrayOf(6.0, -9.0, 12.0, 8.0),
