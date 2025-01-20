@@ -40,25 +40,71 @@ fun runTest(algorithm: CholeskyDecomposition.Algorithm) {
     println("l3=\n$l3\nlt3=\n$lt3\n\noriginal=\n${test3}\nrecomputed=\n${llt3}\n${if (test3 == llt3) "equal" else "not equal"}\n\n")
 }
 
-fun main() {
-    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
-    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_CROUT)
-
-    val matrix = DoubleMatrix.of(3 by 3,
+fun runTest(algorithm: QRDecomposition.Algorithm) {
+    println("running tests with $algorithm algorithm")
+    val matrix0 = DoubleMatrix.of(
+        3 by 3,
         1.0, 1.0, 0.0,
         1.0, 0.0, 1.0,
         0.0, 1.0, 1.0,
     )
+
+    val (Q0, R0) = QRDecomposition(matrix0, algorithm)
+    val QR0 = Q0 matMult R0
+
+    println("Q0=\n$Q0\nR0=\n$R0\n\noriginal=\n${matrix0}\nrecomputed=\n${QR0}\n${if (QR0 == matrix0) "equal" else "not equal"}\n\n")
+
+    val matrix1 = DoubleMatrix.of(
+        3 by 3,
+        12.0, -51.0, 4.0,
+        6.0, 167.0, -68.0,
+        -4.0, 24.0, -41.0,
+    )
+
+    val (Q1, R1) = QRDecomposition(matrix1, algorithm)
+    val QR1 = Q1 matMult R1
+
+    println("Q1=\n$Q1\nR1=\n$R1\n\noriginal=\n${matrix1}\nrecomputed=\n${QR1}\n${if (QR1 == matrix1) "equal" else "not equal"}\n\n")
+
+    val matrix2 = DoubleMatrix.of(
+        2 by 3,
+        1.0, 3.0, 4.0,
+        2.0, 0.0, 9.0,
+    )
+
+    val (Q2, R2) = QRDecomposition(matrix2, algorithm)
+    val QR2 = Q2 matMult R2
+
+    println("Q2=\n$Q2\nR2=\n$R2\n\noriginal=\n${matrix2}\nrecomputed=\n${QR2}\n${if (QR2 == matrix2) "equal" else "not equal"}\n\n")
+}
+
+fun main() {
+    runTest(QRDecomposition.Algorithm.GRAM_SCHMIDT)
+    runTest(QRDecomposition.Algorithm.MODIFIED_GRAM_SCHMIDT)
+    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_BANACHIEWICZ)
+    // runTest(CholeskyDecomposition.Algorithm.CHOLESKY_CROUT)
+
+    // val matrix = DoubleMatrix.of(3 by 3,
+    //     1.0, 1.0, 0.0,
+    //     1.0, 0.0, 1.0,
+    //     0.0, 1.0, 1.0,
+    // )
+
+    // val matrix = DoubleMatrix.of(2 by 3,
+    //     1.0, 3.0, 4.0,
+    //     2.0, 0.0, 9.0,
+    // )
+
+    // val matrix = IntMatrix.of(2 by 3,
+    //     1, 3, 4,
+    //     2, 0, 9,
+    // )
 
     // val matrix = DoubleMatrix.of(3 by 3,
     //     12.0, -51.0,   4.0,
     //      6.0, 167.0, -68.0,
     //     -4.0,  24.0, -41.0,
     // )
-
-    val (Q, R) = QRDecomposition(matrix)
-
-    println("$Q\n\n$R\n\n${Q matMult R}")
 
     // val backing = arrayOf(
     //     arrayOf(2.0, -3.0, 4.0, 3.0),

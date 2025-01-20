@@ -83,7 +83,7 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
             val mat = DoubleMatrix(dim)
             for (i in 0 until dim.x) {
                 for(j in 0 until dim.y) {
-                    mat[i, j] = elements[dim.x * i + j].toDouble()
+                    mat[i, j] = elements[dim.y * i + j].toDouble()
                 }
             }
             return mat
@@ -100,7 +100,7 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
 
     override fun get(indexR: Int, indexCSlice: Slice): DoubleMatrix = DoubleMatrix(super.get(indexR, indexCSlice))
 
-    override fun get(indexRSlice: Slice, indexC: Int): DoubleVectorOld = DoubleVectorOld(this.colLength) { i -> super.get(indexRSlice, indexC)[i] }
+    override fun get(indexRSlice: Slice, indexC: Int): DoubleVectorOld = DoubleVectorOld(indexRSlice.size) { i -> super.get(indexRSlice, indexC)[i] }
 
     override fun get(indexRSlice: Slice, indexCSlice: Slice): DoubleMatrix = DoubleMatrix(super.get(indexRSlice, indexCSlice))
 

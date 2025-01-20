@@ -85,11 +85,11 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
 
         @JvmStatic
         @JvmName("ofInts")
-        fun of(dim: Shape, vararg elements: Int): IntMatrix {
+        fun of(dim: Shape, vararg elements: Number): IntMatrix {
             val mat = IntMatrix(dim)
             for (i in 0 until dim.x) {
                 for(j in 0 until dim.y) {
-                    mat[i, j] = elements[dim.x * i + j]
+                    mat[i, j] = elements[dim.y * i + j].toInt()
                 }
             }
             return mat
@@ -106,7 +106,7 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
 
     override fun get(indexR: Int, indexCSlice: Slice): IntMatrix = IntMatrix(super.get(indexR, indexCSlice))
 
-    override fun get(indexRSlice: Slice, indexC: Int): IntVectorOld = IntVectorOld(this.colLength) { i -> super.get(indexRSlice, indexC)[i] }
+    override fun get(indexRSlice: Slice, indexC: Int): IntVectorOld = IntVectorOld(indexRSlice.size) { i -> super.get(indexRSlice, indexC)[i] }
 
     override fun get(indexRSlice: Slice, indexCSlice: Slice): IntMatrix = IntMatrix(super.get(indexRSlice, indexCSlice))
 
