@@ -5,14 +5,54 @@ import org.kotrix.complex.toComplex
 import org.kotrix.matrix.DoubleMatrix
 import org.kotrix.matrix.matMult
 import org.kotrix.utils.by
-import org.kotrix.vector.DoubleVector
 import kotlin.math.absoluteValue
-import kotlin.math.sqrt
 
 fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
     require(matrix.shape == 2 by 2) {
         "eigenvalues2x2 only supports 2 x 2 matrices"
     }
+
+    /*
+        |---------------|
+        | a - l     b   |
+    det |               | = (a - l)(d - l) - bc = l^2 - (a + d)l + (ad - bc)
+        |   c     d - l |                                  |           |
+        |---------------|                                Trace    determinant
+
+    let
+        a' = 1
+        b' = -(a + d)
+        c' = ad - bc
+    in the following quadratic formula
+
+    -b' +- (b'^2 - 4a'c')^(1/2)   -(-(a + d)) +- ((-(a + d))^2 - 4(ad - bc))^(1/2)
+    --------------------------- = ------------------------------------------------
+                2a'                                       2
+
+            Tr(A)   a + d
+    let m = ----- = -----, p = det(A) = ad - bc
+              2       2
+
+    this allows for the following reduction
+
+    -(-(a + d)) +- ((-(a + d))^2 - 4(ad - bc))^(1/2)   Tr(A) +- (Tr(A)^2 - 4det(A))^(1/2)
+    ------------------------------------------------ = ----------------------------------
+                            2                                         2
+
+    Tr(A) +- (Tr(A)^2 - 4det(A))^(1/2)   Tr(A)    (Tr(A)^2 - 4det(A))^(1/2)         / Tr(A)^2 - 4p \ 1/2
+    ---------------------------------- = ----- +- ------------------------- = m +- |  ------------  |
+                   2                       2                  2                     \       4      /
+
+                                       /                 \ 1/2
+          / Tr(A)^2 - 4p \ 1/2        |   / Tr(A) \ 2     |
+    m +- |  ------------  |    = m +- |  |  -----  | - p  |    = m +- (m^2 - p)^(1/2)
+          \       4      /            |   \   2   /       |
+                                       \                 /
+
+    therefore
+        l1 = m + (m^2 - p)^(1/2)
+        l2 = m - (m^2 - p)^(1/2)
+    */
 
     // val m = matrix.trace() / 2.0
     // val p = matrix.determinant()
@@ -41,7 +81,7 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
     return (m + sqrt) to (m - sqrt)
 }
 
-fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): DoubleVector {
+fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): List<Complex> {
     require(matrix.shape.x == matrix.shape.y) {
         "Input matrix must be square"
     }
@@ -65,41 +105,106 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
         i++
     }
 
-    // println(curr)
+    return buildList {
+        var i = 0
+        val n = matrix.shape.x
 
-    return DoubleVector(matrix.shape.x) {
-        curr[it, it]
-    } as DoubleVector
+        while (i < n) {
+            if (i + 1 < n) {
+                if (curr[i + 1, i].absoluteValue <= tolerance) {
+                    add(curr[i, i].toComplex())
+                    i++
+                } else {
+                    val square = DoubleMatrix.of(2 by 2,
+                            curr[i, i],     curr[i, i + 1],
+                        curr[i + 1, i], curr[i + 1, i + 1],
+                    )
+
+                    val (e1, e2) = eigenvalues2x2(square)
+                    add(e1)
+                    add(e2)
+                    i += 2
+                }
+            } else {
+                add(curr[i, i].toComplex())
+                i++
+            }
+        }
+    }
 }
 
-fun test(matrix: DoubleMatrix) {
-    println("QR iteration:\n${algorithm(matrix)}\n\nMean Product formula:\n${eigenvalues2x2(matrix)}")
+fun DoubleMatrix.test(values: String) {
+    println("=== QR iteration [$values] ==")
+    algorithm(this).forEach(::println)
+    println()
+    if (this.shape == 2 by 2) {
+        println("== mean product formula [$values] ==")
+        eigenvalues2x2(this).also { (e1, e2) ->
+            println(e1)
+            println(e2)
+            println()
+        }
+    }
 }
 
 fun main() {
-    val matrix1 = DoubleMatrix.of(2 by 2,
+    DoubleMatrix.of(2 by 2,
         4.0,  1.0,
         2.0, -1.0
-    )
+    ).test("4.37228, -1.37228")
 
-    val matrix2 = DoubleMatrix.of(2 by 2,
+    DoubleMatrix.of(2 by 2,
         3.0, 1.0,
         4.0, 1.0,
-    )
+    ).test("4.23607, -0.236068")
 
-    test(matrix1)
-    test(matrix2)
+    DoubleMatrix.of(6 by 6,
+        7,  3,  4,  11, -9, -2,
+        -6,  4, -5,   7,  1, 12,
+        -1, -9,  2,   2,  9,  1,
+        -8,  0, -1,   5,  0,  8,
+        -4,  3, -5,   7,  2, 10,
+        6,  1,  4, -11, -7, -1,
+    ).test("2.91676 + 13.248i, 2.91676 - 13.248i, 5 + 6i, 5 - 6i, 1.58324 + 1.41555i, 1.58324 - 1.41555i")
 
-    // todo: figure out how to use QR iteration to solve for complex eigenvalues
-    // val matrix2 = DoubleMatrix.of(6 by 6,
-    //      7,  3,  4,  11, -9, -2,
-    //     -6,  4, -5,   7,  1, 12,
-    //     -1, -9,  2,   2,  9,  1,
-    //     -8,  0, -1,   5,  0,  8,
-    //     -4,  3, -5,   7,  2, 10,
-    //      6,  1,  4, -11, -7, -1,
-    // )
-    //
-    // val eigenvalues2 = algorithm(matrix2)
-    // println(eigenvalues2)
+    DoubleMatrix.of(4 by 4,
+        2, 0, 0, 0,
+        1, 2, 0, 0,
+        0, 1, 3, 0,
+        0, 0, 1, 3,
+    ).test("3, 3, 2, 2")
+
+    DoubleMatrix.of(2 by 2,
+        -5, 2,
+        -7, 4,
+    ).test("-3, 2")
+
+    DoubleMatrix.of(3 by 3,
+         5, -10, -5,
+         2,  14,  2,
+        -4,  -8,  6,
+    ).test("10, 10, 5")
+
+    DoubleMatrix.of(3 by 3,
+         2, 2, -2,
+         1, 3, -1,
+        -1, 1,  1,
+    ).test("4, 2, 0")
+
+    DoubleMatrix.of(3 by 3,
+         33, 105, 105,
+         10,  28,  30,
+        -20, -60, -62,
+    ).test("-2, -2, 3")
+
+    DoubleMatrix.of(3 by 3,
+        1, 2, 4,
+        0, 4, 7,
+        0, 0, 6,
+    ).test("1, 4, 6")
+
+    DoubleMatrix.of(2 by 2,
+        1, 1,
+        1, 0,
+    ).test("1.61801, -0.618034")
 }
