@@ -71,12 +71,13 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
  * A_k = Q_k * R_k where Q_k is an orthonormal matrix and R_k is an upper triangular matrix
  * A_(k+1) = R_k * Q_k = Q_k^-1 * Q_k * R_k * Q_k = Q_k^-1 A_k * Q_k = Q_k^T * A_k * Q_k
  *
- * Giving enough iteration steps (and the correct conditions), this algorithm will converge on the real schur
- * decomposition of A where Q is a unitary matrix and R is a block upper triangular matrix
+ * Giving enough iteration steps (and the correct conditions), this algorithm will converge on the Real Schur
+ * Decomposition of A = Q * R * Q^T where Q is an orthogonal matrix and R is a block upper triangular matrix
  *
- * This allows for easier calculation of eigenvalues as they are on the diagonal of any triangular matrix
+ * This allows for easier calculation of eigenvalues as A is similar to R therefore the eigenvalues are the same
+ * Since R is a block upper triangular matrix, the eigenvalues of R are the eigenvalues of the blocks on the diagonal
  *
- * If the block is a singular scalar value, that value is a real eigenvalue of the original matrix
+ * If the block is a singular scalar value (1 x 1 matrix), that value is a real eigenvalue of the original matrix
  *
  * If the block is a 2 x 2 square matrix, the complex conjugate pair of eigenvalues of said square matrix are a
  * complex conjugate pair of eigenvalues of the original matrix
@@ -89,6 +90,8 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
     var curr = matrix.toDoubleMatrix()
     var prev: DoubleMatrix
 
+    var q = DoubleMatrix.identity(matrix.shape.x)
+
     var diff = Double.POSITIVE_INFINITY
     var i = 0
 
@@ -98,12 +101,23 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
         val (Q, R) = QRDecomposition(prev, QRDecomposition.Algorithm.MODIFIED_GRAM_SCHMIDT)
 
         curr = R matMult Q
+        q = q matMult Q
 
         diff = (curr - prev).maxOf {
             it.absoluteValue
         }
         i++
     }
+
+    // Real Schur Decomposition
+    // note: due to it being a real schur decomposition, the eigenvectors are not the columns of q
+    // if the eigenvectors contain complex values
+
+    // val r = curr
+    // val original = q matMult r matMult q.t
+    // println(q)
+    // println(r)
+    // println(original)
 
     return buildList {
         var i = 0
@@ -207,4 +221,15 @@ fun main() {
         1, 1,
         1, 0,
     ).test("1.61801, -0.618034")
+
+    DoubleMatrix.of(2 by 2,
+        1, -1,
+        1,  1,
+    ).test("1 + i, 1 - i")
+
+    DoubleMatrix.of(3 by 3,
+        0.8, -0.6, 0,
+        0.6,  0.8, 0,
+           1,   2, 2,
+    ).test("2, 0.8 + 0.6i, 0.8 - 0.6i")
 }
