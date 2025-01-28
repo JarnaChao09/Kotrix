@@ -54,25 +54,6 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
         l2 = m - (m^2 - p)^(1/2)
     */
 
-    // val m = matrix.trace() / 2.0
-    // val p = matrix.determinant()
-    //
-    // val sqr = m * m - p
-    //
-    // return if (sqr < 0.0) {
-    //     val sqrt = sqrt(-sqr)
-    //
-    //     val l1 = Complex(m, +sqrt)
-    //     val l2 = Complex(m, -sqrt)
-    //     l1 to l2
-    // } else {
-    //     val sqrt = sqrt(sqr)
-    //
-    //     val l1 = Complex(m + sqrt)
-    //     val l2 = Complex(m - sqrt)
-    //     l1 to l2
-    // }
-
     val m = (matrix.trace() / 2.0).toComplex()
     val p = matrix.determinant().toComplex()
 
@@ -81,6 +62,25 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
     return (m + sqrt) to (m - sqrt)
 }
 
+/**
+ * Performs QR iteration
+ *
+ * This is defined by the following iteration scheme:
+ *
+ * Let A_0 = A
+ * A_k = Q_k * R_k where Q_k is an orthonormal matrix and R_k is an upper triangular matrix
+ * A_(k+1) = R_k * Q_k = Q_k^-1 * Q_k * R_k * Q_k = Q_k^-1 A_k * Q_k = Q_k^T * A_k * Q_k
+ *
+ * Giving enough iteration steps (and the correct conditions), this algorithm will converge on the real schur
+ * decomposition of A where Q is a unitary matrix and R is a block upper triangular matrix
+ *
+ * This allows for easier calculation of eigenvalues as they are on the diagonal of any triangular matrix
+ *
+ * If the block is a singular scalar value, that value is a real eigenvalue of the original matrix
+ *
+ * If the block is a 2 x 2 square matrix, the complex conjugate pair of eigenvalues of said square matrix are a
+ * complex conjugate pair of eigenvalues of the original matrix
+ */
 fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): List<Complex> {
     require(matrix.shape.x == matrix.shape.y) {
         "Input matrix must be square"
