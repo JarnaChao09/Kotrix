@@ -63,7 +63,7 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
 }
 
 /**
- * Performs QR iteration
+ * Performs QR iteration to converge on the Real Schur Decomposition
  *
  * This is defined by the following iteration scheme:
  *
@@ -72,17 +72,9 @@ fun eigenvalues2x2(matrix: DoubleMatrix): Pair<Complex, Complex> {
  * A_(k+1) = R_k * Q_k = Q_k^-1 * Q_k * R_k * Q_k = Q_k^-1 A_k * Q_k = Q_k^T * A_k * Q_k
  *
  * Giving enough iteration steps (and the correct conditions), this algorithm will converge on the Real Schur
- * Decomposition of A = Q * R * Q^T where Q is an orthogonal matrix and R is a block upper triangular matrix
- *
- * This allows for easier calculation of eigenvalues as A is similar to R therefore the eigenvalues are the same
- * Since R is a block upper triangular matrix, the eigenvalues of R are the eigenvalues of the blocks on the diagonal
- *
- * If the block is a singular scalar value (1 x 1 matrix), that value is a real eigenvalue of the original matrix
- *
- * If the block is a 2 x 2 square matrix, the complex conjugate pair of eigenvalues of said square matrix are a
- * complex conjugate pair of eigenvalues of the original matrix
+ * Decomposition of A = Q * R * Q^-1 where Q is an orthogonal matrix and R is a block upper triangular matrix
  */
-fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): List<Complex> {
+fun realSchurDecomposition(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): Pair<DoubleMatrix, DoubleMatrix> {
     require(matrix.shape.x == matrix.shape.y) {
         "Input matrix must be square"
     }
@@ -109,15 +101,28 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
         i++
     }
 
+    return q to curr
+}
+
+/**
+ * Utilizes the Real Schur Decomposition of the input matrix to calculate eigenvalues.
+ *
+ * Let A be the input matrix and its Real Schur Decomposition be defined as A = Q * R * Q^-1
+ * where Q is an orthogonal matrix (meaning Q^-1 = Q^T) and R is a block upper triangular matrix
+ *
+ * The eigenvalues of A can be calculated from R as A is similar to R therefore the eigenvalues are the same
+ * Since R is a block upper triangular matrix, the eigenvalues of R are the eigenvalues of the blocks on the diagonal
+ *
+ * If the block is a singular scalar value (1 x 1 matrix), that value is a real eigenvalue of the original matrix
+ *
+ * If the block is a 2 x 2 square matrix, the complex conjugate pair of eigenvalues of said square matrix are a
+ * complex conjugate pair of eigenvalues of the original matrix
+ */
+fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int = 1000): List<Complex> {
     // Real Schur Decomposition
     // note: due to it being a real schur decomposition, the eigenvectors are not the columns of q
     // if the eigenvectors contain complex values
-
-    // val r = curr
-    // val original = q matMult r matMult q.t
-    // println(q)
-    // println(r)
-    // println(original)
+    val (_, r) = realSchurDecomposition(matrix, tolerance, maxIteration)
 
     return buildList {
         var i = 0
@@ -125,13 +130,13 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
 
         while (i < n) {
             if (i + 1 < n) {
-                if (curr[i + 1, i].absoluteValue <= tolerance) {
-                    add(curr[i, i].toComplex())
+                if (r[i + 1, i].absoluteValue <= tolerance) {
+                    add(r[i, i].toComplex())
                     i++
                 } else {
                     val square = DoubleMatrix.of(2 by 2,
-                            curr[i, i],     curr[i, i + 1],
-                        curr[i + 1, i], curr[i + 1, i + 1],
+                            r[i, i],     r[i, i + 1],
+                        r[i + 1, i], r[i + 1, i + 1],
                     )
 
                     val (e1, e2) = eigenvalues2x2(square)
@@ -140,7 +145,7 @@ fun algorithm(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxIteration: Int
                     i += 2
                 }
             } else {
-                add(curr[i, i].toComplex())
+                add(r[i, i].toComplex())
                 i++
             }
         }
