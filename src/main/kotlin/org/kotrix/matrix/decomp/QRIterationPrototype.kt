@@ -235,6 +235,19 @@ fun main() {
     DoubleMatrix.of(3 by 3,
         0.8, -0.6, 0,
         0.6,  0.8, 0,
-           1,   2, 2,
+          1,    2, 2,
     ).test("2, 0.8 + 0.6i, 0.8 - 0.6i")
+
+    DoubleMatrix.of(3 by 3,
+        0, 0,  2,
+        1, 0, -5,
+        0, 1,  4,
+    ).test("2, 1, 1")
+
+    // problem: if the matrix is already orthogonal, the algorithm fails
+    DoubleMatrix.of(3 by 3,
+        0, 0, -1,
+        1, 0,  0,
+        0, 1,  0,
+    ).test("-1, 0.5 + 0.866025i, 0.5 - 0.866025i")
 }
