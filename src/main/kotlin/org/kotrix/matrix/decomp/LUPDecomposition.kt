@@ -9,6 +9,9 @@ import org.kotrix.vector.DoubleVectorOld
 import kotlin.math.min
 import kotlin.math.abs
 
+/**
+ * The following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix/lup_decomposition.rb (which itself was adapted from JAMA)
+ */
 class LUPDecomposition(matrix: DoubleMatrix) {
     constructor(matrix: NumberMatrix<*>): this(matrix.toDoubleMatrix())
 

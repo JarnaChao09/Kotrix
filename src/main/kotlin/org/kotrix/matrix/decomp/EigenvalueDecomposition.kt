@@ -8,6 +8,9 @@ import org.kotrix.matrix.NumberMatrix
 import org.kotrix.vector.VectorImplOld
 import kotlin.math.*
 
+/**
+ * The following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix/eigenvalue_decomposition.rb (which itself was adapted from JAMA)
+ */
 class EigenvalueDecomposition(matrix: DoubleMatrix) {
     constructor(matrix1: NumberMatrix<*>): this(matrix1 as DoubleMatrix)
 
