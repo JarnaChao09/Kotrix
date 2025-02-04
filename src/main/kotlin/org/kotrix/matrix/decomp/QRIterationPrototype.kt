@@ -79,6 +79,7 @@ fun realSchurDecomposition(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxI
         "Input matrix must be square"
     }
 
+    val shift = DoubleMatrix.identity(matrix.shape.x)
     var curr = matrix.toDoubleMatrix()
     var prev: DoubleMatrix
 
@@ -90,9 +91,9 @@ fun realSchurDecomposition(matrix: DoubleMatrix, tolerance: Double = 1e-12, maxI
     while (i < maxIteration && diff > tolerance) {
         prev = curr.toDoubleMatrix()
 
-        val (Q, R) = QRDecomposition(prev, QRDecomposition.Algorithm.MODIFIED_GRAM_SCHMIDT)
+        val (Q, R) = QRDecomposition(prev - shift, QRDecomposition.Algorithm.MODIFIED_GRAM_SCHMIDT)
 
-        curr = R matMult Q
+        curr = (R matMult Q) + shift
         q = q matMult Q
 
         diff = (curr - prev).maxOf {
@@ -244,10 +245,16 @@ fun main() {
         0, 1,  4,
     ).test("2, 1, 1")
 
-    // problem: if the matrix is already orthogonal, the algorithm fails
     DoubleMatrix.of(3 by 3,
         0, 0, -1,
         1, 0,  0,
         0, 1,  0,
     ).test("-1, 0.5 + 0.866025i, 0.5 - 0.866025i")
+
+    // problem: if the matrix becomes orthogonal after the shift, the algorithm fails
+    DoubleMatrix.of(3 by 3,
+        1, 0, -1,
+        1, 1,  0,
+        0, 1,  1,
+    ).test("0, 1.5 + 0.866025i, 1.5 - 0.866025i")
 }
