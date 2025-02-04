@@ -217,6 +217,7 @@ fun main() {
         -20, -60, -62,
     ).test("-2, -2, 3")
 
+    // problem: shifting a triangular matrix causes NaNs
     DoubleMatrix.of(3 by 3,
         1, 2, 4,
         0, 4, 7,
