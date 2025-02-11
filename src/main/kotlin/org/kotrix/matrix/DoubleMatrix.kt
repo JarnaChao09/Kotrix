@@ -382,7 +382,6 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
                     val size = this.rowLength
                     val last = size - 1
                     val a = this.doubleArray
-                    val noPivot = 0
                     var sign = +1
                     var pivot = 1.0
                     for (k in 0 until size) {
@@ -391,7 +390,7 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
                         if (pivot == 0.0) {
                             val switch = (k+1 until size).find {
                                 a[it][k] != 0.0
-                            } ?: noPivot
+                            } ?: return 0.0
                             val temp = a[switch]
                             a[switch] = a[k]
                             a[k] = temp

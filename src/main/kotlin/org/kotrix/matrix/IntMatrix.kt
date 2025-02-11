@@ -389,7 +389,6 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
                     val size = this.rowLength
                     val last = size - 1
                     val a = this.intArray
-                    val noPivot = 0
                     var sign = +1
                     var pivot = 1
                     for (k in 0 until size) {
@@ -398,7 +397,7 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
                         if (pivot == 0) {
                             val switch = (k+1 until size).find {
                                 a[it][k] != 0
-                            } ?: noPivot
+                            } ?: return 0
                             val temp = a[switch]
                             a[switch] = a[k]
                             a[k] = temp
