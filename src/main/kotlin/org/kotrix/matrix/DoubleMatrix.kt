@@ -345,6 +345,9 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
         return identity
     }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L1318
+     */
     override fun determinant(): Double {
         return when(this.rowLength) {
             0 -> 1.0
@@ -372,6 +375,9 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
                         - m0[3] * m1[2] * m2[0] * m3[1] + m0[3] * m1[2] * m2[1] * m3[0])
             }
             else -> {
+                /**
+                 * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L1369
+                 */
                 fun determinantBareiss(): Double {
                     val size = this.rowLength
                     val last = size - 1
@@ -406,11 +412,17 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
         }
     }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L793
+     */
     override fun adjugate(): DoubleMatrix =
         DoubleMatrix(this.shape) { r, c ->
             this.cofactor(c, r)
         }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L778
+     */
     override fun cofactor(row: Int, col: Int): Double =
         if (this.isEmpty())
             throw RuntimeException("cofactor of empty matrix is not defined")
@@ -419,6 +431,9 @@ class DoubleMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Double): NumberMat
         else
             firstMinor(row, col).determinant() * ((-1.0).pow(row + col))
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L751
+     */
     override fun firstMinor(row: Int, col: Int): DoubleMatrix {
         if (this.isEmpty()) throw RuntimeException("First Minor of Empty Matrix is not defined")
 

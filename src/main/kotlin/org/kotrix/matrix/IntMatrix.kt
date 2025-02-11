@@ -352,6 +352,9 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
         return identity
     }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L1318
+     */
     override fun determinant(): Int {
         return when(this.rowLength) {
             0 -> 1
@@ -379,6 +382,9 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
                  - m0[3] * m1[2] * m2[0] * m3[1] + m0[3] * m1[2] * m2[1] * m3[0])
             }
             else -> {
+                /**
+                 * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L1369
+                 */
                 fun determinantBareiss(): Int {
                     val size = this.rowLength
                     val last = size - 1
@@ -413,11 +419,17 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
         }
     }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L793
+     */
     override fun adjugate(): IntMatrix =
         IntMatrix(this.shape) { r, c ->
             this.cofactor(c, r)
         }
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L778
+     */
     override fun cofactor(row: Int, col: Int): Int =
         if (this.isEmpty())
             throw RuntimeException("cofactor of empty matrix is not defined")
@@ -426,6 +438,9 @@ class IntMatrix(dim: Shape, initBlock: (r: Int, c: Int) -> Int): NumberMatrix<In
         else
             firstMinor(row, col).determinant() * ((-1.0).pow(row + col)).toInt()
 
+    /**
+     * the following code was adapted from https://github.com/ruby/matrix/blob/master/lib/matrix.rb#L751
+     */
     override fun firstMinor(row: Int, col: Int): IntMatrix {
         if (this.isEmpty()) throw RuntimeException("First Minor of Empty Matrix is not defined")
 
